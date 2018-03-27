@@ -44,3 +44,30 @@ class CedulaDialog(QtWidgets.QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+
+    def closeEvent(self,event):
+        print("salio")
+        if self.predio != None:
+            self.predio.selectionChanged.disconnect()
+        
+    def event(self, event):
+        #print(event.type())
+
+        if event.type() == QEvent.WindowActivate:
+            print('esta activa', str(event.type()))
+
+            print(self.lista)
+            listElim = []
+
+            for key, value in self.lista.items():
+                #print(key, value)
+
+                if self.lista[key].isVisible() == False:
+                    listElim.append(key)
+
+                # print(str(self.lista[key].isVisible()),str(self.lista[key].windowTitle()))
+
+            for key in listElim:
+                del self.lista[key]
+
+        return super(CedulaDialog, self).event(event)

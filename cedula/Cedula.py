@@ -21,7 +21,7 @@
  ***************************************************************************/
 """
 from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QCursor, QPixmap
 from PyQt5.QtWidgets import QAction, QMessageBox
 
 # Initialize Qt resources from file resources.py
@@ -30,7 +30,7 @@ from .resources import *
 from .Cedula_dialog import CedulaDialog
 from .Cedula_MainWindow import CedulaMainWindow
 import os.path
-from qgis.core import QgsMessageLog
+from qgis.core import QgsMessageLog, QgsProject
 
 
 class Cedula:
@@ -64,7 +64,6 @@ class Cedula:
 
         # Create the dialog (after translation) and keep reference
         self.dlg = CedulaDialog()
-        self.window = CedulaMainWindow()
 
         # Declare instance attributes
         self.actions = []
@@ -73,28 +72,185 @@ class Cedula:
         self.toolbar = self.iface.addToolBar(u'Cedula')
         self.toolbar.setObjectName(u'Cedula')
 
-        # evento boton
-        self.dlg.pushButton.clicked.connect(self.abreVentana)
-        self.window.pushButton.clicked.connect(self.hasAlgo)
+        # evento boton 
+        #self.dlg.pushButton.clicked.connect(self.abreVentana)
+        #self.dlg.pushButton_2.clicked.connect(self.imprimeStatus)
+
+        self.dlg.pushButton.clicked.connect(self.cambiaCursor)
+
+        self.dlg.variable = {'uno': 1, 'dos': 2}
+        self.dlg.lista = {}
+        self.contador = 0
+
+        self.dlg.predio = None
+
+        self.canvas = iface.mapCanvas()
+
+        self.cursorRedondo = QCursor(QPixmap(["16 16 3 1",
+                                "      c None",
+                                ".     c #FF0000",
+                                "+     c #FFFFFF",
+                                "                ",
+                                "       +.+      ",
+                                "      ++.++     ",
+                                "     +.....+    ",
+                                "    +.     .+   ",
+                                "   +.   .   .+  ",
+                                "  +.    .    .+ ",
+                                " ++.    .    .++",
+                                " ... ...+... ...",
+                                " ++.    .    .++",
+                                "  +.    .    .+ ",
+                                "   +.   .   .+  ",
+                                "   ++.     .+   ",
+                                "    ++.....+    ",
+                                "      ++.++     ",
+                                "       +.+      "]))
+
+
+    def imprimeStatus(self):
+        for key, value in self.dlg.lista.items():
+            #print(key, value) windowTitle
+
+            print(str(self.dlg.lista[key].isVisible()),str(self.dlg.lista[key].windowTitle()))
+
+
+    def cambiaCursor(self):
+        self.dlg.predio = QgsProject.instance().mapLayersByName('predios.geom')[0]
+        print(self.canvas)
+        self.iface.actionSelect().trigger()
+        self.canvas.setCursor(self.cursorRedondo)
+        self.dlg.predio.selectionChanged.connect(self.touchPredio)
+        self.dlg.pushButton.setEnabled(False)
 
     def abreVentana(self):
-        print('imprime algo')
-        self.window.show()
-        print('imprime algo x2')
-        #QgsMessageLog.logMessage("message", "name")
-        print('imprime algo x3')
+
+        if len(self.dlg.lista) == 5:
+            self.msg = QMessageBox()
+            self.msg.setText("Ha completado el numero maximo de Cedulas abiertas")
+            self.msg.setIcon(QMessageBox().Warning)
+            self.msg.setWindowTitle("titulo")
+            self.msg.show()
+            result = self.msg.exec_()
+            #self.contador -= 1
+            return
+
+        #self.window = None
+
+        #self.window = CedulaMainWindow()
+        #self.window.pushButton.clicked.connect(self.hasAlgo)
+        #self.window.show()
+
+
+        #self.window1 = CedulaMainWindow()
+        #self.window1.pushButton.clicked.connect(self.hasAlgo)
+        #self.window1.show()
+
+
+        
+        self.dlg.lista[str(self.contador)] = CedulaMainWindow(str(self.contador))
+        #self.dlg.lista[str(self.contador)].pushButton.clicked.connect(self.hasAlgo)
+        #self.dlg.lista[str(self.contador)].closeEvent(self,event)
+        self.dlg.lista[str(self.contador)].setWindowTitle(str(self.contador))
+        #self.dlg.lista[str(self.contador)].setAttribute(55, True)
+        self.dlg.lista[str(self.contador)].show()
+
+        self.contador += 1
+
+        # print('imprime algo x2')
+        # QgsMessageLog.logMessage("message", "name")
+        # print('imprime algo x3')
 
     def hasAlgo(self):
-        self.msg = QMessageBox()
-        self.msg.setText("mensaje")
-        self.msg.setIcon(QMessageBox().Critical)
-        self.msg.setWindowTitle("titulo")
-        self.msg.show()
-        result = self.msg.exec_()
+        texto = "Sin descripcion enviada"
+        #self.msg = QMessageBox()
+        #self.msg.setText("mensaje")
+        #self.msg.setIcon(QMessageBox().Critical)
+        #self.msg.setWindowTitle("titulo")
+        #self.msg.show()
+        #result = self.msg.exec_()
 
-        QgsMessageLog.logMessage("message", "name")
-        print('entro')
-        #self.lineEdit.clear
+        #QgsMessageLog.logMessage("message", "name")
+        #print('entro')
+
+        if len(texto) != 0:
+            return
+
+        if "0" in self.dlg.lista:
+            #print(str(self.dlg.lista["0"].isActiveWindow()) + str(self.dlg.lista["0"].windowTitle()) + str(self.dlg.lista["0"].close()))
+            print(self.dlg.lista["0"].key, self.dlg.lista["0"].value)
+            #self.dlg.lista["0"].lineEdit.setText("texto")
+
+        if "1" in self.dlg.lista:
+            #print(str(self.dlg.lista["1"].isActiveWindow()) + str(self.dlg.lista["1"].windowTitle()) + str(self.dlg.lista["1"].close()))
+            print(self.dlg.lista["1"].key, self.dlg.lista["1"].value)
+            #self.dlg.lista["1"].lineEdit.setText("otro texto")
+
+        if "2" in self.dlg.lista:
+            #print(str(self.dlg.lista["2"].isActiveWindow()) + str(self.dlg.lista["2"].windowTitle()) + str(self.dlg.lista["2"].close()))
+            print(self.dlg.lista["2"].key, self.dlg.lista["2"].value)
+            #self.dlg.lista["2"].lineEdit.setText("otro texto del dos")
+
+        if "3" in self.dlg.lista:
+            #print(str(self.dlg.lista["3"].isActiveWindow()) + str(self.dlg.lista["3"].windowTitle()) + str(self.dlg.lista["3"].close()))
+            print(self.dlg.lista["3"].key, self.dlg.lista["3"].value)
+            #self.dlg.lista["3"].lineEdit.setText("otro texto del tres")
+
+        if "4" in self.dlg.lista:
+            #print(str(self.dlg.lista["4"].isActiveWindow()) + str(self.dlg.lista["4"].windowTitle()) + str(self.dlg.lista["4"].close()))
+            print(self.dlg.lista["4"].key, self.dlg.lista["4"].value)
+            #self.dlg.lista["4"].lineEdit.setText("otro texto del tres")
+
+        if "5" in self.dlg.lista:
+            #print(str(self.dlg.lista["5"].isActiveWindow()) + str(self.dlg.lista["5"].windowTitle()) + str(self.dlg.lista["5"].close()))
+            print(self.dlg.lista["5"].key, self.dlg.lista["5"].value)
+            #self.dlg.lista["5"].lineEdit.setText("otro texto del tres")
+
+
+    # - EVENTOS -
+
+    # PREDIOS.selectionChange()
+    def touchPredio(self):
+        campos = self.dlg.predio.fields()
+        print('entrap')
+        features = self.dlg.predio.selectedFeatures()
+
+        for f in features:
+            print(f["cve_cat"])
+
+
+        print(self.dlg.predio.isSignalConnected())
+
+        self.dlg.predio.selectionChanged.disconnect()
+
+        print(self.dlg.predio.isSignalConnected())
+
+        self.dlg.pushButton.setEnabled(True)
+    
+
+    # CONDOMINIOS_VERTICALES.selectionChange()
+    def touchCondV(self):
+        print('entrav')
+        features = self.condV.selectedFeatures()
+
+        for f in features:
+            print(f.id())
+
+    # CLAVES_CONDOMINIOS_VERTICALES.selectionChange()
+    def touchCvesCondV(self):
+        print('entracvev')
+        features = self.cveCondV.selectedFeatures()
+
+        for f in features:
+            print(f.id())
+
+    # CONDOMINIOS_HORIZONTALES.selectionChange()
+    def touchCondH(self):
+        print('entrah')
+        features = self.condH.selectedFeatures()
+
+        for f in features:
+            print(f.id())
 
 
     # noinspection PyMethodMayBeStatic
@@ -124,6 +280,7 @@ class Cedula:
         status_tip=None,
         whats_this=None,
         parent=None):
+
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -196,6 +353,12 @@ class Cedula:
             callback=self.run,
             parent=self.iface.mainWindow())
 
+    def onClosePlugin(self):
+        """Cleanup necessary items here when plugin dockwidget is closed"""
+
+        # disconnects
+        self.dlg.closingPlugin.disconnect(self.onClosePlugin)
+        print('cerramos el plugin')
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -209,15 +372,28 @@ class Cedula:
 
 
     def run(self):
+
+        self.dlg.pushButton.setEnabled(True)
+        #self.dlg.closingPlugin.connect(self.onClosePlugin)
+        
         """Run method that performs all the real work"""
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
         result = self.dlg.exec_()
         # See if OK was pressed
-        #if result:
+        if result:
         # Do something useful here - delete the line containing pass and
         # substitute with your code.
         # pass
+            print("CERRAR")
+        # OBTENER CAPAS A USAR
+        # predio
+            #self.predio.selectionChanged.disconnect(self.touchPredio)
+        
+
+
+
+
             
 
