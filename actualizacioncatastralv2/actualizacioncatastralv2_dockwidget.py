@@ -24,8 +24,9 @@
 
 import os
 
-from PyQt5 import QtGui, QtWidgets, uic
-from PyQt5.QtCore import pyqtSignal
+from PyQt5 import QtGui, QtWidgets, uic, QtCore
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'actualizacioncatastralv2_dockwidget_base.ui'))
@@ -43,8 +44,36 @@ class actualizacioncatastralv2DockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
+        #self.installEventFilter(self)
         self.setupUi(self)
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
         event.accept()
+
+
+    '''
+    def eventFilter(self, object, event):
+        print(event.type())
+
+        
+        if event.type() == QEvent.WindowActivate:
+            print('esta activa', str(event.type()))
+
+            
+            print(self.lista)
+            listElim = []
+
+            for key, value in self.lista.items():
+                if self.lista[key].isVisible() == False:
+                    listElim.append(key)
+
+            for key in listElim:
+                del self.lista[key]
+            
+        
+        return False
+        #return super(actualizacioncatastralv2DockWidget, self).event(event)
+    '''
+
+        
