@@ -47,33 +47,5 @@ class actualizacioncatastralv2DockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         #self.installEventFilter(self)
         self.setupUi(self)
 
-    def closeEvent(self, event):
-        self.closingPlugin.emit()
-        event.accept()
-
-
-    '''
-    def eventFilter(self, object, event):
-        print(event.type())
-
-        
-        if event.type() == QEvent.WindowActivate:
-            print('esta activa', str(event.type()))
-
-            
-            print(self.lista)
-            listElim = []
-
-            for key, value in self.lista.items():
-                if self.lista[key].isVisible() == False:
-                    listElim.append(key)
-
-            for key in listElim:
-                del self.lista[key]
-            
-        
-        return False
-        #return super(actualizacioncatastralv2DockWidget, self).event(event)
-    '''
 
         

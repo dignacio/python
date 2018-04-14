@@ -25,6 +25,8 @@ from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt,
 from PyQt5.QtGui import QIcon, QColor, QCursor, QPixmap
 from PyQt5.QtWidgets import QAction, QMessageBox
 from PyQt5 import QtWidgets
+from PyQt5 import QtGui
+from PyQt5 import QtCore
 # Initialize Qt resources from file resources.py
 from .resources import *
 from qgis.core import *
@@ -92,6 +94,9 @@ class actualizacioncatastralv2:
         self.dockwidget.comboManzana.currentIndexChanged.connect(self.obtenerIdManzana)
 
         # -- DAVID, evento boton de abrir cedula --
+        #rMyIcon = QtGui.QPixmap("add.png");
+        #icon = QtGui.QIcon(rMyIcon)
+        self.dockwidget.btnAbrirCedula.setIcon(QtGui.QIcon('add.png'))
         self.dockwidget.btnAbrirCedula.clicked.connect(self.abrirCedula)
         # -- DAVID, evento boton de cancelar apertura de cedula --
         self.dockwidget.btnCancelAperCedula.clicked.connect(self.cancelarCedula)
@@ -259,14 +264,14 @@ class actualizacioncatastralv2:
         self.pluginIsActive = False
 
         # -- DAVID, desconectar los eventos -- 
-        self.capaManzana.selectionChanged.disconnect(self.cargarTablita)
-        self.capaPrediosGeom.selectionChanged.disconnect(self.cargarTablita)
-        self.capaPrediosNum.selectionChanged.disconnect(self.cargarTablita)
-        self.capaConstrucciones.selectionChanged.disconnect(self.cargarTablita)
-        self.capaHorizontalesGeom.selectionChanged.disconnect(self.cargarTablita)
-        self.capaHorizontalesNum.selectionChanged.disconnect(self.cargarTablita)
-        self.capaVerticales.selectionChanged.disconnect(self.cargarTablita)
-        self.capaCvesVert.selectionChanged.disconnect(self.cargarTablita)
+        self.capaManzana.selectionChanged.disconnect()
+        self.capaPrediosGeom.selectionChanged.disconnect()
+        self.capaPrediosNum.selectionChanged.disconnect()
+        self.capaConstrucciones.selectionChanged.disconnect()
+        self.capaHorizontalesGeom.selectionChanged.disconnect()
+        self.capaHorizontalesNum.selectionChanged.disconnect()
+        self.capaVerticales.selectionChanged.disconnect()
+        self.capaCvesVert.selectionChanged.disconnect()
 
 ########################################################################################################
 
@@ -308,7 +313,7 @@ class actualizacioncatastralv2:
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockwidget)
             self.dockwidget.show()
 
-            self.cuerpo = {"incluirGeom": "true", "pagina": None, "bbox": "false", "pin": "false", "geomWKT": None, "epsg": None, "properties": {}, "epsgGeomWKT": None, "itemsPagina": None, "nombre": "x"}
+            self.cuerpo = {"incluirGeom": "true", "pagina": None, "bbox": "false", "pin": "false", "geomWKT": None, "epsg": None, "properties": None, "epsgGeomWKT": None, "itemsPagina": None, "nombre": "x"}
             self.headers = {'Content-Type': 'application/json'}
             self.payload = json.dumps(self.cuerpo)
 
@@ -320,11 +325,21 @@ class actualizacioncatastralv2:
             self.idManzana = ' '
 
             #Modo desarrollor
-            self.modoDesarrollo = False
+            self.modoDesarrollo = True
             
             #Configuracion
             #self.servidorIP = 'http://192.168.0.39:1093/'
-            self.servidorIP = 'http://127.0.0.1:1093/'
+            #self.servidorIP = 'http://127.0.0.1:1093/'
+            self.servidorIP = 'http://127.0.0.1:8080/'
+            
+            self.urlManzanas = self.servidorIP + 'busquedasimplewkn/api/manzana/'
+            self.urlPredios = self.servidorIP + 'busquedasimplewkn/api/manzana/predios/'
+            self.urlConstrucciones = self.servidorIP + 'busquedasimplewkn/api/manzana/construcciones/'
+            self.urlHorizontales = self.servidorIP + 'busquedasimplewkn/api/manzana/deptoh/'
+            self.urlVerticales = self.servidorIP + 'busquedasimplewkn/api/manzana/deptov/'
+            self.urlClavesV = self.servidorIP + 'busquedasimplewkn/api/manzana/deptovcve/'
+            self.urlTiposConst = self.servidorIP + 'busquedasimplewkn/api/cat/const/esp/'
+            '''
             self.urlManzanas = self.servidorIP + 'api/manzana/'
             self.urlPredios = self.servidorIP + 'api/manzana/predios/'
             self.urlConstrucciones = self.servidorIP + 'api/manzana/construcciones/'
@@ -332,7 +347,7 @@ class actualizacioncatastralv2:
             self.urlVerticales = self.servidorIP + 'api/manzana/deptov/'
             self.urlClavesV = self.servidorIP + 'api/manzana/deptovcve/'
             self.urlTiposConst = self.servidorIP + 'api/cat/const/esp/'
-
+            '''
             #Acciones iniciales
             if self.modoDesarrollo:
                 self.obtenerIdManzana()
@@ -346,9 +361,6 @@ class actualizacioncatastralv2:
                     
                 except:
                     self.createAlert("Error al cargar localidades\nError de servidor", QMessageBox().Information, "Cargar Localidades")
-
-            
-            
 
             # -- DAVID, cambio a self --
             #Asignar eventos de cambio de seleccion
@@ -389,8 +401,9 @@ class actualizacioncatastralv2:
             #self.idManzana = '002055'  #Manzana estandar
             #self.idManzana = '030015'
             #self.idManzana = '065003'   #Manzana Estandar sin horizontales
-            self.idManzana = '01001001020004009053'
-            #self.idManzana = '016031'
+            #self.idManzana = '01001001020004009053'
+            #self.idManzana = '01001001020004071051'
+            self.idManzana = '01001001020004033005'
 
         else:
             index = self.dockwidget.comboManzana.currentIndex()
@@ -405,10 +418,11 @@ class actualizacioncatastralv2:
         self.dockwidget.comboLocalidad.clear()
 
         try:
-            print(self.servidorIP + 'api/combo/ixtlahuaca/localidades/')
-            respuesta = requests.get(self.servidorIP + 'api/combo/ixtlahuaca/localidades/')
-        except requests.exceptions.RequestException:
-            raise RuntimeError('Error de servidor')
+            self.headers['Authorization'] = self.obtenerToken()
+            respuesta = requests.get(self.servidorIP + 'busquedasimplewkn/api/combo/001/localidades/', headers = self.headers)
+            #respuesta = requests.get(self.servidorIP + 'api/combo/001/localidades/', headers = self.headers)
+        except requests.exceptions.RequestException as r:
+            raise RuntimeError('Error de servidor-----------------------')
 
         lenJson = len(list(respuesta.json()))
 
@@ -434,7 +448,9 @@ class actualizacioncatastralv2:
             self.dockwidget.comboSector.clear()
 
             try:
-                respuesta = requests.get(self.servidorIP +  'api/combo/localidades/' + idSector + '/sector/')
+                self.headers['Authorization'] = self.obtenerToken()
+                respuesta = requests.get(self.servidorIP +  'busquedasimplewkn/api/combo/localidades/' + idSector + '/sector/', headers = self.headers)
+                #respuesta = requests.get(self.servidorIP +  'api/combo/localidades/' + idSector + '/sector/', headers = self.headers)
             except requests.exceptions.RequestException:
                 raise RuntimeError('Error de servidor')
 
@@ -462,7 +478,9 @@ class actualizacioncatastralv2:
             self.dockwidget.comboManzana.clear()
 
             try:
-                respuesta = requests.get(self.servidorIP +  'api/combo/sector/' + idSector + '/manzana/')
+                self.headers['Authorization'] = self.obtenerToken()
+                respuesta = requests.get(self.servidorIP +  'busquedasimplewkn/api/combo/sector/' + idSector + '/manzana/', headers = self.headers)
+                #respuesta = requests.get(self.servidorIP +  'api/combo/sector/' + idSector + '/manzana/', headers = self.headers)
             except requests.exceptions.RequestException:
                 raise RuntimeError('Error de servidor')
 
@@ -527,6 +545,7 @@ class actualizacioncatastralv2:
     def pintarUnaCapa(self, nombreCapa):
         
         print ("Cargando... " + nombreCapa)
+
         data = self.obtenerAPintar(nombreCapa)
         
         type(data)
@@ -603,7 +622,6 @@ class actualizacioncatastralv2:
             return
 
         varKeys = data['features'][0]['properties']
-
         keys = list(varKeys.keys())
         properties = []
         polys = []
@@ -722,8 +740,10 @@ class actualizacioncatastralv2:
 
         #idManzana = self.dockwidget.comboManzana.currentText()
         try:
+            print(self.payload)
+            self.headers['Authorization'] = self.obtenerToken()
             response = requests.post(url + self.idManzana, headers = self.headers, data = self.payload)
-            print(url + self.idManzana)
+            #print(url + self.idManzana)
         except requests.exceptions.RequestException:
             self.createAlert("Error de servidor", QMessageBox().Critical, "Error de servidor")
             return
@@ -744,17 +764,14 @@ class actualizacioncatastralv2:
         
         self.capaActiva = iface.activeLayer()
         self.vaciarTablita()
-        
         self.comboConstEsp = QtWidgets.QComboBox()
         #for t in self.tiposConstEsp:
         #        self.comboConstEsp.addItem(t)
-
 
         header = self.dockwidget.tablaEdicion.horizontalHeader()
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
         #header.setStretchLastSection(True)
-
         
         self.dockwidget.labelCapaEdicion.setText('---')
         if self.capaActiva == None:
@@ -762,7 +779,6 @@ class actualizacioncatastralv2:
             self.cambiarStatus("No se ha seleccionado ninguna capa", "error")
 
         else:
-
 
             self.seleccion = self.capaActiva.selectedFeatures()
             self.listaEtiquetas = []
@@ -788,7 +804,10 @@ class actualizacioncatastralv2:
                     ixIdTipoConst = campos.lookupField('id_tipo_construccion')
                     ixCveConstEsp = campos.lookupField('cve_const_esp')
                     self.tipConst = self.seleccion[0].attributes()[ixIdTipoConst]
-                    respuesta = requests.get(self.urlTiposConst)
+
+                    self.headers['Authorization'] = self.obtenerToken()
+                    respuesta = requests.get(self.urlTiposConst, headers = self.headers)
+
                     diccionarioConst = {}
                     if respuesta.status_code == 200:
                         for clave in respuesta.json():
@@ -1207,3 +1226,20 @@ font: 10pt "Bahnschrift";"""
             return True
         except ValueError:
             return False
+
+    def obtenerToken(self):
+        #return ""
+        url= self.servidorIP + '/auth/login'
+        payload = {"username" : "user", "password" : "user"}
+        payload = json.dumps(payload)
+        headers = {'Content-Type': 'application/json'}
+
+        response = requests.post(url, headers = headers, data = payload)
+        if response.status_code == 200: 
+            #print('habemus token')
+            data = response.content
+        else:
+            print('no se arma el token')
+
+        #print(json.loads(data)['access_token'])
+        return 'bearer ' + json.loads(data)['access_token']

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>928</width>
-    <height>744</height>
+    <width>788</width>
+    <height>774</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>674</width>
+    <width>788</width>
     <height>590</height>
    </size>
   </property>
@@ -72,17 +72,20 @@
         <widget class="QWidget" name="widget_6" native="true">
          <property name="minimumSize">
           <size>
-           <width>569</width>
+           <width>580</width>
            <height>43</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>569</width>
+           <width>580</width>
            <height>43</height>
           </size>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
+          <property name="rightMargin">
+           <number>17</number>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="lbCveCata">
             <property name="font">
@@ -119,7 +122,7 @@
          </layout>
         </widget>
        </item>
-       <item row="0" column="2" alignment="Qt::AlignRight">
+       <item row="0" column="3" alignment="Qt::AlignRight">
         <widget class="QPushButton" name="pushButton_2">
          <property name="minimumSize">
           <size>
@@ -135,6 +138,23 @@
          </property>
          <property name="text">
           <string>Guardar</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="lbTipoCond">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>lbTipoCond</string>
+         </property>
+         <property name="margin">
+          <number>10</number>
          </property>
         </widget>
        </item>
@@ -156,7 +176,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget">
             <property name="currentIndex">
-             <number>0</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="tUbicacion">
              <attribute name="title">
@@ -195,7 +215,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>575</width>
-                   <height>461</height>
+                   <height>600</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
@@ -214,70 +234,6 @@
                   <property name="spacing">
                    <number>5</number>
                   </property>
-                  <item row="3" column="0" colspan="4">
-                   <widget class="QLabel" name="label_2">
-                    <property name="text">
-                     <string>Nombre de Vialidad/Calle</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="6" column="2">
-                   <widget class="QLineEdit" name="leNoExteAnt"/>
-                  </item>
-                  <item row="5" column="2">
-                   <widget class="QLabel" name="label_5">
-                    <property name="text">
-                     <string>No. Exterior Ant</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="8" column="2">
-                   <widget class="QLabel" name="lbColonia">
-                    <property name="text">
-                     <string>lbColonia</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="10" column="0">
-                   <widget class="QLabel" name="lbCveCatAnt">
-                    <property name="text">
-                     <string>lbCveCatAnt</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="3">
-                   <widget class="QLabel" name="label">
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>30</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>30</height>
-                     </size>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <pointsize>12</pointsize>
-                      <weight>75</weight>
-                      <bold>true</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Tipo de Predio</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="8" column="3">
-                   <widget class="QLabel" name="lbLocalidad">
-                    <property name="text">
-                     <string>lbLocalidad</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="0" column="0" rowspan="2" colspan="3">
                    <widget class="QWidget" name="widget_7" native="true">
                     <property name="minimumSize">
@@ -696,38 +652,29 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="6" column="3">
-                   <widget class="QLineEdit" name="leNumPredio"/>
-                  </item>
-                  <item row="7" column="3">
-                   <widget class="QLabel" name="label_11">
+                  <item row="8" column="1" colspan="2">
+                   <widget class="QLabel" name="label_13">
                     <property name="text">
-                     <string>Localidad</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="10" column="1" colspan="2">
-                   <widget class="QLabel" name="lbNomMpio">
-                    <property name="text">
-                     <string>lbNomMpio</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="8" column="1">
-                   <widget class="QComboBox" name="cmbTipoAsentH"/>
-                  </item>
-                  <item row="9" column="0">
-                   <widget class="QLabel" name="label_12">
-                    <property name="text">
-                     <string>Clave Catastral Anterior</string>
+                     <string>Nombre del Municipio</string>
                     </property>
                    </widget>
                   </item>
                   <item row="6" column="1">
-                   <widget class="QLineEdit" name="leNoInterior"/>
+                   <widget class="QLabel" name="label_8">
+                    <property name="text">
+                     <string>Tipo Asentamiento Humano</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="2">
+                   <widget class="QLabel" name="label_10">
+                    <property name="text">
+                     <string>Colonia</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="1" column="3">
-                   <widget class="QComboBox" name="comboBox">
+                   <widget class="QComboBox" name="cmbTipoPredio">
                     <property name="minimumSize">
                      <size>
                       <width>150</width>
@@ -740,125 +687,446 @@
                       <height>30</height>
                      </size>
                     </property>
-                   </widget>
-                  </item>
-                  <item row="8" column="0">
-                   <widget class="QLabel" name="lbCodigoPostal">
-                    <property name="text">
-                     <string>lbCodigoPostal</string>
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="inputMethodHints">
+                     <set>Qt::ImhNone</set>
                     </property>
                    </widget>
                   </item>
-                  <item row="7" column="0">
-                   <widget class="QLabel" name="label_7">
+                  <item row="8" column="3">
+                   <widget class="QLabel" name="label_30">
                     <property name="text">
-                     <string>Codigo Postal</string>
+                     <string>Regimen de Propiedad</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="3">
+                  <item row="9" column="3">
+                   <widget class="QComboBox" name="cmbRegimenProp">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0" colspan="3">
+                   <widget class="QLabel" name="lbNomCalle">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbNomCalle</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1">
+                   <widget class="QLabel" name="label_4">
+                    <property name="text">
+                     <string>No. Exterior Alf</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="11" column="0" colspan="4">
+                   <widget class="QgsCollapsibleGroupBox" name="mGroupBox_2">
+                    <property name="title">
+                     <string>Colindancias</string>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_10">
+                     <item row="5" column="4">
+                      <widget class="QPushButton" name="btnColinRemoveOne">
+                       <property name="minimumSize">
+                        <size>
+                         <width>30</width>
+                         <height>24</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>30</width>
+                         <height>24</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="icon">
+                        <iconset>
+                         <normaloff>:/cedula/icons/remove_one.png</normaloff>:/cedula/icons/remove_one.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_15">
+                       <property name="text">
+                        <string>Orientacion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QComboBox" name="cmbOrientacion">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="3">
+                      <widget class="QLabel" name="label_17">
+                       <property name="text">
+                        <string>Descripcion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QLineEdit" name="leDispPerim">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="3">
+                      <widget class="QLineEdit" name="leDescripcion">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QLabel" name="label_16">
+                       <property name="text">
+                        <string>Dist. Perimetral</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="4">
+                      <widget class="QPushButton" name="btnColinRemoveAll">
+                       <property name="minimumSize">
+                        <size>
+                         <width>30</width>
+                         <height>24</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>30</width>
+                         <height>24</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="icon">
+                        <iconset>
+                         <normaloff>:/cedula/icons/remove_all.png</normaloff>:/cedula/icons/remove_all.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0" rowspan="3" colspan="4">
+                      <widget class="QTableWidget" name="twColindancias">
+                       <property name="columnCount">
+                        <number>4</number>
+                       </property>
+                       <column>
+                        <property name="text">
+                         <string>idOrientacion</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Orientacion</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Distancia</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Descripcion</string>
+                        </property>
+                       </column>
+                      </widget>
+                     </item>
+                     <item row="4" column="4">
+                      <widget class="QPushButton" name="btnColinAdd">
+                       <property name="minimumSize">
+                        <size>
+                         <width>30</width>
+                         <height>24</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>30</width>
+                         <height>24</height>
+                        </size>
+                       </property>
+                       <property name="icon">
+                        <iconset>
+                         <normaloff>:/cedula/icons/add.png</normaloff>:/cedula/icons/add.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="10" column="0" colspan="4">
+                   <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="title">
+                     <string>Vialidades</string>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_9">
+                     <item row="1" column="1">
+                      <widget class="QLabel" name="label_14">
+                       <property name="text">
+                        <string>Vialidades Colindantes</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QTableWidget" name="tableWidget"/>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="4" column="3">
                    <widget class="QLabel" name="label_6">
                     <property name="text">
                      <string>Num. Predio</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="0">
+                  <item row="4" column="2">
+                   <widget class="QLabel" name="label_5">
+                    <property name="text">
+                     <string>No. Exterior Ant</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="3">
+                   <widget class="QLineEdit" name="leNumPredio">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="2">
+                   <widget class="QLineEdit" name="leNoExteAnt">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="1">
+                   <widget class="QLineEdit" name="leNoExteriorAlf">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="2">
+                   <widget class="QLabel" name="lbColonia">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbColonia</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="9" column="0">
+                   <widget class="QLabel" name="lbCveCatAnt">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbCveCatAnt</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="3">
+                   <widget class="QLabel" name="label">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>30</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>30</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>12</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Tipo de Predio</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="3">
+                   <widget class="QLabel" name="lbLocalidad">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbLocalidad</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="3">
+                   <widget class="QLabel" name="label_11">
+                    <property name="text">
+                     <string>Localidad</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="9" column="1" colspan="2">
+                   <widget class="QLabel" name="lbNomMpio">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbNomMpio</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="1">
+                   <widget class="QComboBox" name="cmbTipoAsentH">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="0">
+                   <widget class="QLabel" name="label_12">
+                    <property name="text">
+                     <string>Clave Catastral Anterior</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0">
+                   <widget class="QLabel" name="lbCodigoPostal">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbCodigoPostal</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="0">
+                   <widget class="QLabel" name="label_7">
+                    <property name="text">
+                     <string>Codigo Postal</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
                    <widget class="QLabel" name="label_3">
                     <property name="text">
                      <string>No. Exterior</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="6" column="0">
+                  <item row="5" column="0">
                    <widget class="QLabel" name="lbNoExt">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
                     <property name="text">
                      <string>lbNoExt</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="1">
-                   <widget class="QLabel" name="label_4">
+                  <item row="3" column="3">
+                   <widget class="QPushButton" name="pushButton_3">
                     <property name="text">
-                     <string>No. Interior</string>
+                     <string>Seleccionar Localidad</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="9" column="1" colspan="2">
-                   <widget class="QLabel" name="label_13">
+                  <item row="2" column="0" colspan="3">
+                   <widget class="QLabel" name="label_2">
                     <property name="text">
-                     <string>Nombre del Municipio</string>
+                     <string>Nombre de Vialidad/Calle</string>
                     </property>
-                   </widget>
-                  </item>
-                  <item row="7" column="1">
-                   <widget class="QLabel" name="label_8">
-                    <property name="text">
-                     <string>Tipo Asentamiento Humano</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0" colspan="4">
-                   <spacer name="horizontalSpacer_2">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="7" column="2">
-                   <widget class="QLabel" name="label_10">
-                    <property name="text">
-                     <string>Colonia</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="11" column="0" colspan="4">
-                   <spacer name="horizontalSpacer">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="4" column="0" colspan="4">
-                   <widget class="QLabel" name="lbNomCalle">
-                    <property name="text">
-                     <string>lbNomCalle</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="12" column="0" colspan="4">
-                   <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>150</height>
-                     </size>
-                    </property>
-                    <widget class="QPushButton" name="pushButton_3">
-                     <property name="geometry">
-                      <rect>
-                       <x>80</x>
-                       <y>20</y>
-                       <width>75</width>
-                       <height>23</height>
-                      </rect>
-                     </property>
-                     <property name="text">
-                      <string>PushButton</string>
-                     </property>
-                    </widget>
                    </widget>
                   </item>
                  </layout>
@@ -871,6 +1139,1098 @@
              <attribute name="title">
               <string>Terreno</string>
              </attribute>
+             <layout class="QGridLayout" name="gridLayout_11">
+              <item row="12" column="0">
+               <widget class="QLabel" name="label_22">
+                <property name="text">
+                 <string>Servicios de Predio</string>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="0">
+               <widget class="QComboBox" name="cmbFormaPredio">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_21">
+                <property name="text">
+                 <string>Servicios de Calle</string>
+                </property>
+               </widget>
+              </item>
+              <item row="10" column="0">
+               <widget class="QLabel" name="label_28">
+                <property name="text">
+                 <string>Forma de Predio</string>
+                </property>
+               </widget>
+              </item>
+              <item row="10" column="1">
+               <widget class="QLabel" name="label_29">
+                <property name="text">
+                 <string>Orientacion del Predio dentro de la Manzana</string>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="1">
+               <widget class="QLineEdit" name="leFrente">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="0">
+               <widget class="QLineEdit" name="leFondo">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="1">
+               <widget class="QLabel" name="label_25">
+                <property name="text">
+                 <string>Frente</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="label_26">
+                <property name="text">
+                 <string>Superficie de Terreno</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QComboBox" name="cmbTipoUsoSuelo">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_19">
+                <property name="text">
+                 <string>Tipo Uso de Suelo</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLineEdit" name="leSupTerr">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="cmbUsoSuelo">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="0">
+               <widget class="QLabel" name="label_24">
+                <property name="text">
+                 <string>Fondo</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_18">
+                <property name="text">
+                 <string>Uso de Suelo</string>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="1">
+               <widget class="QComboBox" name="cmbOrientPredMza">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+               </widget>
+              </item>
+              <item row="13" column="0" colspan="2">
+               <widget class="QTableWidget" name="tableWidget_4"/>
+              </item>
+              <item row="1" column="2" rowspan="11">
+               <widget class="QTableWidget" name="tableWidget_3"/>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_27">
+                <property name="text">
+                 <string>Facilidad de Comunicacion</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QComboBox" name="cmbFacilComun">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QComboBox" name="cmbValorTerr">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLabel" name="label_38">
+                <property name="text">
+                 <string>Valor de Terreno</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QLabel" name="lbUsoPredioEtiqueta">
+                <property name="text">
+                 <string>Uso de Predio</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1">
+               <widget class="QComboBox" name="cmbUsoPredio">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_23">
+                <property name="text">
+                 <string>Tipo de Relieve</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QComboBox" name="cmbTipoRelieve">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="tConstrPred">
+             <attribute name="title">
+              <string>Construcciones</string>
+             </attribute>
+             <layout class="QVBoxLayout" name="verticalLayout_2">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QScrollArea" name="scrollArea_3">
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_3">
+                 <property name="geometry">
+                  <rect>
+                   <x>-224</x>
+                   <y>0</y>
+                   <width>727</width>
+                   <height>605</height>
+                  </rect>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_17">
+                  <property name="leftMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>10</number>
+                  </property>
+                  <item row="0" column="0" alignment="Qt::AlignHCenter">
+                   <widget class="QWidget" name="widget_8" native="true">
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>90</height>
+                     </size>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_12">
+                     <property name="leftMargin">
+                      <number>9</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>20</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>9</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>20</number>
+                     </property>
+                     <property name="horizontalSpacing">
+                      <number>9</number>
+                     </property>
+                     <item row="0" column="0" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_31">
+                       <property name="text">
+                        <string>Volumen</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="3" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_32">
+                       <property name="text">
+                        <string>Sup. Constr.</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="4" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_33">
+                       <property name="text">
+                        <string>Num. Niveles</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QComboBox" name="cmbVolumenP">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>28</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>60</width>
+                         <height>28</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1" alignment="Qt::AlignVCenter">
+                      <widget class="QPushButton" name="btnAddConstP">
+                       <property name="minimumSize">
+                        <size>
+                         <width>30</width>
+                         <height>28</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>30</width>
+                         <height>28</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="icon">
+                        <iconset>
+                         <normaloff>:/cedula/icons/add.png</normaloff>:/cedula/icons/add.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QPushButton" name="btnDelConstrP">
+                       <property name="minimumSize">
+                        <size>
+                         <width>30</width>
+                         <height>28</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>30</width>
+                         <height>28</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="icon">
+                        <iconset>
+                         <normaloff>:/cedula/icons/remove_one.png</normaloff>:/cedula/icons/remove_one.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="3" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                      <widget class="QLabel" name="lbSupConstrP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbSupConstrP</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="4" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                      <widget class="QLabel" name="lbNumNivP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbNumNivP</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="5" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_40">
+                       <property name="text">
+                        <string>Tipo Construccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="5" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="lbTipoConstP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbTipoConstP</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="6" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="lbCveConstEspP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbCveConstEspP</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="6" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="lbCveConstEspP_2">
+                       <property name="text">
+                        <string>Cve. Const. Esp.</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QWidget" name="widget_10" native="true">
+                    <layout class="QGridLayout" name="gridLayout_13">
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="label_47">
+                       <property name="text">
+                        <string>Nvl. Fraccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="2">
+                      <widget class="QLineEdit" name="leNvlUbicaP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <widget class="QLineEdit" name="leAnioConsP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QLabel" name="label_45">
+                       <property name="text">
+                        <string>Destino</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="label_49">
+                       <property name="text">
+                        <string>Uso Especifico</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_46">
+                       <property name="text">
+                        <string>Nombre Comercio, Industria, etc</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLabel" name="lbNvlFraccP">
+                       <property name="text">
+                        <string>lbNvlFraccP</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="lbSupConstrFP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbSupConstrFP</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QLabel" name="label_58">
+                       <property name="text">
+                        <string>Año de Construccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="label_56">
+                       <property name="text">
+                        <string>Superficie de Constr</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_44">
+                       <property name="text">
+                        <string>Uso de Construccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QComboBox" name="cmbUsoConstrP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2">
+                      <widget class="QLabel" name="label_48">
+                       <property name="text">
+                        <string>Nvl. Ubicacion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QComboBox" name="cmbDestinoP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLineEdit" name="leNombreP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QComboBox" name="cmbUsoEspP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="2">
+                      <widget class="QComboBox" name="cmbEdoConstrP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="2">
+                      <widget class="QLabel" name="label_57">
+                       <property name="text">
+                        <string>Estado de la Construccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" alignment="Qt::AlignHCenter">
+                   <widget class="QWidget" name="widget_9" native="true">
+                    <layout class="QGridLayout" name="gridLayout_14">
+                     <property name="leftMargin">
+                      <number>9</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>20</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>20</number>
+                     </property>
+                     <item row="0" column="2" colspan="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_35">
+                       <property name="text">
+                        <string>Cve. Uso</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="4" colspan="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_37">
+                       <property name="text">
+                        <string>Valor M2</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="6" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_39">
+                       <property name="text">
+                        <string>Val. Const</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_34">
+                       <property name="text">
+                        <string>Fracciones</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QComboBox" name="cmbFraccionesP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2" colspan="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="lbCveUsoP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbCveUsoP</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="4" colspan="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="lbValM2P">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbValM2P</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="6" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="lbValConstP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbValConstP</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_36">
+                       <property name="text">
+                        <string>Nva. Fracc.</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_42">
+                       <property name="text">
+                        <string>Nivel Prop.</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="5" colspan="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_43">
+                       <property name="text">
+                        <string>con:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QPushButton" name="btnSubdividir">
+                       <property name="text">
+                        <string>Subdividir</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QComboBox" name="cmbNvaFraccP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="2">
+                      <widget class="QLineEdit" name="lineEditP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="3" colspan="2">
+                      <widget class="QPushButton" name="btnFusionarP">
+                       <property name="text">
+                        <string>Fusionar</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="5" colspan="2">
+                      <widget class="QComboBox" name="cmbConP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QWidget" name="widget_11" native="true">
+                    <layout class="QGridLayout" name="gridLayout_15">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_59">
+                       <property name="text">
+                        <string>Categoria</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="label_61">
+                       <property name="text">
+                        <string>Factor de Construccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QComboBox" name="cmbCategoriaP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QComboBox" name="cmbFactorConstrP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_60">
+                       <property name="text">
+                        <string>Caracteristicas</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QPushButton" name="btnCalcValCatP">
+                       <property name="text">
+                        <string>Calculo de Valor Cat.</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0" colspan="3">
+                      <widget class="QTableView" name="twCaracteristicas"/>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="tab">
+             <attribute name="title">
+              <string>Condominio</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_16">
+              <item row="1" column="2">
+               <widget class="QLineEdit" name="lineEdit_2"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLineEdit" name="lineEdit"/>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_50">
+                <property name="text">
+                 <string>Perimetro</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2" colspan="2">
+               <widget class="QGroupBox" name="groupBox_2">
+                <property name="title">
+                 <string>GroupBox</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_19">
+                 <item row="5" column="0">
+                  <widget class="QLineEdit" name="lineEdit_15"/>
+                 </item>
+                 <item row="0" column="0" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_73">
+                   <property name="text">
+                    <string>sup terr priv</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLineEdit" name="lineEdit_16"/>
+                 </item>
+                 <item row="6" column="0" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_72">
+                   <property name="text">
+                    <string>sup terr total</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLineEdit" name="lineEdit_20"/>
+                 </item>
+                 <item row="7" column="0">
+                  <widget class="QLineEdit" name="lineEdit_17"/>
+                 </item>
+                 <item row="4" column="0" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_69">
+                   <property name="text">
+                    <string>sup terr ex</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_68">
+                   <property name="text">
+                    <string>sup terr comun</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_52">
+                   <property name="text">
+                    <string>valor terr priv</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="lineEdit_6"/>
+                 </item>
+                 <item row="2" column="1" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_55">
+                   <property name="text">
+                    <string>valor terr comun</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QLineEdit" name="lineEdit_9"/>
+                 </item>
+                 <item row="4" column="1" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_67">
+                   <property name="text">
+                    <string>valor terr ex</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="1">
+                  <widget class="QLineEdit" name="lineEdit_13"/>
+                 </item>
+                 <item row="6" column="1" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_63">
+                   <property name="text">
+                    <string>valor terr total</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="1">
+                  <widget class="QLineEdit" name="lineEdit_11"/>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="3">
+               <widget class="QLabel" name="label_64">
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_20">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Num. Oficial</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0" colspan="2">
+               <widget class="QGroupBox" name="groupBox">
+                <property name="title">
+                 <string>GroupBox</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_18">
+                 <item row="3" column="0">
+                  <widget class="QLineEdit" name="lineEdit_19"/>
+                 </item>
+                 <item row="5" column="0">
+                  <widget class="QLineEdit" name="lineEdit_14"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLineEdit" name="lineEdit_21"/>
+                 </item>
+                 <item row="2" column="0" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_75">
+                   <property name="text">
+                    <string>sup const comun</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_74">
+                   <property name="text">
+                    <string>sup const ex</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_70">
+                   <property name="text">
+                    <string>sup Const Priv</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="0">
+                  <widget class="QLineEdit" name="lineEdit_18"/>
+                 </item>
+                 <item row="6" column="0" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_71">
+                   <property name="text">
+                    <string>sup const total</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_54">
+                   <property name="text">
+                    <string>valor Const Priv</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="lineEdit_7"/>
+                 </item>
+                 <item row="2" column="1" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_53">
+                   <property name="text">
+                    <string>valor const comun</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QLineEdit" name="lineEdit_8"/>
+                 </item>
+                 <item row="4" column="1" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_66">
+                   <property name="text">
+                    <string>valor const ex</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="1">
+                  <widget class="QLineEdit" name="lineEdit_12"/>
+                 </item>
+                 <item row="6" column="1" alignment="Qt::AlignBottom">
+                  <widget class="QLabel" name="label_62">
+                   <property name="text">
+                    <string>valor const total</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="1">
+                  <widget class="QLineEdit" name="lineEdit_10"/>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="label_51">
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_65">
+                <property name="text">
+                 <string>Clave Catastral Ant.</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QLabel" name="label_76">
+                <property name="text">
+                 <string>Indiviso</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </widget>
           </item>
@@ -1047,7 +2407,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>928</width>
+     <width>788</width>
      <height>21</height>
     </rect>
    </property>
