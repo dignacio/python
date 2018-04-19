@@ -17,7 +17,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'mainWindow.ui'))
 
 class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
-    def __init__(self, cveCatas = "0", parent=None):
+    def __init__(self, cveCatas = "0", cond = False, parent=None):
         """Constructor."""
         super(CedulaMainWindow, self).__init__(parent, \
             flags=Qt.WindowMinimizeButtonHint|Qt.WindowMaximizeButtonHint|Qt.WindowCloseButtonHint)
@@ -27,24 +27,33 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
 
+        # clave catastral global
+        self.cveCatastral = cveCatas[0:25]
 
-        self.cveCatastral = cveCatas
+        self.cveCondSel = ''
+        if len(cveCatas) > 25:
+            self.cveCondSel = cveCatas[25:]
+
+        # es condominio
+        self.cond = cond
 
         self.servidorIP = 'http://127.0.0.1:8080/'
         self.urlPredio = self.servidorIP + 'busquedasimplewkn/api/cedula/predio/'
         self.urlConstr = self.servidorIP + 'featureswkn/api/construccion/getAllByCve/'
         self.urlCatalogos = self.servidorIP + 'configuracion/api/cat/getAllCatalogosEpredio'
-        self.urlCatTipoAsentH = self.servidorIP + 'configuracion/api/cat-tipo-asentamiento-humanos'
-        self.urlCatTipoUsoSuelo = self.servidorIP + 'configuracion/api/cat-tipo-uso-suelos'
-        self.urlValorTerreno = self.servidorIP + 'configuracion/api/cat-valores-terrenos'
+        self.urlCatTipoAsentH = self.servidorIP + 'configuracion/api/cat-tipo-asentamiento-humanos?page=0&size=200'
+        self.urlCatTipoUsoSuelo = self.servidorIP + 'configuracion/api/cat-tipo-uso-suelos?page=0&size=200'
+        self.urlValorTerreno = self.servidorIP + 'configuracion/api/cat-valores-terrenos?page=0&size=200'
         self.urlCatUsoSueloByTipoUso = self.servidorIP + 'featureswkn/api/cat-tipo-uso-suelo/getCatUsoSueloByCve/'
-        self.urlUsoConstr = self.servidorIP + 'configuracion/api/cat-uso-construccions'
-        self.urlDestino = self.servidorIP + 'configuracion/api/cat-destinos'
-        self.urlEdoConstr = self.servidorIP + 'configuracion/api/cat-estado-construccions'
+        self.urlUsoConstr = self.servidorIP + 'configuracion/api/cat-uso-construccions?page=0&size=200'
+        self.urlDestino = self.servidorIP + 'configuracion/api/cat-destinos?page=0&size=200'
+        self.urlEdoConstr = self.servidorIP + 'configuracion/api/cat-estado-construccions?page=0&size=200'
         self.urlCatFactorByTipoFactor = self.servidorIP + 'featureswkn/api/cat-factor/getAllFactorByIdTipoFactor/'
         self.urlCategoriasByIdUsoConst = self.servidorIP + 'featureswkn/api/cat-vuc/getCategoriasByIdConstruccion/'
         self.urlUsoEspecifByIdUsoConst = self.servidorIP + 'featureswkn/api/cat-uso-especifico/getCatUsoEspecificoByIdUsoConstruccion/'
         self.urlRCaracCategoria = self.servidorIP + 'featureswkn/api/cat-vuc/getRCaractCara/'
+        self.urlCondominios = self.servidorIP + 'busquedasimplewkn/api/cedula/combo/condo/'
+        self.urlCondByCveCatTipoPred = self.servidorIP + 'featureswkn/api/condominios/getByCveCatAndType/'
 
         self.headers = {'Content-Type': 'application/json'}
 
@@ -97,43 +106,27 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         disenioCmb = '''
         QComboBox QAbstractItemView::item { min-height: 25;}
-        QListView{color: black ;font-size: 16px; outline:none;font-weight:bold}
+        QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}
         QListView::item:selected { color: red; background-color: lightgray;}
         '''
         self.cmbTipoPredio.setView(self.generaQListView())
-        self.cmbTipoPredio.setStyleSheet(disenioCmb)
         self.cmbTipoAsentH.setView(self.generaQListView())
-        self.cmbTipoAsentH.setStyleSheet(disenioCmb)
         self.cmbRegimenProp.setView(self.generaQListView())
-        self.cmbRegimenProp.setStyleSheet(disenioCmb)
         self.cmbOrientacion.setView(self.generaQListView())
-        self.cmbOrientacion.setStyleSheet(disenioCmb)
         self.cmbTipoUsoSuelo.setView(self.generaQListView())
-        self.cmbTipoUsoSuelo.setStyleSheet(disenioCmb)
         self.cmbUsoSuelo.setView(self.generaQListView())
-        self.cmbUsoSuelo.setStyleSheet(disenioCmb)
         self.cmbTipoRelieve.setView(self.generaQListView())
-        self.cmbTipoRelieve.setStyleSheet(disenioCmb)
         self.cmbFacilComun.setView(self.generaQListView())
-        self.cmbFacilComun.setStyleSheet(disenioCmb)
         self.cmbValorTerr.setView(self.generaQListView())
-        self.cmbValorTerr.setStyleSheet(disenioCmb)
         self.cmbFormaPredio.setView(self.generaQListView())
-        self.cmbFormaPredio.setStyleSheet(disenioCmb)
         self.cmbOrientPredMza.setView(self.generaQListView())
-        self.cmbOrientPredMza.setStyleSheet(disenioCmb)
         self.cmbUsoConstrP.setView(self.generaQListView())
-        self.cmbUsoConstrP.setStyleSheet(disenioCmb)
+        self.cmbCondo.setView(self.generaQListView())
         self.cmbUsoEspP.setView(self.generaQListView())
-        self.cmbUsoEspP.setStyleSheet(disenioCmb)
         self.cmbDestinoP.setView(self.generaQListView())
-        self.cmbDestinoP.setStyleSheet(disenioCmb)
         self.cmbEdoConstrP.setView(self.generaQListView())
-        self.cmbEdoConstrP.setStyleSheet(disenioCmb)
         self.cmbCategoriaP.setView(self.generaQListView())
-        self.cmbCategoriaP.setStyleSheet(disenioCmb)
         self.cmbFactorConstrP.setView(self.generaQListView())
-        self.cmbFactorConstrP.setStyleSheet(disenioCmb)
 
         # -- Eventos
         self.pushButton.clicked.connect(self.event_hasAlgo)
@@ -145,6 +138,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.cmbFraccionesP.currentIndexChanged.connect(self.event_cambioFraccPred)
         self.cmbUsoConstrP.currentIndexChanged.connect(self.event_cambioUsoConstr)
         self.cmbCategoriaP.currentIndexChanged.connect(self.event_cambioCategoria)
+        self.cmbCondo.currentIndexChanged.connect(self.event_cambioCondominio)
 
         # -- Titulo
         self.setWindowTitle(self.descomponeCveCata(self.cveCatastral))
@@ -154,7 +148,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.muestraClaveGlobal(self.cveCatastral)
 
         # -- carga informacion en los catalogos
-        dataCat = self.consumeWSCatalogosPredios(self.urlCatalogos)
+        dataCat = self.consumeWSGeneral(self.urlCatalogos)
         self.cargaCatalogos(dataCat)
 
         # -- carga informacion en los catalogos CONSTRUCCIONES
@@ -164,24 +158,16 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         dataCed = self.consumeWSCedula(self.cveCatastral[0:25])
         self.cargaCedula(dataCed)
 
-        if len(self.cveCatastral) > 25:
+        if self.cond:
+            # se carga el combo de condominios
+            dataCond = self.consumeWSGeneral(self.urlCondominios + self.cveCatastral)
+            self.defineComboCond(dataCond)
 
-            # se abri un condominio vertical
-            if len(self.cveCatastral) == 27:
-                # cargar el combo de condominios de las claves verticales
-                # y mostrar el primero en la pestaña de condominios
-                pass
-            elif len(self.cveCatastral) == 31:
-                # identificar de que condominio pertenece
-
-                # cargar todos en el combo de condominios segun el tipo
-
-                # seleccionar en el combo la clave que se selecciono
-                # y cargar las construcciones y datos del condominio seleccionado
-
-                pass
-
-
+            # se selecciona el condominio abierto
+            if len(self.cveCondSel) > 0:
+                index = self.cmbCondo.findText(self.cveCondSel, QtCore.Qt.MatchFixedString)
+                if index >= 0:
+                    self.cmbCondo.setCurrentIndex(index)
 
         # -- carga informacion de construcciones de PREDIO
         dataConstP = self.consumeWSConstr(self.cveCatastral)
@@ -195,6 +181,14 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         view = QListView()
         view.setWordWrap(True)
         return view
+
+    # - carga el combo de condominios
+    def defineComboCond(self, dataCond):
+
+        for dc in dataCond:
+
+            clave = dc['label'][25:]
+            self.cmbCondo.addItem(clave, dc['other'])
 
     # - carga la informacion de los catalogos
     def cargaCatalogos(self, dataCat):
@@ -296,28 +290,28 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.createAlert('Error durante la carga de informacion "cargaCatalogos()": ' + str(e))
 
     def catalogoTipoAsentH(self):
-        return self.consumeWSCatalogosPredios(self.urlCatTipoAsentH)
+        return self.consumeWSGeneral(self.urlCatTipoAsentH)
 
     def catalogoTipoUsoSuelo(self):
-        return self.consumeWSCatalogosPredios(self.urlCatTipoUsoSuelo)
+        return self.consumeWSGeneral(self.urlCatTipoUsoSuelo)
 
     def catalogoValorTerreno(self):
-        return self.consumeWSCatalogosPredios(self.urlValorTerreno)
+        return self.consumeWSGeneral(self.urlValorTerreno)
 
     def catalogoUsoConstr(self):
-        return self.consumeWSCatalogosPredios(self.urlUsoConstr)
+        return self.consumeWSGeneral(self.urlUsoConstr)
 
     def catalogoDestino(self):
-        return self.consumeWSCatalogosPredios(self.urlDestino)
+        return self.consumeWSGeneral(self.urlDestino)
 
     def catalogoEdoConstr(self):
-        return self.consumeWSCatalogosPredios(self.urlEdoConstr)
+        return self.consumeWSGeneral(self.urlEdoConstr)
 
     def catalogoFactorByTipoFactor(self):
-        return self.consumeWSCatalogosPredios(self.urlCatFactorByTipoFactor + '5')
+        return self.consumeWSGeneral(self.urlCatFactorByTipoFactor + '5')
 
     def consultaCaracter(self, idUsoConst, idCate):
-        return self.consumeWSCatalogosPredios(self.urlRCaracCategoria + idUsoConst + '/' + idCate)
+        return self.consumeWSGeneral(self.urlRCaracCategoria + idUsoConst + '/' + idCate)
 
     # - carga la informacion de las construcciones
     def cargaConstrPred(self, dataConstP):
@@ -377,11 +371,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         # --- SE LLENARA EN UN METODO A PARTE PORQUE NO SE INCLUYE EN LA LISTA DE CATALOGOS
         factor = self.catalogoFactorByTipoFactor()
         
-        print(len(usoConstr))
-        print(len(destino))
-        print(len(edoConstr))
-        print(len(factor))
-
         # -- uso construccion
         if len(usoConstr) > 0:
             self.cmbUsoConstrP.addItem('', -1)
@@ -598,7 +587,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         return json.loads(data)
 
     # - consume ws para informacion de catalogos
-    def consumeWSCatalogosPredios(self, url_cons = ""):
+    def consumeWSGeneral(self, url_cons = ""):
 
         url = url_cons
         data = ""
@@ -607,13 +596,13 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.headers['Authorization'] = self.obtenerToken()
             response = requests.get(url, headers = self.headers)
         except requests.exceptions.RequestException as e:
-            self.createAlert("Error de servidor, 'consumeWSCatalogosPredios()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
+            self.createAlert("Error de servidor, 'consumeWSGeneral()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
             return
 
         if response.status_code == 200:
             data = response.content
         else:
-            self.createAlert('Error en peticion "consumeWSCatalogosPredios()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
+            self.createAlert('Error en peticion "consumeWSGeneral()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
             return
 
         return json.loads(data)
@@ -636,6 +625,22 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         #self.createAlert('Clave: ' + self.cveCatastral, QMessageBox.Information, 'Cedula Catastral')
         #self.createAlert('Clave: ' + clave, QMessageBox.Information, 'Cedula Catastral')
 
+    def event_cambioCondominio(self):
+
+        if self.cmbCondo.count() > 0:
+            index = self.cmbCondo.currentIndex()
+            tipoCond = self.cmbCondo.itemData(index) # <---- tipo de condominio
+            clave = self.cmbCondo.currentText()      # <---- clave de condominio
+
+            # consumir ws de consulta de informacion de condominio
+            dataCond = self.consumeWSGeneral(self.urlCondByCveCatTipoPred + clave + '/' + tipoCond)
+
+            if len(dataCond) == 0:
+                return
+
+            dc = dataCond[0]
+            self.leNumOfCond.setText(dc['numOfi'])
+
     def event_cambioUsoConstr(self):
 
         if self.cmbUsoConstrP.count() > 0:
@@ -646,8 +651,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.cmbUsoEspP.clear()
 
             # -- obtiene categorias
-            data = self.consumeWSCatalogosPredios(self.urlCategoriasByIdUsoConst + str(idUsoConst))
-            data1 = self.consumeWSCatalogosPredios(self.urlUsoEspecifByIdUsoConst + str(idUsoConst))
+            data = self.consumeWSGeneral(self.urlCategoriasByIdUsoConst + str(idUsoConst))
+            data1 = self.consumeWSGeneral(self.urlUsoEspecifByIdUsoConst + str(idUsoConst))
             if data == None and data1 == None:
                 return
 
@@ -670,7 +675,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             self.cmbUsoSuelo.clear()
 
-            data = self.consumeWSCatalogosPredios(self.urlCatUsoSueloByTipoUso + str(idTipoUS))
+            data = self.consumeWSGeneral(self.urlCatUsoSueloByTipoUso + str(idTipoUS))
             if data == None:
                 return
 

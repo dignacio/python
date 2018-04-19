@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1207</width>
-    <height>774</height>
+    <width>1210</width>
+    <height>655</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -86,36 +86,42 @@
           <property name="rightMargin">
            <number>17</number>
           </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="lbCveCata">
-            <property name="font">
-             <font>
-              <pointsize>20</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>00-000-000-00-0000-000-000-00000</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
+          <item row="0" column="2" alignment="Qt::AlignTop">
            <widget class="QComboBox" name="cmbCondo">
             <property name="minimumSize">
              <size>
               <width>100</width>
-              <height>27</height>
+              <height>32</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>100</width>
-              <height>27</height>
+              <height>32</height>
              </size>
             </property>
             <property name="font">
              <font>
-              <pointsize>20</pointsize>
+              <pointsize>14</pointsize>
              </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" alignment="Qt::AlignVCenter">
+           <widget class="QLabel" name="lbCveCata">
+            <property name="font">
+             <font>
+              <pointsize>20</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>00-000-000-00-0000-000-000-00000</string>
             </property>
            </widget>
           </item>
@@ -176,7 +182,7 @@
           <item>
            <widget class="QTabWidget" name="tabWidget">
             <property name="currentIndex">
-             <number>2</number>
+             <number>3</number>
             </property>
             <widget class="QWidget" name="tUbicacion">
              <attribute name="title">
@@ -214,8 +220,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>722</width>
-                   <height>600</height>
+                   <width>725</width>
+                   <height>601</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
@@ -694,6 +700,10 @@
                       <bold>true</bold>
                      </font>
                     </property>
+                    <property name="styleSheet">
+                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                    </property>
                     <property name="inputMethodHints">
                      <set>Qt::ImhNone</set>
                     </property>
@@ -714,6 +724,10 @@
                       <weight>75</weight>
                       <bold>true</bold>
                      </font>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                     </property>
                    </widget>
                   </item>
@@ -782,6 +796,10 @@
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -1064,6 +1082,10 @@
                       <bold>true</bold>
                      </font>
                     </property>
+                    <property name="styleSheet">
+                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                    </property>
                    </widget>
                   </item>
                   <item row="8" column="0">
@@ -1213,6 +1235,10 @@
                   <bold>true</bold>
                  </font>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                </property>
                </widget>
               </item>
               <item row="0" column="0">
@@ -1242,6 +1268,10 @@
                   <bold>true</bold>
                  </font>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                </property>
                </widget>
               </item>
               <item row="8" column="0">
@@ -1267,6 +1297,10 @@
                   <bold>true</bold>
                  </font>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                </property>
                </widget>
               </item>
               <item row="13" column="0" colspan="2">
@@ -1291,6 +1325,10 @@
                   <bold>true</bold>
                  </font>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                </property>
                </widget>
               </item>
               <item row="5" column="1">
@@ -1301,6 +1339,10 @@
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                 </property>
                </widget>
               </item>
@@ -1327,6 +1369,10 @@
                   <bold>true</bold>
                  </font>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                </property>
                </widget>
               </item>
               <item row="2" column="0">
@@ -1345,6 +1391,10 @@
                   <bold>true</bold>
                  </font>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                </property>
                </widget>
               </item>
               <item row="11" column="0">
@@ -1355,6 +1405,10 @@
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                 </property>
                </widget>
               </item>
@@ -1386,7 +1440,7 @@
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-223</y>
                    <width>727</width>
                    <height>714</height>
                   </rect>
@@ -1469,6 +1523,10 @@
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -1640,6 +1698,10 @@
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
                       </widget>
                      </item>
                      <item row="1" column="2" colspan="2" alignment="Qt::AlignHCenter">
@@ -1721,6 +1783,10 @@
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
                       </widget>
                      </item>
                      <item row="3" column="2">
@@ -1749,6 +1815,10 @@
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -1781,6 +1851,10 @@
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
                       </widget>
                      </item>
                      <item row="1" column="1">
@@ -1791,6 +1865,10 @@
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -1968,6 +2046,10 @@
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
                       </widget>
                      </item>
                      <item row="2" column="2">
@@ -1985,6 +2067,10 @@
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -2008,6 +2094,10 @@
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
                       </widget>
                      </item>
                      <item row="5" column="2">
@@ -2018,6 +2108,10 @@
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -2043,10 +2137,10 @@
              </attribute>
              <layout class="QGridLayout" name="gridLayout_16">
               <item row="1" column="2">
-               <widget class="QLineEdit" name="lineEdit_2"/>
+               <widget class="QLineEdit" name="leCveCatAntCond"/>
               </item>
               <item row="1" column="0">
-               <widget class="QLineEdit" name="lineEdit"/>
+               <widget class="QLineEdit" name="leNumOfCond"/>
               </item>
               <item row="0" column="1">
                <widget class="QLabel" name="label_50">
@@ -2062,7 +2156,7 @@
                 </property>
                 <layout class="QGridLayout" name="gridLayout_19">
                  <item row="5" column="0">
-                  <widget class="QLineEdit" name="lineEdit_15"/>
+                  <widget class="QLineEdit" name="leSupTerrExcCond"/>
                  </item>
                  <item row="0" column="0" alignment="Qt::AlignBottom">
                   <widget class="QLabel" name="label_73">
@@ -2072,7 +2166,7 @@
                   </widget>
                  </item>
                  <item row="3" column="0">
-                  <widget class="QLineEdit" name="lineEdit_16"/>
+                  <widget class="QLineEdit" name="leSupTerrComunCond"/>
                  </item>
                  <item row="6" column="0" alignment="Qt::AlignBottom">
                   <widget class="QLabel" name="label_72">
@@ -2082,10 +2176,10 @@
                   </widget>
                  </item>
                  <item row="1" column="0">
-                  <widget class="QLineEdit" name="lineEdit_20"/>
+                  <widget class="QLineEdit" name="leSupTerrPrivCond"/>
                  </item>
                  <item row="7" column="0">
-                  <widget class="QLineEdit" name="lineEdit_17"/>
+                  <widget class="QLineEdit" name="leSupTerrTotalCond"/>
                  </item>
                  <item row="4" column="0" alignment="Qt::AlignBottom">
                   <widget class="QLabel" name="label_69">
@@ -2109,7 +2203,7 @@
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QLineEdit" name="lineEdit_6"/>
+                  <widget class="QLineEdit" name="leValTerrPrivCond"/>
                  </item>
                  <item row="2" column="1" alignment="Qt::AlignBottom">
                   <widget class="QLabel" name="label_55">
@@ -2119,7 +2213,7 @@
                   </widget>
                  </item>
                  <item row="3" column="1">
-                  <widget class="QLineEdit" name="lineEdit_9"/>
+                  <widget class="QLineEdit" name="leValTerrComunCond"/>
                  </item>
                  <item row="4" column="1" alignment="Qt::AlignBottom">
                   <widget class="QLabel" name="label_67">
@@ -2129,7 +2223,7 @@
                   </widget>
                  </item>
                  <item row="5" column="1">
-                  <widget class="QLineEdit" name="lineEdit_13"/>
+                  <widget class="QLineEdit" name="leValTerrExcCond"/>
                  </item>
                  <item row="6" column="1" alignment="Qt::AlignBottom">
                   <widget class="QLabel" name="label_63">
@@ -2139,15 +2233,15 @@
                   </widget>
                  </item>
                  <item row="7" column="1">
-                  <widget class="QLineEdit" name="lineEdit_11"/>
+                  <widget class="QLineEdit" name="leValTerrTotalCond"/>
                  </item>
                 </layout>
                </widget>
               </item>
               <item row="1" column="3">
-               <widget class="QLabel" name="label_64">
+               <widget class="QLabel" name="lbIndivisoCond">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string>lbIndivisoCond</string>
                 </property>
                </widget>
               </item>
@@ -2177,13 +2271,13 @@
                 </property>
                 <layout class="QGridLayout" name="gridLayout_18">
                  <item row="3" column="0">
-                  <widget class="QLineEdit" name="lineEdit_19"/>
+                  <widget class="QLineEdit" name="leSupConstComunCond"/>
                  </item>
                  <item row="5" column="0">
-                  <widget class="QLineEdit" name="lineEdit_14"/>
+                  <widget class="QLineEdit" name="leSupConstExcCond"/>
                  </item>
                  <item row="1" column="0">
-                  <widget class="QLineEdit" name="lineEdit_21"/>
+                  <widget class="QLineEdit" name="leSupConstPrivCond"/>
                  </item>
                  <item row="2" column="0" alignment="Qt::AlignBottom">
                   <widget class="QLabel" name="label_75">
@@ -2207,7 +2301,7 @@
                   </widget>
                  </item>
                  <item row="7" column="0">
-                  <widget class="QLineEdit" name="lineEdit_18"/>
+                  <widget class="QLineEdit" name="leSupConstTotalCond"/>
                  </item>
                  <item row="6" column="0" alignment="Qt::AlignBottom">
                   <widget class="QLabel" name="label_71">
@@ -2224,7 +2318,7 @@
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QLineEdit" name="lineEdit_7"/>
+                  <widget class="QLineEdit" name="leValConstPrivCond"/>
                  </item>
                  <item row="2" column="1" alignment="Qt::AlignBottom">
                   <widget class="QLabel" name="label_53">
@@ -2234,7 +2328,7 @@
                   </widget>
                  </item>
                  <item row="3" column="1">
-                  <widget class="QLineEdit" name="lineEdit_8"/>
+                  <widget class="QLineEdit" name="leValConstComunCond"/>
                  </item>
                  <item row="4" column="1" alignment="Qt::AlignBottom">
                   <widget class="QLabel" name="label_66">
@@ -2244,7 +2338,7 @@
                   </widget>
                  </item>
                  <item row="5" column="1">
-                  <widget class="QLineEdit" name="lineEdit_12"/>
+                  <widget class="QLineEdit" name="leValConstExcCond"/>
                  </item>
                  <item row="6" column="1" alignment="Qt::AlignBottom">
                   <widget class="QLabel" name="label_62">
@@ -2254,15 +2348,15 @@
                   </widget>
                  </item>
                  <item row="7" column="1">
-                  <widget class="QLineEdit" name="lineEdit_10"/>
+                  <widget class="QLineEdit" name="leValConstTotalCond"/>
                  </item>
                 </layout>
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QLabel" name="label_51">
+               <widget class="QLabel" name="lbPerimetroCond">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string>lbPerimetroCond</string>
                 </property>
                </widget>
               </item>
@@ -2457,7 +2551,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1207</width>
+     <width>1210</width>
      <height>21</height>
     </rect>
    </property>

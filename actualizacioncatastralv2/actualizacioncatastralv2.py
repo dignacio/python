@@ -325,7 +325,7 @@ class actualizacioncatastralv2:
             self.idManzana = ' '
 
             #Modo desarrollor
-            self.modoDesarrollo = False
+            self.modoDesarrollo = True
             
             #Configuracion
             #self.servidorIP = 'http://192.168.0.39:1093/'
@@ -525,10 +525,10 @@ class actualizacioncatastralv2:
 
             self.pintarUnaCapa('manzana')
             self.pintarUnaCapa('predios.geom')
-            self.pintarNum('predios.num')
-            self.pintarUnaCapa('construcciones')
+            #self.pintarNum('predios.num')
+            #self.pintarUnaCapa('construcciones')
             self.pintarUnaCapa('horizontales.geom')
-            self.pintarNum('horizontales.num')
+            #self.pintarNum('horizontales.num')
             self.pintarUnaCapa('verticales')
             self.pintarUnaCapa('cves_verticales')
             self.zoomManzana()
@@ -885,7 +885,7 @@ class actualizacioncatastralv2:
         # -- DAVID, abrir cedula -- 
         if self.abrePredio:
 
-            print(len(self.dockwidget.lista))
+            #print(len(self.dockwidget.lista))
 
             listElim = []
 
@@ -899,14 +899,41 @@ class actualizacioncatastralv2:
 
             capaActiva = iface.activeLayer()
             features = []
+            cond = False
 
             # saber cual capa esta activa, a cual se le dio click
             if capaActiva.name() == 'predios.geom':
                 features = self.capaPrediosGeom.selectedFeatures()
+
+                # validar si el predio contiene algun condominio
+                condVCve = self.capaCvesVert.getFeatures()
+                condHori = self.capaHorizontalesGeom.getFeatures()
+
+                # -- buscar si el predio seleccionado contiene condominios
+                # -* ya sean verticales u horizontales
+                for p in features:
+                    geomP = p.geometry()
+
+                    # verifica si tiene claves de verticales
+                    for cv in condVCve:
+                        geom = cv.geometry().buffer(-0.000001,1)
+                        if geom.within(geomP):
+                            cond = True
+                            break
+
+                    # verifica si tiene horizontales
+                    for cv in condHori:
+                        geom = cv.geometry().buffer(-0.000001,1)
+                        if geom.within(geomP):
+                            cond = True
+                            break
+
             elif capaActiva.name() == 'horizontales.geom':
                 features = self.capaHorizontalesGeom.selectedFeatures()
+                cond = True
             elif capaActiva.name() == 'cves_verticales':
                 features = self.capaCvesVert.selectedFeatures()
+                cond = True
 
             if len(features) == 0:
                 self.cambiarStatusCedula("Seleccione una geometria", "error")
@@ -918,10 +945,11 @@ class actualizacioncatastralv2:
                 self.cambiarStatusCedula("Abriendo cedula...", "ok")
 
                 feat = features[0]
+
                 #validar si la clave ya existe
                 for key, value in self.dockwidget.lista.items():
-                    if str(key) == str(feat['cve_cat']):
-                        self.createAlert('La Clave: \'' + str(feat['cve_cat']) + '\' se encuentra abierta', QMessageBox.Information, 'Cedula Catastral')
+                    if str(key) == str(feat['cve_cat'][0:25]):
+                        self.createAlert('La Clave: \'' + str(feat['cve_cat'][0:25]) + '\' se encuentra abierta', QMessageBox.Information, 'Cedula Catastral')
                         self.cancelaAperturaCedula()
                         return
 
@@ -931,15 +959,17 @@ class actualizacioncatastralv2:
                     return
 
                 # abrir Cedula
-                self.dockwidget.lista[str(feat['cve_cat'])] = CedulaMainWindow(str(feat['cve_cat']))
+                self.dockwidget.lista[str(feat['cve_cat'])[0:25]] = CedulaMainWindow(str(feat['cve_cat']), cond = cond)
                 #self.dockwidget.lista[str(feat['cve_cat'])].setWindowTitle(str(feat['cve_cat']))
-                self.dockwidget.lista[str(feat['cve_cat'])].show()
+                self.dockwidget.lista[str(feat['cve_cat'])[0:25]].show()
 
             self.cancelaAperturaCedula()
 
+            '''
             for key, value in self.dockwidget.lista.items():
                 print(self.dockwidget.lista[key].isVisible())
             print(len(self.dockwidget.lista))
+            '''
 
 
     # -- DAVID, funcion para cancelar la apertura de la cedula --
