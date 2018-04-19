@@ -325,7 +325,7 @@ class actualizacioncatastralv2:
             self.idManzana = ' '
 
             #Modo desarrollor
-            self.modoDesarrollo = True
+            self.modoDesarrollo = False
             
             #Configuracion
             #self.servidorIP = 'http://192.168.0.39:1093/'
@@ -403,7 +403,8 @@ class actualizacioncatastralv2:
             #self.idManzana = '065003'   #Manzana Estandar sin horizontales
             #self.idManzana = '01001001020004009053'
             #self.idManzana = '01001001020004071051'
-            self.idManzana = '01001001020004033005'
+            #self.idManzana = '01001001020004033005'
+            self.idManzana = '01001001020004060004'
 
         else:
             index = self.dockwidget.comboManzana.currentIndex()

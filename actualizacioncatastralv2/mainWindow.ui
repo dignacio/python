@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>788</width>
+    <width>1207</width>
     <height>774</height>
    </rect>
   </property>
@@ -214,7 +214,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>575</width>
+                   <width>722</width>
                    <height>600</height>
                   </rect>
                  </property>
@@ -1147,17 +1147,6 @@
                 </property>
                </widget>
               </item>
-              <item row="11" column="0">
-               <widget class="QComboBox" name="cmbFormaPredio">
-                <property name="font">
-                 <font>
-                  <pointsize>14</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="2">
                <widget class="QLabel" name="label_21">
                 <property name="text">
@@ -1358,6 +1347,17 @@
                 </property>
                </widget>
               </item>
+              <item row="11" column="0">
+               <widget class="QComboBox" name="cmbFormaPredio">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
             <widget class="QWidget" name="tConstrPred">
@@ -1385,10 +1385,10 @@
                 <widget class="QWidget" name="scrollAreaWidgetContents_3">
                  <property name="geometry">
                   <rect>
-                   <x>-224</x>
+                   <x>0</x>
                    <y>0</y>
                    <width>727</width>
-                   <height>605</height>
+                   <height>714</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_17">
@@ -1591,175 +1591,8 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="2" column="0">
-                   <widget class="QWidget" name="widget_10" native="true">
-                    <layout class="QGridLayout" name="gridLayout_13">
-                     <item row="2" column="1">
-                      <widget class="QLabel" name="label_47">
-                       <property name="text">
-                        <string>Nvl. Fraccion</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="2">
-                      <widget class="QLineEdit" name="leNvlUbicaP">
-                       <property name="font">
-                        <font>
-                         <pointsize>14</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="1">
-                      <widget class="QLineEdit" name="leAnioConsP">
-                       <property name="font">
-                        <font>
-                         <pointsize>14</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="2">
-                      <widget class="QLabel" name="label_45">
-                       <property name="text">
-                        <string>Destino</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QLabel" name="label_49">
-                       <property name="text">
-                        <string>Uso Especifico</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="label_46">
-                       <property name="text">
-                        <string>Nombre Comercio, Industria, etc</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="1">
-                      <widget class="QLabel" name="lbNvlFraccP">
-                       <property name="text">
-                        <string>lbNvlFraccP</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="0">
-                      <widget class="QLabel" name="lbSupConstrFP">
-                       <property name="font">
-                        <font>
-                         <pointsize>14</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                       <property name="text">
-                        <string>lbSupConstrFP</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="1">
-                      <widget class="QLabel" name="label_58">
-                       <property name="text">
-                        <string>Año de Construccion</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="0">
-                      <widget class="QLabel" name="label_56">
-                       <property name="text">
-                        <string>Superficie de Constr</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_44">
-                       <property name="text">
-                        <string>Uso de Construccion</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QComboBox" name="cmbUsoConstrP">
-                       <property name="font">
-                        <font>
-                         <pointsize>14</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="2">
-                      <widget class="QLabel" name="label_48">
-                       <property name="text">
-                        <string>Nvl. Ubicacion</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="2">
-                      <widget class="QComboBox" name="cmbDestinoP">
-                       <property name="font">
-                        <font>
-                         <pointsize>14</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="0">
-                      <widget class="QLineEdit" name="leNombreP">
-                       <property name="font">
-                        <font>
-                         <pointsize>14</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QComboBox" name="cmbUsoEspP">
-                       <property name="font">
-                        <font>
-                         <pointsize>14</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="2">
-                      <widget class="QComboBox" name="cmbEdoConstrP">
-                       <property name="font">
-                        <font>
-                         <pointsize>14</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="2">
-                      <widget class="QLabel" name="label_57">
-                       <property name="text">
-                        <string>Estado de la Construccion</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
                   <item row="1" column="0" alignment="Qt::AlignHCenter">
-                   <widget class="QWidget" name="widget_9" native="true">
+                   <widget class="QWidget" name="wFraccionP" native="true">
                     <layout class="QGridLayout" name="gridLayout_14">
                      <property name="leftMargin">
                       <number>9</number>
@@ -1976,7 +1809,224 @@
                       </widget>
                      </item>
                      <item row="3" column="0" colspan="3">
-                      <widget class="QTableView" name="twCaracteristicas"/>
+                      <widget class="QTableWidget" name="twCaracteristicas">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>180</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <column>
+                        <property name="text">
+                         <string>idGrupo</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Grupo</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>idSubGrupo</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Sub Grupo</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>idCaracteristica</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Caracteristica</string>
+                        </property>
+                       </column>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QWidget" name="widget_10" native="true">
+                    <layout class="QGridLayout" name="gridLayout_13">
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="label_47">
+                       <property name="text">
+                        <string>Nvl. Fraccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="2">
+                      <widget class="QLineEdit" name="leNvlUbicaP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <widget class="QLineEdit" name="leAnioConsP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QLabel" name="label_45">
+                       <property name="text">
+                        <string>Destino</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="label_49">
+                       <property name="text">
+                        <string>Uso Especifico</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_46">
+                       <property name="text">
+                        <string>Nombre Comercio, Industria, etc</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLabel" name="lbNvlFraccP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbNvlFraccP</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="lbSupConstrFP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbSupConstrFP</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QLabel" name="label_58">
+                       <property name="text">
+                        <string>Año de Construccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="label_56">
+                       <property name="text">
+                        <string>Superficie de Constr</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_44">
+                       <property name="text">
+                        <string>Uso de Construccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QComboBox" name="cmbUsoConstrP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2">
+                      <widget class="QLabel" name="label_48">
+                       <property name="text">
+                        <string>Nvl. Ubicacion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QComboBox" name="cmbDestinoP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLineEdit" name="leNombreP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QComboBox" name="cmbUsoEspP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="2">
+                      <widget class="QComboBox" name="cmbEdoConstrP">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="2">
+                      <widget class="QLabel" name="label_57">
+                       <property name="text">
+                        <string>Estado de la Construccion</string>
+                       </property>
+                      </widget>
                      </item>
                     </layout>
                    </widget>
@@ -2407,7 +2457,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>788</width>
+     <width>1207</width>
      <height>21</height>
     </rect>
    </property>
@@ -2447,7 +2497,7 @@
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

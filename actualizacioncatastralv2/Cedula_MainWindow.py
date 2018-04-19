@@ -8,7 +8,7 @@ from PyQt5 import QtWidgets
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QListView
 
 import os, json, requests, sys
 
@@ -38,7 +38,13 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.urlCatTipoUsoSuelo = self.servidorIP + 'configuracion/api/cat-tipo-uso-suelos'
         self.urlValorTerreno = self.servidorIP + 'configuracion/api/cat-valores-terrenos'
         self.urlCatUsoSueloByTipoUso = self.servidorIP + 'featureswkn/api/cat-tipo-uso-suelo/getCatUsoSueloByCve/'
-        self.urlCatEdoConstr = self.servidorIP + 'configuracion/api/cat-estado-construccions'
+        self.urlUsoConstr = self.servidorIP + 'configuracion/api/cat-uso-construccions'
+        self.urlDestino = self.servidorIP + 'configuracion/api/cat-destinos'
+        self.urlEdoConstr = self.servidorIP + 'configuracion/api/cat-estado-construccions'
+        self.urlCatFactorByTipoFactor = self.servidorIP + 'featureswkn/api/cat-factor/getAllFactorByIdTipoFactor/'
+        self.urlCategoriasByIdUsoConst = self.servidorIP + 'featureswkn/api/cat-vuc/getCategoriasByIdConstruccion/'
+        self.urlUsoEspecifByIdUsoConst = self.servidorIP + 'featureswkn/api/cat-uso-especifico/getCatUsoEspecificoByIdUsoConstruccion/'
+        self.urlRCaracCategoria = self.servidorIP + 'featureswkn/api/cat-vuc/getRCaractCara/'
 
         self.headers = {'Content-Type': 'application/json'}
 
@@ -63,6 +69,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 event.ignore()
 
     def showEvent(self, event):
+
         if self.cargada:
             return
 
@@ -80,14 +87,64 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.leFrente.setValidator(QDoubleValidator(0.99,99.99,2))
         self.lbUsoPredioEtiqueta.hide()
         self.cmbUsoPredio.hide()
+        self.twCaracteristicas.setColumnHidden(0, True)
+        self.twCaracteristicas.setColumnHidden(2, True)
+        self.twCaracteristicas.setColumnHidden(4, True)
+        header = self.twCaracteristicas.horizontalHeader()
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
+
+        disenioCmb = '''
+        QComboBox QAbstractItemView::item { min-height: 25;}
+        QListView{color: black ;font-size: 16px; outline:none;font-weight:bold}
+        QListView::item:selected { color: red; background-color: lightgray;}
+        '''
+        self.cmbTipoPredio.setView(self.generaQListView())
+        self.cmbTipoPredio.setStyleSheet(disenioCmb)
+        self.cmbTipoAsentH.setView(self.generaQListView())
+        self.cmbTipoAsentH.setStyleSheet(disenioCmb)
+        self.cmbRegimenProp.setView(self.generaQListView())
+        self.cmbRegimenProp.setStyleSheet(disenioCmb)
+        self.cmbOrientacion.setView(self.generaQListView())
+        self.cmbOrientacion.setStyleSheet(disenioCmb)
+        self.cmbTipoUsoSuelo.setView(self.generaQListView())
+        self.cmbTipoUsoSuelo.setStyleSheet(disenioCmb)
+        self.cmbUsoSuelo.setView(self.generaQListView())
+        self.cmbUsoSuelo.setStyleSheet(disenioCmb)
+        self.cmbTipoRelieve.setView(self.generaQListView())
+        self.cmbTipoRelieve.setStyleSheet(disenioCmb)
+        self.cmbFacilComun.setView(self.generaQListView())
+        self.cmbFacilComun.setStyleSheet(disenioCmb)
+        self.cmbValorTerr.setView(self.generaQListView())
+        self.cmbValorTerr.setStyleSheet(disenioCmb)
+        self.cmbFormaPredio.setView(self.generaQListView())
+        self.cmbFormaPredio.setStyleSheet(disenioCmb)
+        self.cmbOrientPredMza.setView(self.generaQListView())
+        self.cmbOrientPredMza.setStyleSheet(disenioCmb)
+        self.cmbUsoConstrP.setView(self.generaQListView())
+        self.cmbUsoConstrP.setStyleSheet(disenioCmb)
+        self.cmbUsoEspP.setView(self.generaQListView())
+        self.cmbUsoEspP.setStyleSheet(disenioCmb)
+        self.cmbDestinoP.setView(self.generaQListView())
+        self.cmbDestinoP.setStyleSheet(disenioCmb)
+        self.cmbEdoConstrP.setView(self.generaQListView())
+        self.cmbEdoConstrP.setStyleSheet(disenioCmb)
+        self.cmbCategoriaP.setView(self.generaQListView())
+        self.cmbCategoriaP.setStyleSheet(disenioCmb)
+        self.cmbFactorConstrP.setView(self.generaQListView())
+        self.cmbFactorConstrP.setStyleSheet(disenioCmb)
 
         # -- Eventos
         self.pushButton.clicked.connect(self.event_hasAlgo)
         self.btnColinAdd.clicked.connect(self.event_agregaColin)
         self.btnColinRemoveOne.clicked.connect(self.event_remueveColin)
         self.btnColinRemoveAll.clicked.connect(self.event_remTodasColin)
-        self.cmbTipoUsoSuelo.currentIndexChanged.connect(self.event_obtenerUsoSuelo)
+        self.cmbTipoUsoSuelo.currentIndexChanged.connect(self.event_CambioTipoUsoSuelo)
         self.cmbVolumenP.currentIndexChanged.connect(self.event_cambioVolPred)
+        self.cmbFraccionesP.currentIndexChanged.connect(self.event_cambioFraccPred)
+        self.cmbUsoConstrP.currentIndexChanged.connect(self.event_cambioUsoConstr)
+        self.cmbCategoriaP.currentIndexChanged.connect(self.event_cambioCategoria)
 
         # -- Titulo
         self.setWindowTitle(self.descomponeCveCata(self.cveCatastral))
@@ -101,21 +158,43 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.cargaCatalogos(dataCat)
 
         # -- carga informacion en los catalogos CONSTRUCCIONES
-        #dataCat = self.consumeWSCatalogosConstrucciones(self.urlCatalogos)
-        #self.cargaCatalogos(dataCat)
+        self.cargaCatalogosConstruccionesP()
 
-        # -- carga informacion de la cedula
-        dataCed = self.consumeWSCedula(self.cveCatastral)
+        # -- carga informacion de la cedula segun la clave global
+        dataCed = self.consumeWSCedula(self.cveCatastral[0:25])
         self.cargaCedula(dataCed)
+
+        if len(self.cveCatastral) > 25:
+
+            # se abri un condominio vertical
+            if len(self.cveCatastral) == 27:
+                # cargar el combo de condominios de las claves verticales
+                # y mostrar el primero en la pestaña de condominios
+                pass
+            elif len(self.cveCatastral) == 31:
+                # identificar de que condominio pertenece
+
+                # cargar todos en el combo de condominios segun el tipo
+
+                # seleccionar en el combo la clave que se selecciono
+                # y cargar las construcciones y datos del condominio seleccionado
+
+                pass
+
+
 
         # -- carga informacion de construcciones de PREDIO
         dataConstP = self.consumeWSConstr(self.cveCatastral)
-        print('todo bien')
         self.cargaConstrPred(dataConstP)
 
         self.cargada = True
 
     # --- M E T O D O S ---
+
+    def generaQListView(self):
+        view = QListView()
+        view.setWordWrap(True)
+        return view
 
     # - carga la informacion de los catalogos
     def cargaCatalogos(self, dataCat):
@@ -134,8 +213,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             # TERRENO
             facilComun = dataCat['catFacilidadComunicacions']
             # --- SE LLENARA EN UN METODO A PARTE PORQUE NO SE INCLUYE EN LA LISTA DE CATALOGOS
-            # --- C A M B I A R A   L A   I P   CUANDO SE AGREGUE A LOS MICROSERVICIOS
-            # --- SE LLENARA EN UN METODO A PARTE PORQUE NO SE INCLUYE EN LA LISTA DE CATALOGOS
             tipoUsoSuelo = self.catalogoTipoUsoSuelo()
             # --- SE LLENARA EN UN METODO A PARTE PORQUE NO SE INCLUYE EN LA LISTA DE CATALOGOS
             valTerr = self.catalogoValorTerreno()
@@ -146,26 +223,26 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             orientPredMza = dataCat['catPredioUbicMznas']
 
             # -- tipo de predio
-            if len(tipoPredio) > 1:
-                self.cmbTipoPredio.addItem('', '-1')
+            if len(tipoPredio) > 0:
+                self.cmbTipoPredio.addItem('', -1)
                 for tp in tipoPredio:
                     self.cmbTipoPredio.addItem(str(tp['descripcion']), str(tp['cveTipoPred']))
 
             # -- orientacion
-            if len(orientacion) > 1:
-                self.cmbOrientacion.addItem('', '-1')
+            if len(orientacion) > 0:
+                self.cmbOrientacion.addItem('', -1)
                 for ori in orientacion:
                     self.cmbOrientacion.addItem(str(ori['descripcion']), str(ori['id']))
 
             # -- regimen propiedad
-            if len(regimenProp) > 1:
-                self.cmbRegimenProp.addItem('', '-1')
+            if len(regimenProp) > 0:
+                self.cmbRegimenProp.addItem('', -1)
                 for reg in regimenProp:
                     self.cmbRegimenProp.addItem(str(reg['descripcion']), str(reg['id']))
 
             # -- facilidad de cominicacion
-            if len(facilComun) > 1:
-                self.cmbFacilComun.addItem('', '-1')
+            if len(facilComun) > 0:
+                self.cmbFacilComun.addItem('', -1)
                 for fac in facilComun:
                     self.cmbFacilComun.addItem(str(fac['descripcion']), str(fac['id']))
 
@@ -179,38 +256,38 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             '''
 
             # -- tipo relieve
-            if len(tipoRelieve) > 1:
-                self.cmbTipoRelieve.addItem('', '-1')
+            if len(tipoRelieve) > 0:
+                self.cmbTipoRelieve.addItem('', -1)
                 for rel in tipoRelieve:
                     self.cmbTipoRelieve.addItem(str(rel['tipoRelieve']), str(rel['id']))
 
             # -- forma predio
-            if len(formaPredio) > 1:
-                self.cmbFormaPredio.addItem('', '-1')
+            if len(formaPredio) > 0:
+                self.cmbFormaPredio.addItem('', -1)
                 for form in formaPredio:
                     self.cmbFormaPredio.addItem(str(form['descripcion']), str(form['id']))
 
             # -- orientacion predio dentro de manzana
-            if len(orientPredMza) > 1:
-                self.cmbOrientPredMza.addItem('', '-1')
+            if len(orientPredMza) > 0:
+                self.cmbOrientPredMza.addItem('', -1)
                 for predm in orientPredMza:
                     self.cmbOrientPredMza.addItem(str(predm['descripcion']), str(predm['id']))
 
             # -- tipo de asentamiento humano
-            if len(tipoAsentH) > 1:
-                self.cmbTipoAsentH.addItem('', '-1')
+            if len(tipoAsentH) > 0:
+                self.cmbTipoAsentH.addItem('', -1)
                 for tipa in tipoAsentH:
                     self.cmbTipoAsentH.addItem(str(tipa['descripcion']), str(tipa['id']))
 
             # -- tipo uso suelo
-            if len(tipoUsoSuelo) > 1:
-                self.cmbTipoUsoSuelo.addItem('', '-1')
+            if len(tipoUsoSuelo) > 0:
+                self.cmbTipoUsoSuelo.addItem('', -1)
                 for tipa in tipoUsoSuelo:
                     self.cmbTipoUsoSuelo.addItem(str(tipa['descripcion']), str(tipa['cveTipoUsoSuelo']))
 
             # -- valor de terreno
-            if len(valTerr) > 1:
-                self.cmbValorTerr.addItem('', '-1')
+            if len(valTerr) > 0:
+                self.cmbValorTerr.addItem('', -1)
                 for vt in valTerr:
                     self.cmbValorTerr.addItem(str(vt['descripcion']), str(vt['cveVus']))
 
@@ -227,12 +304,27 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
     def catalogoValorTerreno(self):
         return self.consumeWSCatalogosPredios(self.urlValorTerreno)
 
+    def catalogoUsoConstr(self):
+        return self.consumeWSCatalogosPredios(self.urlUsoConstr)
+
+    def catalogoDestino(self):
+        return self.consumeWSCatalogosPredios(self.urlDestino)
+
+    def catalogoEdoConstr(self):
+        return self.consumeWSCatalogosPredios(self.urlEdoConstr)
+
+    def catalogoFactorByTipoFactor(self):
+        return self.consumeWSCatalogosPredios(self.urlCatFactorByTipoFactor + '5')
+
+    def consultaCaracter(self, idUsoConst, idCate):
+        return self.consumeWSCatalogosPredios(self.urlRCaracCategoria + idUsoConst + '/' + idCate)
+
     # - carga la informacion de las construcciones
     def cargaConstrPred(self, dataConstP):
         
         try:
             if len(dataConstP) == 0:
-                self.createAlert('Sin Resultados')
+                self.createAlert('Sin Resultados', titulo = 'cargaConstrPred')
                 return
 
             # ordena las construcciones segun el volumen
@@ -250,6 +342,19 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                     fr['idConstruccion'] = dcp['id']
                     fr['idPredio'] = dcp['idPredio']
                     fr['cveCatastral'] = dcp['cveCatastral']
+                    fr['codigoConstruccion'] = ''
+                    fr['valorConst'] = 0
+                    fr['precioM2'] = 0
+                    fr['idCatUsoConstruccion'] = -1
+                    fr['idCatUsoEspecifico'] = -1
+                    fr['idCatDestino'] = -1
+                    fr['nombre'] = ''
+                    fr['nvlUbica'] = ''
+                    fr['anioConstruccion'] = ''
+                    fr['idCatEstadoConstruccion'] = -1
+                    fr['idCategoria'] = -1
+                    fr['idFactor'] = -1
+                    fr['caracCategorias'] = []
 
                     fracciones.append(fr)
                     dcp['fracciones'] = fracciones
@@ -260,13 +365,54 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.errorCerrar = True
             self.createAlert('Error durante la carga de informacion "cargaConstrPred()": ' + str(e))
 
+    # - carga catalogos de construcciones
+    def cargaCatalogosConstruccionesP(self):
+        
+        # --- SE LLENARA EN UN METODO A PARTE PORQUE NO SE INCLUYE EN LA LISTA DE CATALOGOS
+        usoConstr = self.catalogoUsoConstr()
+        # --- SE LLENARA EN UN METODO A PARTE PORQUE NO SE INCLUYE EN LA LISTA DE CATALOGOS
+        destino = self.catalogoDestino()
+        # --- SE LLENARA EN UN METODO A PARTE PORQUE NO SE INCLUYE EN LA LISTA DE CATALOGOS
+        edoConstr = self.catalogoEdoConstr()
+        # --- SE LLENARA EN UN METODO A PARTE PORQUE NO SE INCLUYE EN LA LISTA DE CATALOGOS
+        factor = self.catalogoFactorByTipoFactor()
+        
+        print(len(usoConstr))
+        print(len(destino))
+        print(len(edoConstr))
+        print(len(factor))
+
+        # -- uso construccion
+        if len(usoConstr) > 0:
+            self.cmbUsoConstrP.addItem('', -1)
+            for uc in usoConstr:
+                self.cmbUsoConstrP.addItem(str(uc['descripcion']), str(uc['id']))
+
+        # -- destino
+        if len(destino) > 0:
+            self.cmbDestinoP.addItem('', -1)
+            for d in destino:
+                self.cmbDestinoP.addItem(str(d['descripcion']), str(d['id']))
+
+        # -- estado de construccion
+        if len(edoConstr) > 0:
+            self.cmbEdoConstrP.addItem('', -1)
+            for ec in edoConstr:
+                self.cmbEdoConstrP.addItem(str(ec['descripcion']), str(ec['id']))
+
+        # -- factor
+        if len(factor) > 0:
+            self.cmbFactorConstrP.addItem('', -1)
+            for ec in factor:
+                self.cmbFactorConstrP.addItem(str(ec['descripcion']), str(ec['id']))
+
     # - carga la informacion de un predio en el formulario
     def cargaCedula(self, dataCed):
 
         try:
 
             if len(dataCed) == 0:
-                self.createAlert('Sin Resultados')
+                self.createAlert('Sin Resultados', titulo = 'cargaCedula')
                 return
 
             cedula = dataCed[0]
@@ -490,7 +636,33 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         #self.createAlert('Clave: ' + self.cveCatastral, QMessageBox.Information, 'Cedula Catastral')
         #self.createAlert('Clave: ' + clave, QMessageBox.Information, 'Cedula Catastral')
 
-    def event_obtenerUsoSuelo(self):
+    def event_cambioUsoConstr(self):
+
+        if self.cmbUsoConstrP.count() > 0:
+            index = self.cmbUsoConstrP.currentIndex()
+            idUsoConst = self.cmbUsoConstrP.itemData(index)
+
+            self.cmbCategoriaP.clear()
+            self.cmbUsoEspP.clear()
+
+            # -- obtiene categorias
+            data = self.consumeWSCatalogosPredios(self.urlCategoriasByIdUsoConst + str(idUsoConst))
+            data1 = self.consumeWSCatalogosPredios(self.urlUsoEspecifByIdUsoConst + str(idUsoConst))
+            if data == None and data1 == None:
+                return
+
+            lenJson = len(list(data))
+            lenJson1 = len(list(data1))
+
+            if lenJson > 0:
+                for cate in data:
+                    self.cmbCategoriaP.addItem(str(cate['categoria']), cate['id'])
+
+            if lenJson1 > 0:
+                for esp in data1:
+                    self.cmbUsoEspP.addItem(str(esp['descripcion']), esp['id'])
+
+    def event_CambioTipoUsoSuelo(self):
 
         if self.cmbTipoUsoSuelo.count() > 0:
             index = self.cmbTipoUsoSuelo.currentIndex()
@@ -498,7 +670,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             self.cmbUsoSuelo.clear()
 
-            data = self.consumeWSCatalogosPredios(self.urlCatUsoSueloByTipoUso + idTipoUS)
+            data = self.consumeWSCatalogosPredios(self.urlCatUsoSueloByTipoUso + str(idTipoUS))
             if data == None:
                 return
 
@@ -508,9 +680,97 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 for usos in data:
                     self.cmbUsoSuelo.addItem(str(usos['descripcion']), str(usos['cveUsoSuelo']))
 
+    def event_cambioFraccPred(self):
+
+        if self.cmbFraccionesP.count() > 0:
+            index = self.cmbFraccionesP.currentIndex()
+            data = self.cmbFraccionesP.itemData(index)
+
+            '''
+            string = constr.replace("'", "\"")
+            string = string.replace("None", "\"None\"")
+            string = string.replace("False", "\"False\"")
+            string = string.replace("True", "\"True\"")
+
+            data = json.loads(string)
+            '''
+
+            self.lbCveUsoP.setText(str(data['codigoConstruccion']))
+            self.lbValM2P.setText(str(data['precioM2']))
+            self.lbValConstP.setText(str(data['valorConst']))
+            self.lbSupConstrFP.setText(str(data['supConstFraccion']))
+            self.lbNvlFraccP.setText(str(data['numNivel']))
+            self.leNombreP.setText(str(data['nombre']))
+            self.leNvlUbicaP.setText(str(data['nvlUbica']))
+            self.leAnioConsP.setText(str(data['anioConstruccion']))
+
+            # uso de construccion
+            if data['idCatUsoConstruccion'] != None:
+                index = self.cmbUsoConstrP.findData(data['idCatUsoConstruccion'])
+                if index >= 0:
+                    self.cmbUsoConstrP.setCurrentIndex(index)
+
+            # uso especifico
+            if data['idCatUsoEspecifico'] != None:
+                index = self.cmbUsoEspP.findData(data['idCatUsoEspecifico'])
+                if index >= 0:
+                    self.cmbUsoEspP.setCurrentIndex(index)
+
+            # destino
+            if data['idCatDestino'] != None:
+                index = self.cmbDestinoP.findData(data['idCatDestino'])
+                if index >= 0:
+                    self.cmbDestinoP.setCurrentIndex(index)
+
+            # estado de construccion
+            if data['idCatEstadoConstruccion'] != None:
+                index = self.cmbEdoConstrP.findData(data['idCatEstadoConstruccion'])
+                if index >= 0:
+                    self.cmbEdoConstrP.setCurrentIndex(index)
+
+            # categoria
+            if data['idCategoria'] != None:
+                index = self.cmbCategoriaP.findData(data['idCategoria'])
+                if index >= 0:
+                    self.cmbCategoriaP.setCurrentIndex(index)
+
+            # factor
+            if data['idFactor'] != None:
+                index = self.cmbFactorConstrP.findData(data['idFactor'])
+                if index >= 0:
+                    self.cmbFactorConstrP.setCurrentIndex(index)
+
+            self.twCaracteristicas.clearContents()
+            self.twCaracteristicas.setRowCount(0)
+            
+            for row in range(0, self.twCaracteristicas.rowCount()):        
+                self.twCaracteristicas.removeRow(row)
+
+            # grupos subgrupos y caracteristicas
+            caracteristicas = data['caracCategorias']
+            if len(caracteristicas) > 0:
+
+                for carac in caracteristicas:
+                    # agrega un renglon a las coindancias
+                    idGrupo = carac['idGrupo']
+                    descGpo = carac['descripcionGrupo']
+                    idSubGp = carac['idSubgrupo']
+                    descSub = carac['descripcionSubGrupo']
+                    idCarac = carac['idCaracteristica']
+                    descCar = carac['descripcionCaracteristica']
+
+                    rowPosition = self.twCaracteristicas.rowCount()
+                    self.twCaracteristicas.insertRow(rowPosition)
+                    self.twCaracteristicas.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(idGrupo)))
+                    self.twCaracteristicas.setItem(rowPosition , 1, QtWidgets.QTableWidgetItem(descGpo))
+                    self.twCaracteristicas.setItem(rowPosition , 2, QtWidgets.QTableWidgetItem(str(idSubGp)))
+                    self.twCaracteristicas.setItem(rowPosition , 3, QtWidgets.QTableWidgetItem(descSub))
+                    self.twCaracteristicas.setItem(rowPosition , 4, QtWidgets.QTableWidgetItem(str(idCarac)))
+                    self.twCaracteristicas.setItem(rowPosition , 5, QtWidgets.QTableWidgetItem(descCar))
+
     def event_cambioVolPred(self):
 
-        if self.cmbTipoUsoSuelo.count() > 0:
+        if self.cmbVolumenP.count() > 0:
             index = self.cmbVolumenP.currentIndex()
             data = self.cmbVolumenP.itemData(index)
 
@@ -541,7 +801,50 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             fra = data['fracciones'][0]
             self.cmbFraccionesP.addItem(str(fra['volumen']), fra)
             
+    def event_cambioCategoria(self):
+        
+        idUsoConst = 0
+        idCate = 0
 
+        # obtener el uso de construccion
+        if self.cmbUsoConstrP.count() > 0:
+            index = self.cmbUsoConstrP.currentIndex()
+            idUsoConst = self.cmbUsoConstrP.itemData(index)
+
+        # obtener la categoria
+        if self.cmbCategoriaP.count() > 0:
+            index = self.cmbCategoriaP.currentIndex()
+            idCate = self.cmbCategoriaP.itemData(index)
+
+        # consume ws para obtener las caracteristicas
+        data = self.consultaCaracter(str(idUsoConst), str(idCate))
+
+        self.twCaracteristicas.clearContents()
+        self.twCaracteristicas.setRowCount(0)
+            
+        for row in range(0, self.twCaracteristicas.rowCount()):        
+            self.twCaracteristicas.removeRow(row)
+
+
+        if len(data) > 0:
+
+            for carac in data:
+                # agrega un renglon a las coindancias
+                idGrupo = carac['idCatGrupo']
+                descGpo = carac['descripcionCatGrupo']
+                idSubGp = carac['idCatSubgrupo']
+                descSub = carac['descripcionCatSubgrupo']
+                idCarac = carac['idCatCaracteristica']
+                descCar = carac['descripcionCatCaracteristica']
+
+                rowPosition = self.twCaracteristicas.rowCount()
+                self.twCaracteristicas.insertRow(rowPosition)
+                self.twCaracteristicas.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(idGrupo)))
+                self.twCaracteristicas.setItem(rowPosition , 1, QtWidgets.QTableWidgetItem(descGpo))
+                self.twCaracteristicas.setItem(rowPosition , 2, QtWidgets.QTableWidgetItem(str(idSubGp)))
+                self.twCaracteristicas.setItem(rowPosition , 3, QtWidgets.QTableWidgetItem(descSub))
+                self.twCaracteristicas.setItem(rowPosition , 4, QtWidgets.QTableWidgetItem(str(idCarac)))
+                self.twCaracteristicas.setItem(rowPosition , 5, QtWidgets.QTableWidgetItem(descCar))
 
     def event_agregaColin(self):
 
@@ -563,7 +866,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.createAlert('Defina una descripcion')
             return
 
-        # agrega un renglon a las coindancias
+        # agrega un renglon a las colindancias
         idOrient = self.cmbOrientacion.itemData(index)
         orientac = self.cmbOrientacion.currentText()
         distanci = self.leDispPerim.text()
