@@ -96,10 +96,10 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.leFrente.setValidator(QDoubleValidator(0.99,99.99,2))
         self.lbUsoPredioEtiqueta.hide()
         self.cmbUsoPredio.hide()
-        self.twCaracteristicas.setColumnHidden(0, True)
-        self.twCaracteristicas.setColumnHidden(2, True)
-        self.twCaracteristicas.setColumnHidden(4, True)
-        header = self.twCaracteristicas.horizontalHeader()
+        self.twCaracteristicasP.setColumnHidden(0, True)
+        self.twCaracteristicasP.setColumnHidden(2, True)
+        self.twCaracteristicasP.setColumnHidden(4, True)
+        header = self.twCaracteristicasP.horizontalHeader()
         header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
         header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
         header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
@@ -160,6 +160,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         if self.cond:
             # se carga el combo de condominios
+
             dataCond = self.consumeWSGeneral(self.urlCondominios + self.cveCatastral)
             self.defineComboCond(dataCond)
 
@@ -633,13 +634,58 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             clave = self.cmbCondo.currentText()      # <---- clave de condominio
 
             # consumir ws de consulta de informacion de condominio
-            dataCond = self.consumeWSGeneral(self.urlCondByCveCatTipoPred + clave + '/' + tipoCond)
+            dataCond = self.consumeWSGeneral(self.urlCondByCveCatTipoPred + self.cveCatastral + clave + '/' + tipoCond)
 
             if len(dataCond) == 0:
                 return
 
             dc = dataCond[0]
-            self.leNumOfCond.setText(dc['numOfi'])
+
+            self.leNumOfCond.setText(str(dc['numOfi']))
+            self.lbPerimetroCond.setText(str(dc['perimetro']))
+            self.leCveCatAntCond.setText(str(dc['cveCatAnt']))
+            self.lbIndivisoCond.setText(str(dc['indiviso']))
+
+            # --- construccion
+            # - superficies
+            self.leSupConstPrivCond.setText(str(dc['supConstruccionPrivada'] or 0))
+            self.leSupConstComunCond.setText(str(dc['supConstruccionComun'] or 0))
+            self.leSupConstExcCond.setText(str(dc['supConstComunEx'] or 0))
+
+            supC = (dc['supConstruccionPrivada'] or 0) + (dc['supConstruccionComun'] or 0) + (dc['supConstComunEx'] or 0)
+
+            self.leSupConstTotalCond.setText(str(supC))
+            # - valores
+            self.leValConstPrivCond.setText(str(dc['valorConstruccionPriv'] or 0))
+            self.leValConstComunCond.setText(str(dc['valorConstruccionComun'] or 0))
+            self.leValConstExcCond.setText(str(dc['valorConstExc'] or 0))
+
+            valC = (dc['valorConstruccionPriv'] or 0) + (dc['valorConstruccionComun'] or 0) + (dc['valorConstExc'] or 0)
+
+            self.leValConstTotalCond.setText(str(valC))
+
+            # --- terreno
+            # - superficies
+            self.leSupTerrPrivCond.setText(str(dc['supTerPrivada'] or 0))
+            self.leSupTerrComunCond.setText(str(dc['supTerComun'] or 0))
+            self.leSupTerrExcCond.setText(str(dc['supTerrComunEx'] or 0))
+
+            supT = (dc['supTerPrivada'] or 0) + (dc['supTerComun'] or 0) + (dc['supTerrComunEx'] or 0)
+
+            self.leSupTerrTotalCond.setText(str(supT))
+            # - valores
+            self.leValTerrPrivCond.setText(str(dc['valorTerrenoPriv'] or 0))
+            self.leValTerrComunCond.setText(str(dc['valorTerrenoComun'] or 0))
+            self.leValTerrExcCond.setText(str(dc['valorTerrExc'] or 0))
+
+            valT = (dc['valorTerrenoPriv'] or 0) + (dc['valorTerrenoComun'] or 0) + (dc['valorTerrExc'] or 0)
+
+            self.leValTerrTotalCond.setText(str(valT))
+
+            # -- C A R G A   C O N T R U C C I O N E S
+            dataConstC = self.consumeWSConstr(self.cveCatastral + clave, tipoCond)
+            print(dataConstC)
+
 
     def event_cambioUsoConstr(self):
 
@@ -691,15 +737,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             index = self.cmbFraccionesP.currentIndex()
             data = self.cmbFraccionesP.itemData(index)
 
-            '''
-            string = constr.replace("'", "\"")
-            string = string.replace("None", "\"None\"")
-            string = string.replace("False", "\"False\"")
-            string = string.replace("True", "\"True\"")
-
-            data = json.loads(string)
-            '''
-
             self.lbCveUsoP.setText(str(data['codigoConstruccion']))
             self.lbValM2P.setText(str(data['precioM2']))
             self.lbValConstP.setText(str(data['valorConst']))
@@ -745,11 +782,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 if index >= 0:
                     self.cmbFactorConstrP.setCurrentIndex(index)
 
-            self.twCaracteristicas.clearContents()
-            self.twCaracteristicas.setRowCount(0)
+            self.twCaracteristicasP.clearContents()
+            self.twCaracteristicasP.setRowCount(0)
             
-            for row in range(0, self.twCaracteristicas.rowCount()):        
-                self.twCaracteristicas.removeRow(row)
+            for row in range(0, self.twCaracteristicasP.rowCount()):        
+                self.twCaracteristicasP.removeRow(row)
 
             # grupos subgrupos y caracteristicas
             caracteristicas = data['caracCategorias']
@@ -764,14 +801,14 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                     idCarac = carac['idCaracteristica']
                     descCar = carac['descripcionCaracteristica']
 
-                    rowPosition = self.twCaracteristicas.rowCount()
-                    self.twCaracteristicas.insertRow(rowPosition)
-                    self.twCaracteristicas.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(idGrupo)))
-                    self.twCaracteristicas.setItem(rowPosition , 1, QtWidgets.QTableWidgetItem(descGpo))
-                    self.twCaracteristicas.setItem(rowPosition , 2, QtWidgets.QTableWidgetItem(str(idSubGp)))
-                    self.twCaracteristicas.setItem(rowPosition , 3, QtWidgets.QTableWidgetItem(descSub))
-                    self.twCaracteristicas.setItem(rowPosition , 4, QtWidgets.QTableWidgetItem(str(idCarac)))
-                    self.twCaracteristicas.setItem(rowPosition , 5, QtWidgets.QTableWidgetItem(descCar))
+                    rowPosition = self.twCaracteristicasP.rowCount()
+                    self.twCaracteristicasP.insertRow(rowPosition)
+                    self.twCaracteristicasP.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(idGrupo)))
+                    self.twCaracteristicasP.setItem(rowPosition , 1, QtWidgets.QTableWidgetItem(descGpo))
+                    self.twCaracteristicasP.setItem(rowPosition , 2, QtWidgets.QTableWidgetItem(str(idSubGp)))
+                    self.twCaracteristicasP.setItem(rowPosition , 3, QtWidgets.QTableWidgetItem(descSub))
+                    self.twCaracteristicasP.setItem(rowPosition , 4, QtWidgets.QTableWidgetItem(str(idCarac)))
+                    self.twCaracteristicasP.setItem(rowPosition , 5, QtWidgets.QTableWidgetItem(descCar))
 
     def event_cambioVolPred(self):
 
@@ -824,11 +861,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         # consume ws para obtener las caracteristicas
         data = self.consultaCaracter(str(idUsoConst), str(idCate))
 
-        self.twCaracteristicas.clearContents()
-        self.twCaracteristicas.setRowCount(0)
+        self.twCaracteristicasP.clearContents()
+        self.twCaracteristicasP.setRowCount(0)
             
-        for row in range(0, self.twCaracteristicas.rowCount()):        
-            self.twCaracteristicas.removeRow(row)
+        for row in range(0, self.twCaracteristicasP.rowCount()):        
+            self.twCaracteristicasP.removeRow(row)
 
 
         if len(data) > 0:
@@ -842,14 +879,14 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 idCarac = carac['idCatCaracteristica']
                 descCar = carac['descripcionCatCaracteristica']
 
-                rowPosition = self.twCaracteristicas.rowCount()
-                self.twCaracteristicas.insertRow(rowPosition)
-                self.twCaracteristicas.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(idGrupo)))
-                self.twCaracteristicas.setItem(rowPosition , 1, QtWidgets.QTableWidgetItem(descGpo))
-                self.twCaracteristicas.setItem(rowPosition , 2, QtWidgets.QTableWidgetItem(str(idSubGp)))
-                self.twCaracteristicas.setItem(rowPosition , 3, QtWidgets.QTableWidgetItem(descSub))
-                self.twCaracteristicas.setItem(rowPosition , 4, QtWidgets.QTableWidgetItem(str(idCarac)))
-                self.twCaracteristicas.setItem(rowPosition , 5, QtWidgets.QTableWidgetItem(descCar))
+                rowPosition = self.twCaracteristicasP.rowCount()
+                self.twCaracteristicasP.insertRow(rowPosition)
+                self.twCaracteristicasP.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(idGrupo)))
+                self.twCaracteristicasP.setItem(rowPosition , 1, QtWidgets.QTableWidgetItem(descGpo))
+                self.twCaracteristicasP.setItem(rowPosition , 2, QtWidgets.QTableWidgetItem(str(idSubGp)))
+                self.twCaracteristicasP.setItem(rowPosition , 3, QtWidgets.QTableWidgetItem(descSub))
+                self.twCaracteristicasP.setItem(rowPosition , 4, QtWidgets.QTableWidgetItem(str(idCarac)))
+                self.twCaracteristicasP.setItem(rowPosition , 5, QtWidgets.QTableWidgetItem(descCar))
 
     def event_agregaColin(self):
 

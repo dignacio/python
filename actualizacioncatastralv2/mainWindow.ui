@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1210</width>
-    <height>655</height>
+    <height>876</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -182,7 +182,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
           <item>
            <widget class="QTabWidget" name="tabWidget">
             <property name="currentIndex">
-             <number>3</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="tUbicacion">
              <attribute name="title">
@@ -220,8 +220,8 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>725</width>
-                   <height>601</height>
+                   <width>742</width>
+                   <height>610</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
@@ -1440,7 +1440,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-223</y>
+                   <y>-121</y>
                    <width>727</width>
                    <height>714</height>
                   </rect>
@@ -1768,7 +1768,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                       </widget>
                      </item>
                      <item row="3" column="0">
-                      <widget class="QPushButton" name="btnSubdividir">
+                      <widget class="QPushButton" name="btnSubdividirP">
                        <property name="text">
                         <string>Subdividir</string>
                        </property>
@@ -1887,7 +1887,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                       </widget>
                      </item>
                      <item row="3" column="0" colspan="3">
-                      <widget class="QTableWidget" name="twCaracteristicas">
+                      <widget class="QTableWidget" name="twCaracteristicasP">
                        <property name="minimumSize">
                         <size>
                          <width>0</width>
@@ -2131,7 +2131,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="tab">
+            <widget class="QWidget" name="tCondominio">
              <attribute name="title">
               <string>Condominio</string>
              </attribute>
@@ -2376,6 +2376,726 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
               </item>
              </layout>
             </widget>
+            <widget class="QWidget" name="tConstrCond">
+             <attribute name="title">
+              <string>Constr. Condominio</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_25">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <property name="horizontalSpacing">
+               <number>0</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QScrollArea" name="scrollArea_4">
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_4">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>731</width>
+                   <height>714</height>
+                  </rect>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_20">
+                  <property name="leftMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>10</number>
+                  </property>
+                  <item row="0" column="0" alignment="Qt::AlignHCenter">
+                   <widget class="QWidget" name="widget_9" native="true">
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>90</height>
+                     </size>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_21">
+                     <property name="leftMargin">
+                      <number>9</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>20</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>9</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>20</number>
+                     </property>
+                     <property name="horizontalSpacing">
+                      <number>9</number>
+                     </property>
+                     <item row="0" column="0" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_41">
+                       <property name="text">
+                        <string>Volumen</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="3" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_51">
+                       <property name="text">
+                        <string>Sup. Constr.</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="4" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_64">
+                       <property name="text">
+                        <string>Num. Niveles</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QComboBox" name="cmbVolumenC">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>28</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>60</width>
+                         <height>28</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1" alignment="Qt::AlignVCenter">
+                      <widget class="QPushButton" name="btnAddConstC">
+                       <property name="minimumSize">
+                        <size>
+                         <width>30</width>
+                         <height>28</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>30</width>
+                         <height>28</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="icon">
+                        <iconset>
+                         <normaloff>:/cedula/icons/add.png</normaloff>:/cedula/icons/add.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QPushButton" name="btnDelConstrC">
+                       <property name="minimumSize">
+                        <size>
+                         <width>30</width>
+                         <height>28</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>30</width>
+                         <height>28</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="icon">
+                        <iconset>
+                         <normaloff>:/cedula/icons/remove_one.png</normaloff>:/cedula/icons/remove_one.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="3" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                      <widget class="QLabel" name="lbSupConstrC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbSupConstrC</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="4" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                      <widget class="QLabel" name="lbNumNivC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbNumNivC</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="5" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_77">
+                       <property name="text">
+                        <string>Tipo Construccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="5" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="lbTipoConstC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbTipoConstC</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="6" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="lbCveConstEspC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbCveConstEspC</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="6" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="lbCveConstEspC_2">
+                       <property name="text">
+                        <string>Cve. Const. Esp.</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" alignment="Qt::AlignHCenter">
+                   <widget class="QWidget" name="wFraccionP_2" native="true">
+                    <layout class="QGridLayout" name="gridLayout_22">
+                     <property name="leftMargin">
+                      <number>9</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>20</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>20</number>
+                     </property>
+                     <item row="0" column="2" colspan="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_78">
+                       <property name="text">
+                        <string>Cve. Uso</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="4" colspan="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_79">
+                       <property name="text">
+                        <string>Valor M2</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="6" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_80">
+                       <property name="text">
+                        <string>Val. Const</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_81">
+                       <property name="text">
+                        <string>Fracciones</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QComboBox" name="cmbFraccionesC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2" colspan="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="lbCveUsoC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbCveUsoC</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="4" colspan="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="lbValM2C">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbValM2C</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="6" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="lbValConstC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbValConstC</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_82">
+                       <property name="text">
+                        <string>Nva. Fracc.</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_83">
+                       <property name="text">
+                        <string>Nivel Prop.</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="5" colspan="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_84">
+                       <property name="text">
+                        <string>con:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QPushButton" name="btnSubdividirC">
+                       <property name="text">
+                        <string>Subdividir</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QComboBox" name="cmbNvaFraccC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="2">
+                      <widget class="QLineEdit" name="lineEditC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="3" colspan="2">
+                      <widget class="QPushButton" name="btnFusionarC">
+                       <property name="text">
+                        <string>Fusionar</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="5" colspan="2">
+                      <widget class="QComboBox" name="cmbConC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QWidget" name="widget_12" native="true">
+                    <layout class="QGridLayout" name="gridLayout_23">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_85">
+                       <property name="text">
+                        <string>Categoria</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="label_86">
+                       <property name="text">
+                        <string>Factor de Construccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QComboBox" name="cmbCategoriaC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QComboBox" name="cmbFactorConstrC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_87">
+                       <property name="text">
+                        <string>Caracteristicas</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QPushButton" name="btnCalcValCatC">
+                       <property name="text">
+                        <string>Calculo de Valor Cat.</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0" colspan="3">
+                      <widget class="QTableWidget" name="twCaracteristicasC">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>180</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <column>
+                        <property name="text">
+                         <string>idGrupo</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Grupo</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>idSubGrupo</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Sub Grupo</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>idCaracteristica</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Caracteristica</string>
+                        </property>
+                       </column>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QWidget" name="widget_13" native="true">
+                    <layout class="QGridLayout" name="gridLayout_24">
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="label_88">
+                       <property name="text">
+                        <string>Nvl. Fraccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="2">
+                      <widget class="QLineEdit" name="leNvlUbicaC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <widget class="QLineEdit" name="leAnioConsC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QLabel" name="label_89">
+                       <property name="text">
+                        <string>Destino</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="label_90">
+                       <property name="text">
+                        <string>Uso Especifico</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_91">
+                       <property name="text">
+                        <string>Nombre Comercio, Industria, etc</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLabel" name="lbNvlFraccC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbNvlFraccC</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="lbSupConstrFC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbSupConstrFC</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QLabel" name="label_92">
+                       <property name="text">
+                        <string>Año de Construccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="label_93">
+                       <property name="text">
+                        <string>Superficie de Constr</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_94">
+                       <property name="text">
+                        <string>Uso de Construccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QComboBox" name="cmbUsoConstrC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2">
+                      <widget class="QLabel" name="label_95">
+                       <property name="text">
+                        <string>Nvl. Ubicacion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QComboBox" name="cmbDestinoC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLineEdit" name="leNombreC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QComboBox" name="cmbUsoEspC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="2">
+                      <widget class="QComboBox" name="cmbEdoConstrC">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="2">
+                      <widget class="QLabel" name="label_96">
+                       <property name="text">
+                        <string>Estado de la Construccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </widget>
           </item>
          </layout>
@@ -2591,7 +3311,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

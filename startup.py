@@ -20,6 +20,32 @@ class Startup():
         QSettings().setValue('listaEliminadaRef', [])
         QSettings().setValue('capaRefEdicion', 'None')
 
+        QSettings().setValue('xManzana', "None")
+        QSettings().setValue('xPredGeom', "None")
+        QSettings().setValue('xPredNum', "None")
+        QSettings().setValue('xConst', "None")
+        QSettings().setValue('xHoriGeom', "None")
+        QSettings().setValue('xHoriNum', "None")
+        QSettings().setValue('xVert', "None")
+        QSettings().setValue('xCvesVert', "None")
+
+        QSettings().setValue('xAreaValor', "None")
+        QSettings().setValue('xZonaUno', "None")
+        QSettings().setValue('xZonaDos', "None")
+        QSettings().setValue('xCP', "None")
+        QSettings().setValue('xColonia', "None")
+        QSettings().setValue('xCalle', "None")
+        QSettings().setValue('xSector', "None")
+        QSettings().setValue('xLocal', "None")
+        QSettings().setValue('xSeccion', "None")
+        QSettings().setValue('xMunicipio', "None")
+        QSettings().setValue('xRegion', "None")
+        QSettings().setValue('xEstado', "None")
+        QSettings().setValue('xManzanasRef', "None")
+        QSettings().setValue('xPredRef', "None")
+
+        self.var = QSettings()
+
         self.tablas = {'manzana': 'e_manzana', 'predios.geom': 'e_predio', 'construcciones': 'e_construccion',  'horizontales.geom':'e_condominio_horizontal', 'verticales':'e_condominio_vertical', 'cves_verticales':'e_condominio_vert_clave'}
 
         self.modoDesarrollo = True
@@ -36,11 +62,12 @@ class Startup():
 
         helpBar.addAction(clickFuga)
         helpBar.addAction(clickGuardar)
-        helpBar.addAction(clickBorrarTodoAlv)
+        #helpBar.addAction(clickBorrarTodoAlv)
         
-        self.var = QSettings()
+        
         self.var.setValue("reglasTopologicas", [])
         self.var.setValue("posibleGuardar", "False")
+        self.var.setValue("posibleGuardarRef", "False")
 
     def borrarTodoAlv(self):
         grupoLayers =  QgsProject.instance().layerTreeRoot().findGroup('consulta')
@@ -51,6 +78,9 @@ class Startup():
                 layer.layer().dataProvider().deleteFeatures([f.id()])
             layer.layer().triggerRepaint()
             layer.layer().commitChanges()
+        #print(self.capita.id())
+        #capa = QgsProject.instance().mapLayer(self.capita.id())
+        #print(capa.name())
 
     def cerrarSinPreguntar(self):
         os.kill(os.getpid(), 9)
@@ -228,7 +258,7 @@ class Startup():
 
                 root.insertGroup(0, 'ERRORES DE TOPOLOGIA')
 
-                capa = QgsVectorLayer('Point?crs=epsg:32614&field=mensaje:string(80)', 'ERRORES PUNTO', 'memory')
+                capa = QgsVectorLayer('Point?crs=epsg:' + str(QSettings().value('srid')) +'&field=mensaje:string(80)', 'ERRORES PUNTO', 'memory')
 
                 QgsProject.instance().addMapLayers([capa], False)
 
@@ -276,15 +306,15 @@ class Startup():
 
 #######################################################################################################################
 
-    def agregarALista(self, nombreCapa):
+    def agregarALista(self, idCapa):
 
-        capa = QgsProject.instance().mapLayersByName(nombreCapa)[0]
+        capa = QgsProject.instance().mapLayer( self.obtenerIdCapa( idCapa))
         listaTemp = []
 
         for feat in capa.getFeatures():
             campos = {}
             campos['wkt'] = feat.geometry().asWkt()
-            campos['srid'] = 32614
+            campos['srid'] = QSettings().value('srid')
             campos['tabla'] = self.tablas[capa.name()]
             atributos = {}
             nombresAtrbutos = capa.fields()   
@@ -297,16 +327,16 @@ class Startup():
                     atributo = None
                 atributos[str(nombres[x])] = atributo
                 
-                if capa.name() == ('predios.geom'):
+                if capa.id() == self.obtenerIdCapa('predios.geom'):
                     punto = self.exteriorPredio(feat.geometry())
                     if punto != None:
-                        atributos['num_ext'] = punto['num_ext']
+                        atributos['numExt'] = punto['numExt']
                         atributos['geom_num'] = punto.geometry().asWkt()
 
-                elif capa.name() == ('horizontales.geom'):
+                elif capa.id() == self.obtenerIdCapa('horizontales.geom'):
                     punto = self.exteriorCondom(feat.geometry())
                     if punto != None:
-                        atributos['num_ofi'] = punto['num_ofi']
+                        atributos['numOfi'] = punto['numOfi']
                         atributos['geom_num'] = punto.geometry().asWkt()
                     
             campos['attr'] = atributos
@@ -327,33 +357,11 @@ class Startup():
         for elemento in listaTemp:
             self.listaAGuardar.append(elemento)
 
-#############################################################################################
-
-    def obtenerCapa(self, feat):
-        if feat.fields() == self.capaManzana.fields():
-            capa = self.capaManzana
-        elif feat.fields() == self.capaPrediosGeom.fields():
-            capa = self.capaPrediosGeom
-        elif feat.fields() == self.capaPrediosNum.fields():
-            capa = self.capaPrediosNum
-        elif feat.fields() == self.capaConstrucciones.fields():
-            capa = self.capaConstrucciones
-        elif feat.fields() == self.capaHorizontalesGeom.fields():
-            capa = self.capaHorizontalesGeom
-        elif feat.fields() == self.capaHorizontalesNum.fields():
-            capa = self.capaHorizontalesNum
-        elif feat.fields() == self.capaVerticales.fields():
-            capa = self.capaVerticales
-        elif feat.fields() == self.capaCvesVert.fields():
-            capa = self.capaCvesVert
-
-        return capa
-
 #####################################################################################################################
 
     def exteriorPredio(self, predio):
 
-        puntos = QgsProject.instance().mapLayersByName('predios.num')[0].getFeatures()
+        puntos = QgsProject.instance().mapLayer(self.obtenerIdCapa('predios.num')).getFeatures()
 
         for punto in puntos:
             if punto.geometry().intersects(predio):
@@ -361,7 +369,7 @@ class Startup():
 
     def exteriorCondom(self, condominio):
 
-        puntos = QgsProject.instance().mapLayersByName('horizontales.num')[0].getFeatures()
+        puntos = QgsProject.instance().mapLayer(self.obtenerIdCapa('horizontales.num')).getFeatures()
 
         for punto in puntos:
             if punto.geometry().intersects(condominio):
@@ -384,167 +392,49 @@ class Startup():
         # Run the dialog event loop
         result = msg.exec_()
 
+#######################################################################################################
 
     def cargarCapas(self):
         
-        url = 'http://192.168.0.30:1093/api/cat/municipio/'
-
-        headers = {'Content-Type': 'application/json'}
-
-        #respuesta = requests.get(url, headers = headers)
+        headers = {'Content-Type': 'application/json', 'Authorization' : self.obtenerToken()}
 
 
-
-        if (self.modoDesarrollo):
-
-            srid = 32614
-            #srid = respuesta.json()[0]['srid']
-            self.var.setValue("srid", srid)
-
-            root = QgsProject.instance().layerTreeRoot()
-            root.addGroup('consulta')
-
-            root.addGroup('referencia')
-            #root.addGroup('edicion')
-
-            #Creamos las capas
-            capaManzana = QgsVectorLayer('Polygon?crs=epsg:' + str(srid) +'&field=id:string(50)&field=cve_cat:string(50)&field=clave:string(50)&index=yes', 'manzana', 'memory')
-            capaPredioGeom = QgsVectorLayer('Polygon?crs=epsg:' + str(srid) +'&field=id:string(50)&field=cve_cat:string(50)&field=clave:string(50)&field=cve_cat_ant:string(50)&field=cve_usuario:string(50)&field=id_manzana:string(50)&field=cve_tipo_pred:string(50)&field=num_ext:string(50)&field=num_predio:string(50)&field=fecha_act:string(50)&field=fondo:string(50)&field=frente:string(50)&field=perimetro:string(50)&field=sup_terr:string(50)&field=cve_vus:string(50)&field=cve_uso_suelo:string(50)&field=id_area_valor:string(50)&field=id_facilidad_comunicacion:string(50)&field=nivel:string(50)&field=id_predio_forma:string(50)&field=id_predio_ubicacion_manzana:string(50)&field=id_regimen_propiedad:string(50)&field=id_tipo_relieve:string(50)&field=id_uso_predio:string(50)&field=nombre:string(50)&field=num_exterior_alf:string(50)&field=num_exterior_ant:string(50)&field=observaciones:string(50)&field=valor_catastral:string(50)&field=valor_construccion:string(50)&field=valor_terreno:string(50)&field=geom_num:string(50)', 'predios.geom', 'memory')
-            capaPredioNum = QgsVectorLayer('Point?crs=epsg:' + str(srid) + '&field=num_ext:string(50)', 'predios.num', 'memory')
-            capaConst = QgsVectorLayer('Polygon?crs=epsg:' + str(srid) +'&field=id:string(50)&field=id_predio:string(50)&field=cve_catastral:string(50)&field=fecha_act:string(50)&field=nom_volumen:string(50)&field=sup_const:string(50)&field=num_niveles:string(50)&field=volumen:string(50)&field=guardado:string(50)&field=id_cat_estado_construccion:string(50)&field=id_tipo_construccion:string(50)&field=cve_const_esp:string(50)&field=id_condominio_vertical:string(50)&field=horizontal:string(50)&field=geom_vol:string(50)&field=anio_construccion:string(50)&field=codigo_construccion:string(50)&field=id_factor:string(50)&field=id_categoria:string(50)&field=nombre:string(50)&field=tipo_calculo:string(50)&field=valor_const:string(50)&field=id_cat_destino:string(50)', 'construcciones', 'memory')
-            capaHorizontalGeom = QgsVectorLayer('Polygon?crs=epsg:' + str(srid) + '&field=id:string(50)&field=cve_cat:string(50)&field=clave:string(50)&field=cve_cat_ant:string(50)&field=cve_usuario:string(50)&field=id_manzana:string(50)&field=id_predio:string(50)&field=fecha_act:string(50)&field=num_ofi:string(50)&field=perimetro:string(50)&field=indiviso:string(50)&field=valor_construccion_priv:string(50)&field=valor_construccion_comun:string(50)&field=valor_terreno_priv:string(50)&field=valor_terreno_comun:string(50)&field=pct_ind_rest:string(50)&field=sup_terr_rest:string(50)&field=sup_const_rest:string(50)&field=tipo_calc_ind:string(50)&field=valor_const_exc:string(50)&field=valor_terr_exc:string(50)&field=sup_const_comun_ex:string(50)&field=sup_terr_comun_ex:string(50)&field=sup_ind_mixto:string(50)&field=sup_construccion_comun:string(50)&field=sup_construccion_privada:string(50)&field=sup_ter_comun:string(50)&field=sup_ter_privada:string(50)&field=geom_num:string(50)', 'horizontales.geom', 'memory')
-            capaHorizontalNum = QgsVectorLayer('Point?crs=epsg:' + str(srid) + '&field=num_ofi:string(50)', 'horizontales.num', 'memory')
-            capaVertical = QgsVectorLayer('Polygon?crs=epsg:' + str(srid) + '&field=id:string(50)&field=cve_cat:string(50)&field=clave:string(50)&field=edificio_nombre:string(50)', 'verticales', 'memory')
-            capaCveVertical = QgsVectorLayer('Point?crs=epsg:' + str(srid) + '&field=id:string(50)&field=cve_cat:string(50)&field=clave:string(50)&field=cve_cat_ant:string(50)&field=cve_usuario:string(50)&field=id_manzana:string(50)&field=id_predio:string(50)&field=fecha_act:string(50)&field=num_ofi:string(50)&field=indiviso:string(50)&field=valor_construccion_priv:string(50)&field=valor_construccion_comun:string(50)&field=valor_terreno_priv:string(50)&field=valor_terreno_comun:string(50)&field=valor_terreno_priv:string(50)&field=valor_terreno_comun:string(50)&field=pct_ind:string(50)&field=pct_ind_rest:string(50)&field=sup_terr_rest:string(50)&field=sup_const_rest:string(50)&field=tipo_calc_ind:string(50)&field=valor_const_exc:string(50)&field=valor_terr_exc:string(50)&field=sup_const_comun_ex:string(50)&field=sup_terr_comun_ex:string(50)&field=sup_ind_mixto:string(50)&field=sup_construccion_comun:string(50)&field=sup_construccion_privada:string(50)&field=sup_ter_comun:string(50)&field=sup_ter_privada:string(50)', 'cves_verticales', 'memory')
-            
-            print(capaManzana.id())
-
-            #Renderizado de manzanas
-            renderManzana = capaManzana.renderer()
-            symbolManzana = QgsFillSymbol.createSimple({'color':'255,0,0,0', 'color_border':'#F5A9F2', 'width_border':'0.5'})
-            renderManzana.setSymbol(symbolManzana)
-
-            #Renderizado de predios
-            renderPredio = capaPredioGeom.renderer()
-            symbolPredio = QgsFillSymbol.createSimple({'color':'255,0,0,0', 'color_border':'#00ff00', 'width_border':'0.5'})
-            renderPredio.setSymbol(symbolPredio)
-
-                    #REnderizado predios num
-            propsPred = capaPredioNum.renderer().symbol().symbolLayer(0).properties()
-            propsPred['color'] = '#00FF00'
-            capaPredioNum.renderer().setSymbol(QgsMarkerSymbol.createSimple(propsPred))
+        urlSrid = 'http://192.168.0.40:8080/busquedasimplewkn/api/cat/municipio/'
+        
+        respuesta = requests.get(urlSrid, headers = headers)
 
 
-            #Renderizado de construcciones mediante reglas
-            road_rules = (
-                ('Construccion', ' "id_tipo_construccion" = 1 OR "id_tipo_construccion" is NULL'),
-                ('Const_Esp',  'NOT "id_tipo_construccion" = 1 '),
-            )
+        if respuesta.status_code == 200:
+            salida = respuesta.json()
+            srid = str(salida[0]['srid'])
 
-            symbolConst = QgsSymbol.defaultSymbol(capaConst.geometryType())
-            rendererConst = QgsRuleBasedRenderer(symbolConst)
+            QSettings().setValue('srid', srid)
+        else:
+            self.createAlert('No se ha podido cargar el SRID, se establecerá el valor por defecto: 32614', QMessageBox().Critical, 'Cargar SRID')
+            QSettings().setValue('srid', '32614')
+        #print(respuesta.json())
+        
+        
+        root = QgsProject.instance().layerTreeRoot() #Obtenemos la raiz para agregar grupos
+        root.addGroup('consulta')
+        root.addGroup('referencia')
 
-            fillConst = QgsFillSymbol.createSimple({'color':'255,0,0,0', 'color_border':'#000000', 'width_border':'0.5'})
-            fillEsp = QgsFillSymbol.createSimple({'color':'255,0,0,0', 'color_border':'#00FFFF', 'width_border':'0.5'})
+        self.consultarLlenadoDeCapa('cves_verticales')
+        self.consultarLlenadoDeCapa('verticales')
+        self.consultarLlenadoDeCapa('horizontales.num')
+        self.consultarLlenadoDeCapa('horizontales.geom')
+        self.consultarLlenadoDeCapa('construcciones')
+        self.consultarLlenadoDeCapa('predios.num')
+        self.consultarLlenadoDeCapa('predios.geom')
+        self.consultarLlenadoDeCapa('manzana')
+        
 
-            # get the "root" rule
-            root_rule = rendererConst.rootRule()
-
-            for label, expression in road_rules:
-                # create a clone (i.e. a copy) of the default rule
-                rule = root_rule.children()[0].clone()
-                # set the label, expression and color
-                rule.setLabel(label)
-                rule.setFilterExpression(expression)
-
-                if label == "Construccion":
-                    rule.setSymbol(fillConst)
-                else:
-                    rule.setSymbol(fillEsp)
-
-                root_rule.appendChild(rule)
-
-            root_rule.removeChildAt(0)
-
-            # apply the renderer to the layer
-            capaConst.setRenderer(rendererConst)
-
-            #Renderizado horizontal
-            renderHorizontal = capaHorizontalGeom.renderer()
-            symbolHorizontal = QgsFillSymbol.createSimple({'color':'255,0,0,0', 'color_border':'#C68C21', 'width_border':'0.5'})
-            renderHorizontal.setSymbol(symbolHorizontal)
-            
-            #Renderizado horizontales num
-            propsHor = capaHorizontalNum.renderer().symbol().symbolLayer(0).properties()
-            propsHor['color'] = '#C68C21'
-            capaHorizontalNum.renderer().setSymbol(QgsMarkerSymbol.createSimple(propsHor))
-
-            #Renderizado vertical
-            renderVertical = capaVertical.renderer()
-            symbolVertical = QgsFillSymbol.createSimple({'color':'255,0,0,0', 'color_border':'#ff9900', 'width_border':'0.5'})
-            renderVertical.setSymbol(symbolVertical)
-            
-            props = capaCveVertical.renderer().symbol().symbolLayer(0).properties()
-            props['color'] = '#ff9900'
-            capaCveVertical.renderer().setSymbol(QgsMarkerSymbol.createSimple(props))
-
-            #Tipo BOLD para letras
-            capaManzana.setCustomProperty("labeling/namedStyle", "Bold")
-            capaPredioGeom.setCustomProperty("labeling/namedStyle", "Bold")
-            capaPredioNum.setCustomProperty("labeling/namedStyle", "Bold")
-            capaConst.setCustomProperty("labeling/namedStyle", "Bold")
-            capaHorizontalGeom.setCustomProperty("labeling/namedStyle", "Bold")
-            capaHorizontalNum.setCustomProperty("labeling/namedStyle", "Bold")
-            capaVertical.setCustomProperty("labeling/namedStyle", "Bold")
-            capaCveVertical.setCustomProperty("labeling/namedStyle", "Bold")
-
-            #Agregamos las capas
-            QgsProject.instance().addMapLayers([capaManzana,capaPredioGeom, capaPredioNum, capaConst, capaHorizontalGeom, capaHorizontalNum, capaVertical, capaCveVertical], False)
-
-            arbolManzana = QgsLayerTreeLayer(capaManzana)
-            arbolPredioGeom = QgsLayerTreeLayer(capaPredioGeom)
-            arbolPredioNum = QgsLayerTreeLayer(capaPredioNum)
-            arbolConst = QgsLayerTreeLayer(capaConst)
-            arbolHorizontalGeom = QgsLayerTreeLayer(capaHorizontalGeom)
-            arbolHorizontalNum = QgsLayerTreeLayer(capaHorizontalNum)
-            arbolVertical = QgsLayerTreeLayer(capaVertical)
-            arbolCveVertical = QgsLayerTreeLayer(capaCveVertical)
-
-            consulta = root.findGroup('consulta')
-
-            consulta.insertChildNode(0, arbolCveVertical)
-            consulta.insertChildNode(0, arbolVertical)
-            consulta.insertChildNode(0, arbolHorizontalNum)
-            consulta.insertChildNode(0, arbolHorizontalGeom)
-            consulta.insertChildNode(0, arbolConst)
-            consulta.insertChildNode(0, arbolPredioNum)
-            consulta.insertChildNode(0, arbolPredioGeom)
-            consulta.insertChildNode(0, arbolManzana)
-            
-            
-            self.ineditarCapa('manzana')
-            self.ineditarCapa('predios.geom')
-            self.ineditarCapa('predios.num')
-            self.ineditarCapa('construcciones')
-            self.ineditarCapa('horizontales.geom')
-            self.ineditarCapa('horizontales.num')
-            self.ineditarCapa('verticales')
-            self.ineditarCapa('cves_verticales')
-
-            self.etiquetarCapa('manzana')
-            self.etiquetarCapa('predios.geom')
-            self.etiquetarCapa('predios.num')
-            self.etiquetarCapa('construcciones')
-            self.etiquetarCapa('horizontales.geom')
-            self.etiquetarCapa('horizontales.num')
-            self.etiquetarCapa('verticales')
-            self.etiquetarCapa('cves_verticales')
-
-            
-
+#########################################################################################################################
+    
     def etiquetarCapa(self, nombreCapa):
 
-        capa = QgsProject.instance().mapLayersByName(nombreCapa)[0]
+        capa = QgsProject.instance().mapLayer(self.obtenerIdCapa(nombreCapa))
+        
         etiquetaField = ""
         colorCapa = ""
         esExpresion = False
@@ -555,17 +445,17 @@ class Startup():
             etiquetaField = "clave"
             colorCapa = QColor(0,255,0)
         elif nombreCapa == "predios.num":
-            etiquetaField = "num_ext"
+            etiquetaField = "numExt"
             colorCapa = QColor(0,255,0)
         elif nombreCapa == "construcciones":
-            etiquetaField = " if( id_tipo_construccion = 1, concat(nom_volumen, '\\n', num_niveles), concat(nom_volumen, '\\n', cve_const_esp))"
+            etiquetaField = " if( cve_const_esp is null, concat(nom_volumen, '\n', num_niveles), concat(nom_volumen, '\n', cve_const_esp))"
             esExpresion = True
             colorCapa = QColor(0,0,255)
         elif nombreCapa == "horizontales.geom":
             etiquetaField = "clave"
             colorCapa = QColor(198,140,33)
         elif nombreCapa == "horizontales.num":
-            etiquetaField = "num_ofi"
+            etiquetaField = "numOfi"
             colorCapa = QColor(198,140,33)
         elif nombreCapa == "verticales":
             etiquetaField = "clave"
@@ -598,11 +488,12 @@ class Startup():
         capa.setLabelsEnabled(True)
         capa.triggerRepaint()
 
+##############################################################################################################################
 
     def ineditarCapa(self, nombreCapa):
         #Predios ineditables
 
-        capa = QgsProject.instance().mapLayersByName(nombreCapa)[0]
+        capa = QgsProject.instance().mapLayer(self.obtenerIdCapa(nombreCapa))
 
         campos = capa.fields()   
         nombres = [field.name() for field in campos]
@@ -611,6 +502,8 @@ class Startup():
             config = capa.editFormConfig()
             config.setReadOnly(i, True)
             capa.setEditFormConfig(config)
+
+#####################################################################################################################################
 
     def cargarWebService(self):
 
@@ -866,12 +759,223 @@ class Startup():
             
             QSettings().setValue("reglasTopologicas", reglas)
 
+##############################################################################################################
+
+        
+    def obtenerIdCapa(self, nombreCapa):
+
+        if nombreCapa == "manzana":
+            return QSettings().value('xManzana')
+        elif nombreCapa == "predios.geom":
+            return QSettings().value('xPredGeom')
+        elif nombreCapa == "predios.num":
+            return QSettings().value('xPredNum')
+        elif nombreCapa == "construcciones":
+            return QSettings().value('xConst')
+        elif nombreCapa == "horizontales.geom":
+            return QSettings().value('xHoriGeom')
+        elif nombreCapa == "horizontales.num":
+            return QSettings().value('xHoriNum')
+        elif nombreCapa == "verticales":
+            return QSettings().value('xVert')
+        elif nombreCapa == "cves_verticales":
+            return QSettings().value('xCvesVert')
+        elif nombreCapa == "Area de Valor":
+            return QSettings().value('xAreaValor')
+        elif nombreCapa == "Zona Uno":
+            return QSettings().value('xZonaUno')
+        elif nombreCapa == "Zona Dos":
+            return QSettings().value('xZonaDos')
+        elif nombreCapa == "Codigo Postal":
+            return QSettings().value('xCP')
+        elif nombreCapa == "Colonias":
+            return QSettings().value('xColonia')
+        elif nombreCapa == "Calles":
+            return QSettings().value('xCalle')
+        elif nombreCapa == "Sectores":
+            return QSettings().value('xSector')
+        elif nombreCapa == "Localidades":
+            return QSettings().value('xLocal')
+        elif nombreCapa == "Secciones":
+            return QSettings().value('xSeccion')
+        elif nombreCapa == "Municipios":
+            return QSettings().value('xMunicipio')
+        elif nombreCapa == "Region Catastral":
+            return QSettings().value('xRegion')
+        elif nombreCapa == "Estado":
+            return QSettings().value('xEstado')
+        
+        return 'None'
+
+################################################################################################################################
+
+    def consultarLlenadoDeCapa(self,capaParam):
+        
+        #capaParam = 'manzana'
+
+        diccionarioTabla = {}
+        diccionarioTabla['manzana'] = 'sig:e_manzana'
+        diccionarioTabla['predios.geom'] = 'sig:e_predio'
+        #diccionarioTabla['predios.num'] = 'sig:e_manzana'
+        diccionarioTabla['construcciones'] = 'sig:e_construccion'
+        diccionarioTabla['horizontales.geom'] = 'sig:e_condominio_horizontal'
+        #diccionarioTabla['horizontales.num'] = 'sig:e_manzana'
+        diccionarioTabla['verticales'] = 'sig:e_condominio_vertical'
+        diccionarioTabla['cves_verticales'] = 'sig:e_condominio_vert_clave'
+
+        
+
+        #stringCapa = "sig:e_manzana"
+        
+        headers = {'Content-Type': 'application/json', 'Authorization' : self.obtenerToken()}
+
+        
+        diccionarioTipo = {}
+        diccionarioTipo["STRING"] = 'string'
+        diccionarioTipo["INTEGER"] = 'integer'
+        diccionarioTipo["DATETIME"] = 'date'
+        diccionarioTipo["NUMERIC"] = 'real'
+        diccionarioTipo["SMALLINT"] = 'integer'
+        diccionarioTipo["BOOLEAN"] = 'string'
+
+        diccionarioGeom = {}
+        diccionarioGeom["manzana"] = 'Polygon'
+        diccionarioGeom["predios.geom"] = 'Polygon'
+        diccionarioGeom["predios.num"] = 'Point'
+        diccionarioGeom["construcciones"] = 'Polygon'
+        diccionarioGeom["horizontales.geom"] = 'Polygon'
+        diccionarioGeom["horizontales.num"] = 'Point'
+        diccionarioGeom["verticales"] = 'Polygon'
+        diccionarioGeom["cves_verticales"] = 'Point'
+
+        tipoGeom = diccionarioGeom[capaParam]
 
 
 
+        if capaParam == 'predios.num':
+            stringCapa = 'Point?crs=epsg:' +str(QSettings().value('srid')) +'&field=numExt:string(50)'
+        elif capaParam == 'horizontales.num':
+            stringCapa = 'Point?crs=epsg:' +str(QSettings().value('srid')) +'&field=numOfi:string(50)'
 
+        else:
+            stringTabla = diccionarioTabla[capaParam]
+            urlCapas = 'http://192.168.0.40:8080/busquedasimplewkn/api/thematics/lista/campos/' + stringTabla
+            respuesta = requests.post(urlCapas, headers = headers)
+            
+            stringCapa = tipoGeom + "?crs=epsg:" + str(QSettings().value('srid'))
 
+            if respuesta.status_code == 200:
+                datos = respuesta.json()
+                
+                for campo in datos:
 
+                    longitud = campo['longitud']
+
+                    name = campo['name']
+                    tipo = diccionarioTipo[campo['type']]
+
+                    stringCapa += '&field='
+                    stringCapa += name + ':'
+                    stringCapa += tipo
+
+                    if longitud != None:
+                        stringCapa += "("+str(longitud)+")"
+                    
+                stringCapa += '&index=yes'
+
+                
+            else:
+                
+                print(respuesta.status_code)
+            
+        nuevaCapa = QgsVectorLayer(stringCapa, capaParam, 'memory')
+
+        if capaParam == 'manzana':
+            QSettings().setValue('xManzana', nuevaCapa.id())
+            render = nuevaCapa.renderer()
+            symbol = QgsFillSymbol.createSimple({'color':'255,0,0,0', 'color_border':'#F5A9F2', 'width_border':'0.5'})
+            render.setSymbol(symbol)
+        
+        elif capaParam == 'predios.geom':
+            QSettings().setValue('xPredGeom', nuevaCapa.id())
+            render = nuevaCapa.renderer()
+            symbol = QgsFillSymbol.createSimple({'color':'255,0,0,0', 'color_border':'#00ff00', 'width_border':'0.5'})
+            render.setSymbol(symbol)
+
+        elif capaParam == 'predios.num':
+            QSettings().setValue('xPredNum', nuevaCapa.id())
+            props = nuevaCapa.renderer().symbol().symbolLayer(0).properties()
+            props['color'] = '#00FF00'
+            nuevaCapa.renderer().setSymbol(QgsMarkerSymbol.createSimple(props))
+
+        elif capaParam == 'construcciones':
+            QSettings().setValue('xConst', nuevaCapa.id())
+            road_rules = (
+                ('Const_Esp',  'NOT "cve_const_esp" is NULL '),
+                ('Construccion', ' "cve_const_esp" is NULL '),
+                
+            )
+
+            symbolConst = QgsSymbol.defaultSymbol(nuevaCapa.geometryType())
+            rendererConst = QgsRuleBasedRenderer(symbolConst)
+            fillConst = QgsFillSymbol.createSimple({'color':'255,0,0,0', 'color_border':'#000000', 'width_border':'0.5'})
+            fillEsp = QgsFillSymbol.createSimple({'color':'255,0,0,0', 'color_border':'#00FFFF', 'width_border':'0.5'})
+
+            # get the "root" rule
+            root_rule = rendererConst.rootRule()
+            for label, expression in road_rules:
+                # create a clone (i.e. a copy) of the default rule
+                rule = root_rule.children()[0].clone()
+                # set the label, expression and color
+                rule.setLabel(label)
+                rule.setFilterExpression(expression)
+
+                if label == "Const_Esp":
+                    rule.setSymbol(fillEsp)
+                else:
+                    rule.setSymbol(fillConst)
+
+                root_rule.appendChild(rule)
+            root_rule.removeChildAt(0)
+            #apply the renderer to the layer
+            nuevaCapa.setRenderer(rendererConst)
+
+        elif capaParam == 'horizontales.geom':
+            QSettings().setValue('xHoriGeom', nuevaCapa.id())
+            render = nuevaCapa.renderer()
+            symbol = QgsFillSymbol.createSimple({'color':'255,0,0,0', 'color_border':'#C68C21', 'width_border':'0.5'})
+            render.setSymbol(symbol)
+
+        elif capaParam == 'horizontales.num':
+            QSettings().setValue('xHoriNum', nuevaCapa.id())
+            props = nuevaCapa.renderer().symbol().symbolLayer(0).properties()
+            props['color'] = '#C68C21'
+            nuevaCapa.renderer().setSymbol(QgsMarkerSymbol.createSimple(props))
+
+        elif capaParam == 'verticales':
+            QSettings().setValue('xVert', nuevaCapa.id())
+            render = nuevaCapa.renderer()
+            symbol = QgsFillSymbol.createSimple({'color':'255,0,0,0', 'color_border':'#ff9900', 'width_border':'0.5'})
+            render.setSymbol(symbol)
+            
+        elif capaParam == 'cves_verticales':
+            QSettings().setValue('xCvesVert', nuevaCapa.id())
+            props = nuevaCapa.renderer().symbol().symbolLayer(0).properties()
+            props['color'] = '#ff9900'
+            nuevaCapa.renderer().setSymbol(QgsMarkerSymbol.createSimple(props))
+
+        QgsProject.instance().addMapLayers([nuevaCapa], False)
+
+        root = QgsProject.instance().layerTreeRoot()
+        group = root.findGroup('consulta')
+        capaArbol = QgsLayerTreeLayer(nuevaCapa)
+
+        group.insertChildNode(0, capaArbol)
+
+        self.etiquetarCapa(capaParam)
+        self.ineditarCapa(capaParam)
+
+##################################################################################################################
 
 startup = Startup()
 startup.mostrarConsola()
