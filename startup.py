@@ -354,6 +354,9 @@ class Startup():
 
         listaTemp = QSettings().value('listaEliminada')
 
+        if listaTemp == None:
+            return
+		
         for elemento in listaTemp:
             self.listaAGuardar.append(elemento)
 
