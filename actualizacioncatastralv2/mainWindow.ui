@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1210</width>
+    <width>1227</width>
     <height>876</height>
    </rect>
   </property>
@@ -82,50 +82,77 @@
            <height>43</height>
           </size>
          </property>
-         <layout class="QGridLayout" name="gridLayout_5">
-          <property name="rightMargin">
-           <number>17</number>
+         <widget class="QComboBox" name="cmbCondo">
+          <property name="geometry">
+           <rect>
+            <x>455</x>
+            <y>5</y>
+            <width>100</width>
+            <height>32</height>
+           </rect>
           </property>
-          <item row="0" column="2" alignment="Qt::AlignTop">
-           <widget class="QComboBox" name="cmbCondo">
-            <property name="minimumSize">
-             <size>
-              <width>100</width>
-              <height>32</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>32</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>14</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
 QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" alignment="Qt::AlignVCenter">
-           <widget class="QLabel" name="lbCveCata">
-            <property name="font">
-             <font>
-              <pointsize>20</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>00-000-000-00-0000-000-000-00000</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+          </property>
+         </widget>
+         <widget class="QLabel" name="lbCveCata">
+          <property name="geometry">
+           <rect>
+            <x>9</x>
+            <y>9</y>
+            <width>448</width>
+            <height>25</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>20</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>00-000-000-00-0000-000-000-00000</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="lbPredioGlobal">
+          <property name="geometry">
+           <rect>
+            <x>460</x>
+            <y>10</y>
+            <width>91</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>20</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>000000</string>
+          </property>
+         </widget>
         </widget>
        </item>
        <item row="0" column="3" alignment="Qt::AlignRight">
@@ -180,7 +207,10 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
-           <widget class="QTabWidget" name="tabWidget">
+           <widget class="QTabWidget" name="tabwCedula">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
             <property name="currentIndex">
              <number>2</number>
             </property>
@@ -220,8 +250,8 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>742</width>
-                   <height>610</height>
+                   <width>759</width>
+                   <height>611</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
@@ -731,20 +761,6 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="0" colspan="3">
-                   <widget class="QLabel" name="lbNomCalle">
-                    <property name="font">
-                     <font>
-                      <pointsize>14</pointsize>
-                      <weight>75</weight>
-                      <bold>true</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>lbNomCalle</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="4" column="1">
                    <widget class="QLabel" name="label_4">
                     <property name="text">
@@ -932,7 +948,18 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                       </widget>
                      </item>
                      <item row="2" column="1">
-                      <widget class="QTableWidget" name="tableWidget"/>
+                      <widget class="QTableWidget" name="twVialidades">
+                       <column>
+                        <property name="text">
+                         <string>VIALIDAD</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>NOMBRE</string>
+                        </property>
+                       </column>
+                      </widget>
                      </item>
                     </layout>
                    </widget>
@@ -1138,16 +1165,37 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                    </widget>
                   </item>
                   <item row="3" column="3">
-                   <widget class="QPushButton" name="pushButton_3">
+                   <widget class="QPushButton" name="btnCancelSelCalle">
                     <property name="text">
-                     <string>Seleccionar Localidad</string>
+                     <string>Cancelar Seleccion Calle</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="0" colspan="3">
+                  <item row="3" column="0" colspan="2">
+                   <widget class="QLabel" name="lbNomCalle">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbNomCalle</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0" colspan="2">
                    <widget class="QLabel" name="label_2">
                     <property name="text">
                      <string>Nombre de Vialidad/Calle</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="2">
+                   <widget class="QPushButton" name="btnSelCalle">
+                    <property name="text">
+                     <string>Seleccionar Calle</string>
                     </property>
                    </widget>
                   </item>
@@ -1304,10 +1352,32 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                </widget>
               </item>
               <item row="13" column="0" colspan="2">
-               <widget class="QTableWidget" name="tableWidget_4"/>
+               <widget class="QTableWidget" name="twServiciosPredio">
+                <column>
+                 <property name="text">
+                  <string>Servicio</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Clave</string>
+                 </property>
+                </column>
+               </widget>
               </item>
               <item row="1" column="2" rowspan="11">
-               <widget class="QTableWidget" name="tableWidget_3"/>
+               <widget class="QTableWidget" name="twServiciosCalle">
+                <column>
+                 <property name="text">
+                  <string>Servicio</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Clave</string>
+                 </property>
+                </column>
+               </widget>
               </item>
               <item row="4" column="0">
                <widget class="QLabel" name="label_27">
@@ -1440,9 +1510,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-121</y>
-                   <width>727</width>
-                   <height>714</height>
+                   <y>0</y>
+                   <width>742</width>
+                   <height>712</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_17">
@@ -1844,6 +1914,12 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                      </item>
                      <item row="1" column="0">
                       <widget class="QComboBox" name="cmbCategoriaP">
+                       <property name="maximumSize">
+                        <size>
+                         <width>500</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
                        <property name="font">
                         <font>
                          <pointsize>14</pointsize>
@@ -1859,6 +1935,12 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                      </item>
                      <item row="1" column="1">
                       <widget class="QComboBox" name="cmbFactorConstrP">
+                       <property name="maximumSize">
+                        <size>
+                         <width>500</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
                        <property name="font">
                         <font>
                          <pointsize>14</pointsize>
@@ -2037,21 +2119,6 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                        </property>
                       </widget>
                      </item>
-                     <item row="1" column="0">
-                      <widget class="QComboBox" name="cmbUsoConstrP">
-                       <property name="font">
-                        <font>
-                         <pointsize>14</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
-                       </property>
-                      </widget>
-                     </item>
                      <item row="2" column="2">
                       <widget class="QLabel" name="label_48">
                        <property name="text">
@@ -2061,6 +2128,12 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                      </item>
                      <item row="1" column="2">
                       <widget class="QComboBox" name="cmbDestinoP">
+                       <property name="maximumSize">
+                        <size>
+                         <width>500</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
                        <property name="font">
                         <font>
                          <pointsize>14</pointsize>
@@ -2087,6 +2160,12 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                      </item>
                      <item row="1" column="1">
                       <widget class="QComboBox" name="cmbUsoEspP">
+                       <property name="maximumSize">
+                        <size>
+                         <width>500</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
                        <property name="font">
                         <font>
                          <pointsize>14</pointsize>
@@ -2102,6 +2181,12 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                      </item>
                      <item row="5" column="2">
                       <widget class="QComboBox" name="cmbEdoConstrP">
+                       <property name="maximumSize">
+                        <size>
+                         <width>500</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
                        <property name="font">
                         <font>
                          <pointsize>14</pointsize>
@@ -2122,6 +2207,27 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                        </property>
                       </widget>
                      </item>
+                     <item row="1" column="0">
+                      <widget class="QComboBox" name="cmbUsoConstrP">
+                       <property name="maximumSize">
+                        <size>
+                         <width>500</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; width:auto}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
+                      </widget>
+                     </item>
                     </layout>
                    </widget>
                   </item>
@@ -2136,6 +2242,13 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
               <string>Condominio</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_16">
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_97">
+                <property name="text">
+                 <string>Servicios</string>
+                </property>
+               </widget>
+              </item>
               <item row="1" column="2">
                <widget class="QLineEdit" name="leCveCatAntCond"/>
               </item>
@@ -2146,6 +2259,53 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                <widget class="QLabel" name="label_50">
                 <property name="text">
                  <string>Perimetro</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="3">
+               <widget class="QLabel" name="lbIndivisoCond">
+                <property name="text">
+                 <string>lbIndivisoCond</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_20">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Num. Oficial</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="lbPerimetroCond">
+                <property name="text">
+                 <string>lbPerimetroCond</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_65">
+                <property name="text">
+                 <string>Clave Catastral Ant.</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QLabel" name="label_76">
+                <property name="text">
+                 <string>Indiviso</string>
                 </property>
                </widget>
               </item>
@@ -2238,32 +2398,6 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                 </layout>
                </widget>
               </item>
-              <item row="1" column="3">
-               <widget class="QLabel" name="lbIndivisoCond">
-                <property name="text">
-                 <string>lbIndivisoCond</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_20">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>50</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>50</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Num. Oficial</string>
-                </property>
-               </widget>
-              </item>
               <item row="2" column="0" colspan="2">
                <widget class="QGroupBox" name="groupBox">
                 <property name="title">
@@ -2353,25 +2487,18 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                 </layout>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QLabel" name="lbPerimetroCond">
-                <property name="text">
-                 <string>lbPerimetroCond</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QLabel" name="label_65">
-                <property name="text">
-                 <string>Clave Catastral Ant.</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="3">
-               <widget class="QLabel" name="label_76">
-                <property name="text">
-                 <string>Indiviso</string>
-                </property>
+              <item row="4" column="0">
+               <widget class="QTableWidget" name="twServiciosCondo">
+                <column>
+                 <property name="text">
+                  <string>Servicio</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Clave</string>
+                 </property>
+                </column>
                </widget>
               </item>
              </layout>
@@ -2406,8 +2533,8 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>731</width>
-                   <height>714</height>
+                   <width>742</width>
+                   <height>712</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_20">
@@ -2809,6 +2936,12 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                      </item>
                      <item row="1" column="0">
                       <widget class="QComboBox" name="cmbCategoriaC">
+                       <property name="maximumSize">
+                        <size>
+                         <width>500</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
                        <property name="font">
                         <font>
                          <pointsize>14</pointsize>
@@ -2824,6 +2957,12 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                      </item>
                      <item row="1" column="1">
                       <widget class="QComboBox" name="cmbFactorConstrC">
+                       <property name="maximumSize">
+                        <size>
+                         <width>500</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
                        <property name="font">
                         <font>
                          <pointsize>14</pointsize>
@@ -3002,21 +3141,6 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                        </property>
                       </widget>
                      </item>
-                     <item row="1" column="0">
-                      <widget class="QComboBox" name="cmbUsoConstrC">
-                       <property name="font">
-                        <font>
-                         <pointsize>14</pointsize>
-                         <weight>75</weight>
-                         <bold>true</bold>
-                        </font>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
-                       </property>
-                      </widget>
-                     </item>
                      <item row="2" column="2">
                       <widget class="QLabel" name="label_95">
                        <property name="text">
@@ -3026,6 +3150,12 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                      </item>
                      <item row="1" column="2">
                       <widget class="QComboBox" name="cmbDestinoC">
+                       <property name="maximumSize">
+                        <size>
+                         <width>500</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
                        <property name="font">
                         <font>
                          <pointsize>14</pointsize>
@@ -3052,6 +3182,12 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                      </item>
                      <item row="1" column="1">
                       <widget class="QComboBox" name="cmbUsoEspC">
+                       <property name="maximumSize">
+                        <size>
+                         <width>500</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
                        <property name="font">
                         <font>
                          <pointsize>14</pointsize>
@@ -3067,6 +3203,12 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                      </item>
                      <item row="5" column="2">
                       <widget class="QComboBox" name="cmbEdoConstrC">
+                       <property name="maximumSize">
+                        <size>
+                         <width>500</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
                        <property name="font">
                         <font>
                          <pointsize>14</pointsize>
@@ -3084,6 +3226,27 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                       <widget class="QLabel" name="label_96">
                        <property name="text">
                         <string>Estado de la Construccion</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QComboBox" name="cmbUsoConstrC">
+                       <property name="maximumSize">
+                        <size>
+                         <width>500</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; width:auto}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -3271,7 +3434,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1210</width>
+     <width>1227</width>
      <height>21</height>
     </rect>
    </property>
@@ -3311,7 +3474,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
