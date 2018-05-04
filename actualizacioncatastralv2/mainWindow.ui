@@ -28,7 +28,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Cedula</string>
+   <string>Cedula Catastral</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -609,7 +609,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                       <widget class="QLabel" name="lbSec">
                        <property name="maximumSize">
                         <size>
-                         <width>35</width>
+                         <width>40</width>
                          <height>16777215</height>
                         </size>
                        </property>
@@ -1544,7 +1544,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                    <x>0</x>
                    <y>0</y>
                    <width>882</width>
-                   <height>717</height>
+                   <height>716</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_17">
