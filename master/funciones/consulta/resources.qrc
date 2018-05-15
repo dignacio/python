@@ -1,0 +1,8 @@
+<RCC>
+    
+	<qresource prefix="cedula">
+		<file>icons/add.png</file>
+		<file>icons/remove_all.png</file>
+		<file>icons/remove_one.png</file>
+	</qresource>
+</RCC>
