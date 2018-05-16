@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1159</width>
+    <width>1486</width>
     <height>910</height>
    </rect>
   </property>
@@ -253,7 +253,7 @@ Predio</string>
              <string notr="true"/>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="tUbicacion">
              <attribute name="title">
@@ -291,8 +291,8 @@ Predio</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>714</width>
-                   <height>608</height>
+                   <width>1018</width>
+                   <height>624</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
@@ -1344,8 +1344,8 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>674</width>
-                   <height>703</height>
+                   <width>1001</width>
+                   <height>698</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_5">
@@ -1711,7 +1711,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>881</width>
+                   <width>1001</width>
                    <height>718</height>
                   </rect>
                  </property>
@@ -1941,6 +1941,13 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <width>0</width>
                          <height>0</height>
                         </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <pointsize>10</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
                        </property>
                        <property name="text">
                         <string>Guardar
@@ -2278,6 +2285,16 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <string>Caracteristica</string>
                         </property>
                        </column>
+                       <column>
+                        <property name="text">
+                         <string>idUsoConstr</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>idCategoria</string>
+                        </property>
+                       </column>
                       </widget>
                      </item>
                     </layout>
@@ -2286,14 +2303,14 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                   <item row="2" column="0">
                    <widget class="QWidget" name="widget_10" native="true">
                     <layout class="QGridLayout" name="gridLayout_13">
-                     <item row="2" column="1">
+                     <item row="2" column="2">
                       <widget class="QLabel" name="label_47">
                        <property name="text">
                         <string>Nvl. Fraccion</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="2">
+                     <item row="3" column="3">
                       <widget class="QLineEdit" name="leNvlUbicaP">
                        <property name="minimumSize">
                         <size>
@@ -2309,11 +2326,11 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                         </font>
                        </property>
                        <property name="maxLength">
-                        <number>5</number>
+                        <number>4</number>
                        </property>
                       </widget>
                      </item>
-                     <item row="5" column="1">
+                     <item row="5" column="2">
                       <widget class="QLineEdit" name="leAnioConsP">
                        <property name="minimumSize">
                         <size>
@@ -2333,14 +2350,14 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                        </property>
                       </widget>
                      </item>
-                     <item row="0" column="2">
+                     <item row="0" column="3">
                       <widget class="QLabel" name="label_45">
                        <property name="text">
                         <string>Destino</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="0" column="1">
+                     <item row="0" column="2">
                       <widget class="QLabel" name="label_49">
                        <property name="text">
                         <string>Uso Especifico</string>
@@ -2354,7 +2371,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="1">
+                     <item row="3" column="2">
                       <widget class="QLabel" name="lbNvlFraccP">
                        <property name="minimumSize">
                         <size>
@@ -2394,7 +2411,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="1">
+                     <item row="4" column="2">
                       <widget class="QLabel" name="label_58">
                        <property name="text">
                         <string>Año de Construccion</string>
@@ -2415,14 +2432,14 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                        </property>
                       </widget>
                      </item>
-                     <item row="2" column="2">
+                     <item row="2" column="3">
                       <widget class="QLabel" name="label_48">
                        <property name="text">
                         <string>Nvl. Ubicacion</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="1" column="2">
+                     <item row="1" column="3">
                       <widget class="QComboBox" name="cmbDestinoP">
                        <property name="minimumSize">
                         <size>
@@ -2469,7 +2486,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                        </property>
                       </widget>
                      </item>
-                     <item row="1" column="1">
+                     <item row="1" column="2">
                       <widget class="QComboBox" name="cmbUsoEspP">
                        <property name="minimumSize">
                         <size>
@@ -2496,7 +2513,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                        </property>
                       </widget>
                      </item>
-                     <item row="5" column="2">
+                     <item row="5" column="3">
                       <widget class="QComboBox" name="cmbEdoConstrP">
                        <property name="minimumSize">
                         <size>
@@ -2523,7 +2540,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="2">
+                     <item row="4" column="3">
                       <widget class="QLabel" name="label_57">
                        <property name="text">
                         <string>Estado de la Construccion</string>
@@ -2554,6 +2571,26 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                        <property name="styleSheet">
                         <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
 QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLineEdit" name="leSupConstrFP">
+                       <property name="minimumSize">
+                        <size>
+                         <width>277</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="maxLength">
+                        <number>10</number>
                        </property>
                       </widget>
                      </item>
@@ -2862,7 +2899,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>881</width>
+                   <width>1001</width>
                    <height>714</height>
                   </rect>
                  </property>
@@ -3966,7 +4003,7 @@ de Actualizacion:   </string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1159</width>
+     <width>1486</width>
      <height>21</height>
     </rect>
    </property>

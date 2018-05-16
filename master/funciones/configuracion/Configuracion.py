@@ -67,3 +67,4 @@ class Configuracion():
         self.urlCedCatVuc = self.servidorIP + 'featureswkn/api/cat-vuc/getCatVucFronCatCategoriCatUsoConstAndVigencia/'
         self.urlGuardaPredio = self.servidorIP + 'featureswkn/api/cedula/predio/update'
         self.urlGuardaServiciosP = self.servidorIP + 'featureswkn/api/cedula/servicioCuenta/'
+        self.urlGuardaVolumenP = self.servidorIP + 'featureswkn/api/cedula/construccion/'
