@@ -87,9 +87,17 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.indexFraActualCondo = -1
         self.idCalleSelecc = -1
 
+        self.indexCondoActual = -1
+
         self.usoConstr = []
         self.cateConstP = []
         self.cateConstC = []
+
+        self.seRealiza = True
+
+        self.condominios = []
+        self.constrCond = []
+        self.servCuentaCond = []
 
         self.setupUi(self)
 
@@ -111,6 +119,24 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             return
 
         # -- Diseño
+        
+        self.leSupConstPrivCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leSupConstComunCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leSupConstExcCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leSupConstTotalCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leValConstPrivCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leValConstComunCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leValConstExcCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leValConstTotalCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leSupTerrPrivCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leSupTerrComunCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leSupTerrExcCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leSupTerrTotalCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leValTerrPrivCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leValTerrComunCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leValTerrExcCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leValTerrTotalCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        
         self.leDispPerim.setValidator(QDoubleValidator(0.99,99.99,2))
         self.twColindancias.setColumnHidden(0, True)
         header = self.twColindancias.horizontalHeader()
@@ -157,7 +183,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.leAnioConsP.setValidator(QIntValidator(0,9999,None))
         self.leNvlUbicaP.setValidator(QIntValidator(0,9999,None))
         self.leSupConstrFP.setValidator(QDoubleValidator(0.99,99.99,2))
-        
+        self.leSupConstPrivCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+
         # Diseño - construcciones predios
         self.cmbTipoPredio.setView(self.generaQListView())
         self.cmbTipoAsentH.setView(self.generaQListView())
@@ -179,6 +206,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         # self.cmbFactorConstrP.setView(self.generaQListView()) --- SE deshabilito, ya no se va usar
 
         # -- Eventos
+        self.btnDelConstrP.clicked.connect(self.event_elimConstrC)
         self.btnAddConstP.clicked.connect(self.event_nuevaConstrC)
         self.btnGuardarCed.clicked.connect(self.event_guardarPredio)
         self.btnGuardaVolP.clicked.connect(self.event_guardarVolP)
@@ -799,6 +827,10 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
     # - guarda de manera temporal los valores de construcciones
     def constrTemp(self):
 
+        if not self.seRealiza:
+            self.seRealiza = True
+            return
+
         self.fraccTemp()
         dataTemp = self.cmbVolumenP.itemData(self.indexVolActual)
 
@@ -908,11 +940,69 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         self.cmbFraccionesP.setItemData(self.indexFraActual, dataTemp)
 
+    # - guarda de manera temporal los valores de los condominios
+    def condoTemp(self, claveCata):
+
+        condos = []
+        dataTemp = []
+
+        # quita el condominio a guardar, para poder actualizar sus datos
+        for cond in self.condominios:
+            if cond['cveCat'] == claveCata:
+                dataTemp = cond
+            condos.append(cond)
+
+        dataTemp['numOfi'] = self.leNumOfCond.text()
+        dataTemp['cveCatAnt'] = self.leCveCatAntCond.text()
+
+        # construccion
+        dataTemp['supConstruccionPrivada'] = float(self.leSupConstPrivCond.text())
+        dataTemp['supConstruccionComun'] = float(self.leSupConstComunCond.text())
+        dataTemp['supConstComunEx'] = float(self.leSupConstExcCond.text())
+        dataTemp['valorConstruccionPriv'] = float(self.leValConstPrivCond.text())
+        dataTemp['valorConstruccionComun'] = float(self.leValConstComunCond.text())
+        dataTemp['valorConstExc'] = float(self.leValConstExcCond.text())
+
+        # terreno
+        dataTemp['supTerPrivada'] = float(self.leSupTerrPrivCond.text())
+        dataTemp['supTerComun'] = float(self.leSupTerrComunCond.text())
+        dataTemp['supTerrComunEx'] = float(self.leSupTerrExcCond.text())
+        dataTemp['valorTerrenoPriv'] = float(self.leValTerrPrivCond.text())
+        dataTemp['valorTerrenoComun'] = float(self.leValTerrComunCond.text())
+        dataTemp['valorTerrExc'] = float(self.leValTerrExcCond.text())
+
+        # servicios de cuenta
+        servicios = []
+
+        for serv in self.servCuentaCond:
+            if serv['cveCatastral'] != claveCata:
+                servicios.append(serv)
+
+        # -- GUARDADO DE SERVICIOS DE PREDIO
+        if self.twServiciosCondo.rowCount() > 0:       
+
+            tablaServicios = self.twServiciosCondo
+
+            listaServicios = []
+            for x in range(0, tablaServicios.rowCount()):
+
+                servicio = {}
+                servicio['descripcion'] = tablaServicios.item(x,0).text()
+                servicio['disponible'] = True if tablaServicios.item(x,0).checkState() == 2 else False
+                servicio['servicio'] = tablaServicios.item(x,1).text()
+                servicio['cveCatastral'] = claveCata
+                servicios.append(servicio)        
+
+        condos.append(dataTemp)
+        self.condominios = []
+        self.condominios = list(condos)
+
+        self.servCuentaCond = []
+        self.servCuentaCond = list(servicios)
 
     # - guarda de manera temporal los valores de construcciones CONDOMINIO
     def constrTempCondo(self):
 
-        #print('entraaaaaaaaaaaaaaaaaaaaaaaaa')
         self.fraccTempCondo()
         dataTemp = self.cmbVolumenC.itemData(self.indexVolActualCondo)
 
@@ -1053,6 +1143,27 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         return json.loads(data)
 
+    # - consume ws que verifica si una construccion tiene geometria
+    def verificaSiTieneGeomWS(self, idConst, url):
+
+        data = ""
+        
+        try:
+            self.headers['Authorization'] = self.UTI.obtenerToken()
+            response = requests.get(url + str(idConst), headers = self.headers)
+        except requests.exceptions.RequestException as e:
+            self.createAlert("Error de servidor, 'guardaConstrPredWS()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
+            return str(e)
+
+        if response.status_code == 200:
+            data = response.content
+        else:
+            self.createAlert('Error en peticion "guardaConstrPredWS()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
+            return response.text
+
+        return json.loads(data)
+
+
     # - consume ws para informacion de catalogos
     def consumeWSGeneral(self, url_cons = ""):
 
@@ -1154,6 +1265,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         #self.createAlert('Clave: ' + self.cveCatastral, QMessageBox.Information, 'Cedula Catastral')
         #self.createAlert('Clave: ' + clave, QMessageBox.Information, 'Cedula Catastral')
 
+    # -- Cambio de condominios
+    # -- se consulta la informacion del WS cada vez que se selecciona uno en el combo
+    # -- pero si ya se habia consultado antes, ya no es necesario hacerlo de nuevo
     def event_cambioCondominio(self):
 
         if self.cmbCondo.count() > 0:
@@ -1161,8 +1275,33 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             tipoCond = self.cmbCondo.itemData(index) # <---- tipo de condominio
             clave = self.cmbCondo.currentText()      # <---- clave de condominio
 
-            # consumir ws de consulta de informacion de condominio
-            dataCond = self.consumeWSGeneral(self.CFG.urlCedCondByCveCatTipoPred + self.cveCatastral + clave + '/' + tipoCond)
+            claveAnt = self.cmbCondo.itemText(self.indexCondoActual)
+            
+            if self.indexCondoActual != -1:
+                # se manda a llamar el metodo que guarda de manera temporal
+                # data1 = self.cmbFraccionesP.itemData(self.indexFraActual)
+                self.condoTemp(self.cveCatastral + claveAnt)
+
+            self.indexCondoActual = index
+            
+            dataCond = []
+            consume = True
+            # se busca si ya se habia consumido informacion del condominio seleccionado
+            for condo in self.condominios:
+
+                if condo['cveCat'] == (self.cveCatastral + clave):
+                    consume = False
+                    dataCond.append(condo)
+                    break
+
+            if consume:
+                # consumir ws de consulta de informacion de condominio
+                dataCond = self.consumeWSGeneral(self.CFG.urlCedCondByCveCatTipoPred + self.cveCatastral + clave + '/' + tipoCond)
+
+                if len(dataCond) == 0:
+                    return
+
+                self.condominios.append(dataCond[0])
 
             if len(dataCond) == 0:
                 return
@@ -1177,10 +1316,10 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             self.lbTipoCond.setText(tC)
 
-            self.leNumOfCond.setText(str(dc['numOfi']))
-            self.lbPerimetroCond.setText(str(dc['perimetro']))
-            self.leCveCatAntCond.setText(str(dc['cveCatAnt']))
-            self.lbIndivisoCond.setText(str(dc['indiviso']))
+            self.leNumOfCond.setText(dc['numOfi'])
+            self.lbPerimetroCond.setText(None if dc['perimetro'] is None else str(dc['perimetro']))
+            self.leCveCatAntCond.setText(dc['cveCatAnt'])
+            self.lbIndivisoCond.setText(None if dc['indiviso'] is None else str(dc['indiviso']))
 
             # --- construccion
             # - superficies
@@ -1190,7 +1329,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             supC = (dc['supConstruccionPrivada'] or 0) + (dc['supConstruccionComun'] or 0) + (dc['supConstComunEx'] or 0)
 
-            self.leSupConstTotalCond.setText(str(supC))
+            self.leSupConstTotalCond.setText(str(round(supC, 4)))
             # - valores
             self.leValConstPrivCond.setText(str(dc['valorConstruccionPriv'] or 0))
             self.leValConstComunCond.setText(str(dc['valorConstruccionComun'] or 0))
@@ -1198,7 +1337,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             valC = (dc['valorConstruccionPriv'] or 0) + (dc['valorConstruccionComun'] or 0) + (dc['valorConstExc'] or 0)
 
-            self.leValConstTotalCond.setText(str(valC))
+            self.leValConstTotalCond.setText(str(round(valC, 4)))
 
             # --- terreno
             # - superficies
@@ -1208,7 +1347,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             supT = (dc['supTerPrivada'] or 0) + (dc['supTerComun'] or 0) + (dc['supTerrComunEx'] or 0)
 
-            self.leSupTerrTotalCond.setText(str(supT))
+            self.leSupTerrTotalCond.setText(str(round(supT, 4)))
             # - valores
             self.leValTerrPrivCond.setText(str(dc['valorTerrenoPriv'] or 0))
             self.leValTerrComunCond.setText(str(dc['valorTerrenoComun'] or 0))
@@ -1216,10 +1355,23 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             valT = (dc['valorTerrenoPriv'] or 0) + (dc['valorTerrenoComun'] or 0) + (dc['valorTerrExc'] or 0)
 
-            self.leValTerrTotalCond.setText(str(valT))
+            self.leValTerrTotalCond.setText(str(round(valT, 4)))
 
             # cargar servicios de condomino
-            dataServCuenta = self.obtieneServiciosCuenta(self.cveCatastral + clave)
+            dataServCuenta = []
+            consume = True
+
+            for sc in self.servCuentaCond:
+                if sc['cveCatastral'] == (self.cveCatastral + clave):
+                    consume = False
+                    dataServCuenta.append(sc)
+
+            if consume:
+                dataServCuenta = self.obtieneServiciosCuenta(self.cveCatastral + clave)
+                for dcc in dataServCuenta:
+
+                    dcc['cveCatastral'] = self.cveCatastral + clave
+                    self.servCuentaCond.append(dcc)
 
             self.twServiciosCondo.clearContents()
             self.twServiciosCondo.setRowCount(0)
@@ -1240,9 +1392,22 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
                 self.twServiciosCondo.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(dsc['servicio']))
 
-
             # -- C A R G A   C O N T R U C C I O N E S
-            dataConstC = self.consumeWSConstr(self.cveCatastral + clave, tipoCond)
+            # busca si no se habian consultado antes las construcciones
+            dataConstC = []
+            consume = True
+
+            for cc in self.constrCond:
+                if cc['cveCatastral'] == (self.cveCatastral + clave):
+                    consume = False
+                    dataConstC.append(cc)
+
+            if consume:
+                # consume de ws las construcciones de condominio
+                dataConstC = self.consumeWSConstr(self.cveCatastral + clave, tipoCond)
+                for dcc in dataConstC:
+                    self.constrCond.append(dcc)
+
             self.cargaConstrCondo(dataConstC)
 
     def event_cambioUsoConstr(self):
@@ -2307,6 +2472,93 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         self.createAlert('Proceso Concluido', QMessageBox.Information)
         
+    # -- eliminacion de construccion PREDIO
+    # - se permite eliminar la construccion si y solo si 
+    # - la construccion NOOOO tiene geometria asociada
+    def event_elimConstrC(self):
+        
+        # autoguardado
+        self.constrTemp()
+        
+        # se obtienen todos los volumenes de predios
+        # en forma de una cadena (v1v2v3v4)
+        count = self.cmbVolumenP.count()
+
+        if count == 0:
+            return
+
+        # se obtiene la construccion actual
+        index = self.cmbVolumenP.currentIndex()
+        data = self.cmbVolumenP.itemData(index)
+
+        idConst = data['id']
+        elimina = False
+
+        if idConst is not None:
+
+            # consumir ws para saber si la construccion tiene geometria
+            tieneGeom = self.verificaSiTieneGeomWS(idConst, self.CFG.urlVerifSiTieneGeomConstP)
+            elimina = not tieneGeom
+        else:
+            elimina = True
+
+        # - SI se eliminara la construccion
+        if elimina:
+
+            # si cuenta con un indentificador (id) significa que la informacion se encuentra en la base de datos
+            # si NOOO tiene id, solo se elimina de memoria
+            if idConst is not None:
+
+                # la construccion se borrara directamente de la base de datos
+                # por eso se espera confirmacion del usuario
+                reply = QMessageBox.question(self,'Construccion', 'La construccion se eliminara definitivamente, ¿desea continuar?', QMessageBox.Yes, QMessageBox.No)
+                if reply == QMessageBox.Yes:
+                    
+                    # se envia al ws la construccion a eliminar
+                    data['accion'] = 'delete'
+
+                    payload = []
+                    payload.append(data)
+
+                    resp = self.guardaConstrPredWS(payload, data['accion'], url = self.CFG.urlGuardaVolumenP)
+
+                    if resp == 'OK':
+                        self.createAlert('Eliminacion correcta', QMessageBox.Information)
+
+                        # se elimina del combo de construcciones
+
+                        '''
+                        construccionesTemp = []
+                        count = self.cmbVolumenP.count()
+                        for indx in range(0, count):
+                            dataTemp = self.cmbVolumenP.itemData(indx)
+
+                            if str(dataTemp['nomVolumen']) == str(data['nomVolumen']):
+                                continue
+
+                            construccionesTemp.append(dataTemp)
+
+                        self.cmbVolumenP.clear()
+
+                        for ct in construccionesTemp:
+                            self.cmbVolumenP.addItem(str(ct['nomVolumen']), ct)
+                        '''
+                        self.seRealiza = False
+                        self.cmbVolumenP.removeItem(index)
+
+                else:
+                    return
+            else:
+
+                reply = QMessageBox.question(self,'Construccion', '¿Desea eliminar la construccion?', QMessageBox.Yes, QMessageBox.No)
+                if reply == QMessageBox.Yes:
+                    self.seRealiza = False
+                    self.cmbVolumenP.removeItem(index)
+                else:
+                    return
+            
+        else: # <- NOOO se elimina, debido a que cuenta con geometria asociada
+            self.createAlert('La construccion no se permite eliminar ya que cuenta con informacion cartografica')
 
     # -- GUARDAR PREDIO
     def event_guardarPredio(self):
@@ -2475,7 +2727,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         # se obtiene el volumen
         indexC = self.cmbVolumenP.currentIndex()
         volumen = self.cmbVolumenP.itemData(indexC)
-        #print(volumen)
         frTemp = volumen['fracciones']
         fracciones = []
 
@@ -2508,8 +2759,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             fracciones.append(fr)
 
-
-
         volumen['fracciones'] = fracciones
 
         if volumen['accion'] == 'new':
@@ -2517,7 +2766,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         payload = []
         payload.append(volumen)
-        #print(volumen)
 
         resp = self.guardaConstrPredWS(payload, volumen['accion'], url = self.CFG.urlGuardaVolumenP)
 
