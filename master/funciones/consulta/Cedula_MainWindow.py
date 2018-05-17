@@ -120,22 +120,22 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         # -- Diseño
         
-        self.leSupConstPrivCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leSupConstComunCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leSupConstExcCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leSupConstTotalCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leValConstPrivCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leValConstComunCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leValConstExcCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leValConstTotalCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leSupTerrPrivCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leSupTerrComunCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leSupTerrExcCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leSupTerrTotalCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leValTerrPrivCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leValTerrComunCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leValTerrExcCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
-        self.leValTerrTotalCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
+        self.leSupConstPrivCond.setValidator(QDoubleValidator(0.999,99.999,3))
+        self.leSupConstComunCond.setValidator(QDoubleValidator(0.999,99.999,3))
+        self.leSupConstExcCond.setValidator(QDoubleValidator(0.999,99.999,3))
+        self.leSupConstTotalCond.setValidator(QDoubleValidator(0.999,99.999,3))
+        self.leValConstPrivCond.setValidator(QDoubleValidator(0.99,99.9,2))
+        self.leValConstComunCond.setValidator(QDoubleValidator(0.99,99.99,2))
+        self.leValConstExcCond.setValidator(QDoubleValidator(0.99,99.99,2))
+        self.leValConstTotalCond.setValidator(QDoubleValidator(0.99,99.99,2))
+        self.leSupTerrPrivCond.setValidator(QDoubleValidator(0.999,99.999,3))
+        self.leSupTerrComunCond.setValidator(QDoubleValidator(0.999,99.999,3))
+        self.leSupTerrExcCond.setValidator(QDoubleValidator(0.999,99.999,3))
+        self.leSupTerrTotalCond.setValidator(QDoubleValidator(0.999,99.999,3))
+        self.leValTerrPrivCond.setValidator(QDoubleValidator(0.99,99.99,2))
+        self.leValTerrComunCond.setValidator(QDoubleValidator(0.99,99.99,2))
+        self.leValTerrExcCond.setValidator(QDoubleValidator(0.99,99.99,2))
+        self.leValTerrTotalCond.setValidator(QDoubleValidator(0.99,99.99,2))
         
         self.leDispPerim.setValidator(QDoubleValidator(0.99,99.99,2))
         self.twColindancias.setColumnHidden(0, True)
@@ -209,6 +209,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.btnDelConstrP.clicked.connect(self.event_elimConstrC)
         self.btnAddConstP.clicked.connect(self.event_nuevaConstrC)
         self.btnGuardarCed.clicked.connect(self.event_guardarPredio)
+        self.btnGuardarCedCond.clicked.connect(self.event_guardarCondominio)
+
         self.btnGuardaVolP.clicked.connect(self.event_guardarVolP)
         self.pushButton.clicked.connect(self.event_hasAlgo)
         self.btnColinAdd.clicked.connect(self.event_agregaColin)
@@ -277,6 +279,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             # self.lbTipoCond.hide()
             self.lbTipoCond.setText('')
             self.cmbCondo.hide()
+            self.btnGuardarCedCond.hide()
 
             # quita las tab que corresponden a condominios
             self.tabwCedula.removeTab(3)
@@ -956,20 +959,20 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         dataTemp['cveCatAnt'] = self.leCveCatAntCond.text()
 
         # construccion
-        dataTemp['supConstruccionPrivada'] = float(self.leSupConstPrivCond.text())
-        dataTemp['supConstruccionComun'] = float(self.leSupConstComunCond.text())
-        dataTemp['supConstComunEx'] = float(self.leSupConstExcCond.text())
-        dataTemp['valorConstruccionPriv'] = float(self.leValConstPrivCond.text())
-        dataTemp['valorConstruccionComun'] = float(self.leValConstComunCond.text())
-        dataTemp['valorConstExc'] = float(self.leValConstExcCond.text())
+        dataTemp['supConstruccionPrivada'] = float(0 if self.leSupConstPrivCond.text() == '' else self.leSupConstPrivCond.text())
+        dataTemp['supConstruccionComun'] = float(0 if self.leSupConstComunCond.text() == '' else self.leSupConstComunCond.text())
+        dataTemp['supConstComunEx'] = float(0 if self.leSupConstExcCond.text() == '' else self.leSupConstExcCond.text())
+        dataTemp['valorConstruccionPriv'] = float(0 if self.leValConstPrivCond.text() == '' else self.leValConstPrivCond.text())
+        dataTemp['valorConstruccionComun'] = float(0 if self.leValConstComunCond.text() == '' else self.leValConstComunCond.text())
+        dataTemp['valorConstExc'] = float(0 if self.leValConstExcCond.text() == '' else self.leValConstExcCond.text())
 
         # terreno
-        dataTemp['supTerPrivada'] = float(self.leSupTerrPrivCond.text())
-        dataTemp['supTerComun'] = float(self.leSupTerrComunCond.text())
-        dataTemp['supTerrComunEx'] = float(self.leSupTerrExcCond.text())
-        dataTemp['valorTerrenoPriv'] = float(self.leValTerrPrivCond.text())
-        dataTemp['valorTerrenoComun'] = float(self.leValTerrComunCond.text())
-        dataTemp['valorTerrExc'] = float(self.leValTerrExcCond.text())
+        dataTemp['supTerPrivada'] = float(0 if self.leSupTerrPrivCond.text() == '' else self.leSupTerrPrivCond.text())
+        dataTemp['supTerComun'] = float(0 if self.leSupTerrComunCond.text() == '' else self.leSupTerrComunCond.text())
+        dataTemp['supTerrComunEx'] = float(0 if self.leSupTerrExcCond.text() == '' else self.leSupTerrExcCond.text())
+        dataTemp['valorTerrenoPriv'] = float(0 if self.leValTerrPrivCond.text() == '' else self.leValTerrPrivCond.text())
+        dataTemp['valorTerrenoComun'] = float(0 if self.leValTerrComunCond.text() == '' else self.leValTerrComunCond.text())
+        dataTemp['valorTerrExc'] = float(0 if self.leValTerrExcCond.text() == '' else self.leValTerrExcCond.text())
 
         # servicios de cuenta
         servicios = []
@@ -1246,6 +1249,25 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         return 'OK'
 
+    # - manda al ws un condominio para ser guardado
+    def guardaCondominioWS(self, condominio, tipo, url):
+        data = ""
+        
+        jsonGuardaCond = json.dumps(condominio)
+        try:
+            self.headers['Authorization'] = self.UTI.obtenerToken()
+            response = requests.post(url + tipo, headers = self.headers, data = jsonGuardaCond)
+        except requests.exceptions.RequestException as e:
+            self.createAlert("Error de servidor, 'guardaCondominioWS()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
+            return str(e)
+
+        if response.status_code == 200:
+            data = response.content
+        else:
+            self.createAlert('Error en peticion "guardaCondominioWS()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
+            return response.text
+
+        return 'OK'
 
     # --- S E R V I C I O S   W E B   CIERRA ---
 
@@ -1329,7 +1351,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             supC = (dc['supConstruccionPrivada'] or 0) + (dc['supConstruccionComun'] or 0) + (dc['supConstComunEx'] or 0)
 
-            self.leSupConstTotalCond.setText(str(round(supC, 4)))
+            self.leSupConstTotalCond.setText(str(round(supC, 3)))
             # - valores
             self.leValConstPrivCond.setText(str(dc['valorConstruccionPriv'] or 0))
             self.leValConstComunCond.setText(str(dc['valorConstruccionComun'] or 0))
@@ -1337,7 +1359,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             valC = (dc['valorConstruccionPriv'] or 0) + (dc['valorConstruccionComun'] or 0) + (dc['valorConstExc'] or 0)
 
-            self.leValConstTotalCond.setText(str(round(valC, 4)))
+            self.leValConstTotalCond.setText(str(round(valC, 2)))
 
             # --- terreno
             # - superficies
@@ -1347,7 +1369,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             supT = (dc['supTerPrivada'] or 0) + (dc['supTerComun'] or 0) + (dc['supTerrComunEx'] or 0)
 
-            self.leSupTerrTotalCond.setText(str(round(supT, 4)))
+            self.leSupTerrTotalCond.setText(str(round(supT, 3)))
             # - valores
             self.leValTerrPrivCond.setText(str(dc['valorTerrenoPriv'] or 0))
             self.leValTerrComunCond.setText(str(dc['valorTerrenoComun'] or 0))
@@ -1355,7 +1377,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             valT = (dc['valorTerrenoPriv'] or 0) + (dc['valorTerrenoComun'] or 0) + (dc['valorTerrExc'] or 0)
 
-            self.leValTerrTotalCond.setText(str(round(valT, 4)))
+            self.leValTerrTotalCond.setText(str(round(valT, 2)))
 
             # cargar servicios de condomino
             dataServCuenta = []
@@ -2560,7 +2582,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         else: # <- NOOO se elimina, debido a que cuenta con geometria asociada
             self.createAlert('La construccion no se permite eliminar ya que cuenta con informacion cartografica')
 
-    # -- GUARDAR PREDIO
+    # -- GUARDAR   P R E D I O 
     def event_guardarPredio(self):
         data = self.cedula
         
@@ -2713,7 +2735,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             now = datetime.datetime.now()
             self.lbUltFechaAct.setText(str(now)[0:19])
 
-    # -- GUARDAR VOLUMEN SELECCIONADO
+    # -- GUARDAR   V O L U M E N   SELECCIONADO
     def event_guardarVolP(self):
 
         # autoguardado
@@ -2771,6 +2793,63 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         if resp == 'OK':
             self.createAlert('Guardado correcto', QMessageBox.Information)
+
+    # -- GUARDAR   C O N D O M I N I O   SELECCIONADO
+    def event_guardarCondominio(self):
+
+        # seleccion del condominio actual
+        index = self.cmbCondo.currentIndex()
+        tipoCond = self.cmbCondo.itemData(index) # <---- tipo de condominio
+        clave = self.cmbCondo.currentText()      # <---- clave de condominio
+
+        # guardado temporal
+        self.condoTemp(self.cveCatastral + clave)
+
+        condSave = None
+
+        for cond in self.condominios:
+            if cond['cveCat'] == self.cveCatastral + clave:
+                condSave = cond
+                break
+
+        if condSave is None:
+            self.createAlert('Nada para guardar (condominios)', QMessageBox.Information)
+            return
+
+        print(condSave)
+
+        payload = []
+        payload.append(condSave)
+
+        # --- G U A R D A D O   D E   C O N D O M I N I O S ---
+        resp = self.guardaCondominioWS(payload, tipoCond, url = self.CFG.urlGuardaCondominio)
+
+        if resp == 'OK':
+
+            # -- GUARDADO DE SERVICIOS DE PREDIO
+            if self.twServiciosCondo.rowCount() > 0:       
+
+                tablaServicios = self.twServiciosCondo
+
+                listaServicios = []
+                for x in range(0, tablaServicios.rowCount()):
+
+                    if tablaServicios.item(x,0).checkState() == 2:
+                        servicio = {}
+                        servicio['descripcion'] = tablaServicios.item(x,0).text()
+                        servicio['disponible'] = True
+                        servicio['servicio'] = tablaServicios.item(x,1).text()
+                        listaServicios.append(servicio)
+
+                # consumir ws para guardar los servicios
+                resp = self.guardaServiciosPredWS(listaServicios, cveCata = self.cveCatastral + clave, url = self.CFG.urlGuardaServiciosP)
+
+                if resp != 'OK':
+                    return
+                    
+            # - guardado de servicios de condominio
+            self.createAlert('Guardado correcto', QMessageBox.Information)
+
 
     # --- CERRAR E V E N T O S   Widget ---
 

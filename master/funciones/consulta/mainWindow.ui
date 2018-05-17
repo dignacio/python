@@ -2666,6 +2666,12 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                   </item>
                   <item row="0" column="1">
                    <widget class="QLabel" name="label_50">
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>20</height>
+                     </size>
+                    </property>
                     <property name="text">
                      <string>Perimetro</string>
                     </property>
@@ -2680,6 +2686,12 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                   </item>
                   <item row="0" column="2">
                    <widget class="QLabel" name="label_65">
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>20</height>
+                     </size>
+                    </property>
                     <property name="text">
                      <string>Clave Catastral Ant.</string>
                     </property>
@@ -2690,13 +2702,13 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
-                      <height>50</height>
+                      <height>0</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
                       <width>16777215</width>
-                      <height>50</height>
+                      <height>20</height>
                      </size>
                     </property>
                     <property name="text">
@@ -2712,6 +2724,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                       <weight>75</weight>
                       <bold>true</bold>
                      </font>
+                    </property>
+                    <property name="maxLength">
+                     <number>20</number>
                     </property>
                    </widget>
                   </item>
@@ -2745,6 +2760,12 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                   </item>
                   <item row="0" column="3">
                    <widget class="QLabel" name="label_76">
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>20</height>
+                     </size>
+                    </property>
                     <property name="text">
                      <string>Indiviso</string>
                     </property>
@@ -2765,6 +2786,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="maxLength">
+                        <number>20</number>
+                       </property>
                       </widget>
                      </item>
                      <item row="5" column="0">
@@ -2776,6 +2800,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="maxLength">
+                        <number>20</number>
+                       </property>
                       </widget>
                      </item>
                      <item row="1" column="0">
@@ -2786,6 +2813,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
+                       </property>
+                       <property name="maxLength">
+                        <number>20</number>
                        </property>
                       </widget>
                      </item>
@@ -2819,6 +2849,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="maxLength">
+                        <number>20</number>
+                       </property>
                       </widget>
                      </item>
                      <item row="6" column="0" alignment="Qt::AlignBottom">
@@ -2844,6 +2877,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="maxLength">
+                        <number>20</number>
+                       </property>
                       </widget>
                      </item>
                      <item row="2" column="1" alignment="Qt::AlignBottom">
@@ -2861,6 +2897,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
+                       </property>
+                       <property name="maxLength">
+                        <number>20</number>
                        </property>
                       </widget>
                      </item>
@@ -2880,6 +2919,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="maxLength">
+                        <number>20</number>
+                       </property>
                       </widget>
                      </item>
                      <item row="6" column="1" alignment="Qt::AlignBottom">
@@ -2897,6 +2939,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
+                       </property>
+                       <property name="maxLength">
+                        <number>20</number>
                        </property>
                       </widget>
                      </item>
@@ -2918,6 +2963,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="maxLength">
+                        <number>20</number>
+                       </property>
                       </widget>
                      </item>
                      <item row="0" column="0" alignment="Qt::AlignBottom">
@@ -2935,6 +2983,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
+                       </property>
+                       <property name="maxLength">
+                        <number>20</number>
                        </property>
                       </widget>
                      </item>
@@ -2954,6 +3005,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="maxLength">
+                        <number>20</number>
+                       </property>
                       </widget>
                      </item>
                      <item row="7" column="0">
@@ -2964,6 +3018,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
+                       </property>
+                       <property name="maxLength">
+                        <number>20</number>
                        </property>
                       </widget>
                      </item>
@@ -2997,6 +3054,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="maxLength">
+                        <number>20</number>
+                       </property>
                       </widget>
                      </item>
                      <item row="2" column="1" alignment="Qt::AlignBottom">
@@ -3014,6 +3074,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
+                       </property>
+                       <property name="maxLength">
+                        <number>20</number>
                        </property>
                       </widget>
                      </item>
@@ -3033,6 +3096,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="maxLength">
+                        <number>20</number>
+                       </property>
                       </widget>
                      </item>
                      <item row="6" column="1" alignment="Qt::AlignBottom">
@@ -3051,6 +3117,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <bold>true</bold>
                         </font>
                        </property>
+                       <property name="maxLength">
+                        <number>20</number>
+                       </property>
                       </widget>
                      </item>
                     </layout>
@@ -3058,6 +3127,18 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                   </item>
                   <item row="13" column="0" colspan="2">
                    <widget class="QTableWidget" name="twServiciosCondo">
+                    <property name="minimumSize">
+                     <size>
+                      <width>364</width>
+                      <height>244</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
                     <column>
                      <property name="text">
                       <string>Servicio</string>
@@ -4250,7 +4331,7 @@ de Actualizacion:   </string>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
