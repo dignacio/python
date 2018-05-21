@@ -90,10 +90,12 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.indexCondoActual = -1
 
         self.usoConstr = []
+        self.usoConstrC = []
         self.cateConstP = []
         self.cateConstC = []
 
         self.seRealiza = True
+        self.seRealizaC = True
 
         self.condominios = []
         self.constrCond = []
@@ -119,6 +121,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             return
 
         # -- Diseño
+        # sin edicion en QTableWidget
+        self.twCaracteristicasP.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+        self.twColindancias.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+        self.twVialidades.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+        self.twCaracteristicasC.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
         
         self.leSupConstPrivCond.setValidator(QDoubleValidator(0.999,99.999,3))
         self.leSupConstComunCond.setValidator(QDoubleValidator(0.999,99.999,3))
@@ -162,6 +169,16 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
         header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
 
+        self.twCaracteristicasC.setColumnHidden(0, True)
+        self.twCaracteristicasC.setColumnHidden(2, True)
+        self.twCaracteristicasC.setColumnHidden(4, True)
+        self.twCaracteristicasC.setColumnHidden(6, True)
+        self.twCaracteristicasC.setColumnHidden(7, True)
+        header = self.twCaracteristicasC.horizontalHeader()
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
+
         header = self.twVialidades.horizontalHeader()
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
@@ -182,6 +199,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.leNivPropP.setValidator(QIntValidator(0,99,None))
         self.leAnioConsP.setValidator(QIntValidator(0,9999,None))
         self.leNvlUbicaP.setValidator(QIntValidator(0,9999,None))
+
+        self.leNivPropC.setValidator(QIntValidator(0,99,None))
+        self.leAnioConsC.setValidator(QIntValidator(0,9999,None))
+        self.leNvlUbicaC.setValidator(QIntValidator(0,9999,None))
+
         self.leSupConstrFP.setValidator(QDoubleValidator(0.99,99.99,2))
         self.leSupConstPrivCond.setValidator(QDoubleValidator(0.9999,99.9999,4))
 
@@ -223,6 +245,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.btnCancelSelCalle.clicked.connect(self.event_cancelarCalle)
 
         self.btnCalcValCatP.clicked.connect(self.event_calcularValorConstrPred)
+        self.btnCalcValCatC.clicked.connect(self.event_calcularValorConstrCond)
         self.btnSubdividirP.clicked.connect(self.event_subdividirFraccPred)
         self.btnFusionarP.clicked.connect(self.event_fusionarFraccPred)
 
@@ -517,11 +540,14 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 return
 
             self.cmbVolumenC.clear()
+            self.cmbFraccionesC.clear()
 
             # ordena las construcciones segun el volumen
             construcciones = self.ordenaConstr(dataConstC)
 
             for dcp in construcciones:
+
+                dcp['accion'] = 'update'
                 fracciones = dcp['fracciones']
                 fr = {}
 
@@ -580,6 +606,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 self.cmbUsoConstrC.addItem('', -1)
                 for uc in usoConstr:
                     self.cmbUsoConstrC.addItem(uc['descripcion'], uc['id'])
+                    d = {uc['id']: uc}
+                    self.usoConstrC.append(d)
         
         # -- destino
         if len(destino) > 0:
@@ -994,17 +1022,52 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 servicio['disponible'] = True if tablaServicios.item(x,0).checkState() == 2 else False
                 servicio['servicio'] = tablaServicios.item(x,1).text()
                 servicio['cveCatastral'] = claveCata
-                servicios.append(servicio)        
+                servicios.append(servicio)
 
+        # -- GUARDADO DE CONSTRUCCIONES
+
+        self.constrTempCondo()
+
+        # obtner las construcciones actuales
+        volumen = self.cmbVolumenC.currentText()
+
+        construccionesTemp = []
+        count = self.cmbVolumenC.count()
+
+        for indx in range(0, count):
+            dt = self.cmbVolumenC.itemData(indx)
+
+            construccionesTemp.append(dt)
+
+        condTemp = []
+
+        # quitar las construcciones a modificar
+        for cc in self.constrCond:
+            if cc['cveCatastral'] != claveCata:
+                condTemp.append(cc)
+
+        for ct in construccionesTemp:
+            condTemp.append(ct)
+
+        # temporal CONSTRUCCIONES
+        self.constrCond = []
+        self.constrCond = list(condTemp)
+
+        # temporal CONDOMINIOS
         condos.append(dataTemp)
         self.condominios = []
         self.condominios = list(condos)
 
+        # temporal SERVICIOS
         self.servCuentaCond = []
         self.servCuentaCond = list(servicios)
 
     # - guarda de manera temporal los valores de construcciones CONDOMINIO
     def constrTempCondo(self):
+        
+        if not self.seRealizaC:
+            self.seRealizaC = True
+            return
 
         self.fraccTempCondo()
         dataTemp = self.cmbVolumenC.itemData(self.indexVolActualCondo)
@@ -1029,8 +1092,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             return
 
         dataTemp['codigoConstruccion'] = self.lbCveUsoC.text()
-        dataTemp['precioM2'] = self.lbValM2C.text()
-        dataTemp['valorConst'] = self.lbValConstC.text()
+        dataTemp['precioM2'] = self.lbValM2C.text().replace('$', '').replace(',', '')
+        dataTemp['valorConst'] = self.lbValConstC.text().replace('$', '').replace(',', '')
         dataTemp['supConstFraccion'] = self.lbSupConstrFC.text()
         dataTemp['numNivel'] = self.lbNvlFraccC.text()
         dataTemp['nombre'] = self.leNombreC.text()
@@ -1042,30 +1105,40 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             index = self.cmbUsoConstrC.currentIndex()
             valor = self.cmbUsoConstrC.itemData(index)
             dataTemp['idCatUsoConstruccion'] = valor
+        else:
+            dataTemp['idCatUsoConstruccion'] = -1
 
         # uso especifico
         if self.cmbUsoEspC.count() > 0:
             index = self.cmbUsoEspC.currentIndex()
             valor = self.cmbUsoEspC.itemData(index)
             dataTemp['idCatUsoEspecifico'] = valor
+        else:
+            dataTemp['idCatUsoEspecifico'] = -1
 
         # destino
         if self.cmbDestinoC.count() > 0:
             index = self.cmbDestinoC.currentIndex()
             valor = self.cmbDestinoC.itemData(index)
             dataTemp['idCatDestino'] = valor
+        else:
+            dataTemp['idCatDestino'] = -1
 
         # estado de construccion
         if self.cmbEdoConstrC.count() > 0:
             index = self.cmbEdoConstrC.currentIndex()
             valor = self.cmbEdoConstrC.itemData(index)
             dataTemp['idCatEstadoConstruccion'] = valor
+        else:
+            dataTemp['idCatEstadoConstruccion'] = -1
 
         # categoria
         if self.cmbCategoriaC.count() > 0:
             index = self.cmbCategoriaC.currentIndex()
             valor = self.cmbCategoriaC.itemData(index)
             dataTemp['idCategoria'] = valor
+        else:
+            dataTemp['idCategoria'] = -1
             
         # factor
         #if self.cmbFactorConstrC.count() > 0:
@@ -1085,6 +1158,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             twi3 = self.twCaracteristicasC.item(row,3)
             twi4 = self.twCaracteristicasC.item(row,4)
             twi5 = self.twCaracteristicasC.item(row,5)
+            twi6 = self.twCaracteristicasC.item(row,6)
+            twi7 = self.twCaracteristicasC.item(row,7)
 
             caract['idGrupo'] = twi0.text()
             caract['descripcionGrupo'] = twi1.text()
@@ -1092,6 +1167,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             caract['descripcionSubGrupo'] = twi3.text()
             caract['idCaracteristica'] = twi4.text()
             caract['descripcionCaracteristica'] = twi5.text()
+            caract['idUsoConstruccion'] = twi6.text()
+            caract['idCategoria'] = twi7.text()
 
             caracCategorias.append(caract)
         
@@ -1165,7 +1242,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             return response.text
 
         return json.loads(data)
-
 
     # - consume ws para informacion de catalogos
     def consumeWSGeneral(self, url_cons = ""):
@@ -1430,6 +1506,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 for dcc in dataConstC:
                     self.constrCond.append(dcc)
 
+
+            self.indexVolActualCondo = -1
+            self.indexFraActualCondo = -1
+
+
             self.cargaConstrCondo(dataConstC)
 
     def event_cambioUsoConstr(self):
@@ -1587,6 +1668,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                     self.twCaracteristicasP.setItem(rowPosition , 6, QtWidgets.QTableWidgetItem(str(data['idCatUsoConstruccion'])))
                     self.twCaracteristicasP.setItem(rowPosition , 7, QtWidgets.QTableWidgetItem(str(data['idCategoria'])))
 
+
             # se llena las fracciones a fusionar
             self.cmbConP.clear()
 
@@ -1598,11 +1680,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 fraccionAct = int(self.cmbFraccionesP.currentText())
 
                 if fraccionAct != int(f['volumen']):
+
                     self.cmbConP.addItem(str(f['volumen']))
 
         # deshabilitar subdivision y fusion
         self.deshFusionSubdiv()
-
 
     def event_cambioVolPred(self):
 
@@ -1743,6 +1825,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             lenJson = len(list(data))
             lenJson1 = len(list(data1))
 
+            self.cateConstP.clear()
+
             if lenJson > 0:
                 for cate in data:
                     self.cmbCategoriaC.addItem(str(cate['categoria']), cate['id'])
@@ -1760,17 +1844,21 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             index = self.cmbFraccionesC.currentIndex()
             data = self.cmbFraccionesC.itemData(index)
 
+            if index == -1:
+                return
+
             if self.indexFraActualCondo != -1:
                 # se manda a llamar el metodo que guarda de manera temporal
                 self.fraccTempCondo()
 
             self.indexFraActualCondo = index
 
-            self.lbCveUsoC.setText(str(data['codigoConstruccion']))
+            self.lbCveUsoC.setText(data['codigoConstruccion'])
 
-            self.lbValM2C.setText(str(0) if data['precioM2'] is None else str(data['precioM2']))
-            self.lbValConstC.setText(str(0) if data['valorConst'] is None else str(data['valorConst']))
+            self.lbValM2C.setText('${:,.2f}'.format(0) if data['precioM2'] is None else '${:,.2f}'.format(float(data['precioM2'])))
+            self.lbValConstC.setText('${:,.2f}'.format(0) if data['valorConst'] is None else '${:,.2f}'.format(float(data['valorConst'])))
             self.lbSupConstrFC.setText(str(0) if data['supConstFraccion'] is None else str(data['supConstFraccion']))
+            self.leSupConstrFC.setText(str(0) if data['supConstFraccion'] is None else str(data['supConstFraccion']))
             self.lbNvlFraccC.setText(str(1) if data['numNivel'] is None else str(data['numNivel']))
             self.leNombreC.setText('' if data['nombre'] is None else str(data['nombre']))
             self.leNvlUbicaC.setText('' if data['nvlUbica'] is None else str(data['nvlUbica']))
@@ -1851,13 +1939,36 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                     self.twCaracteristicasC.setItem(rowPosition , 3, QtWidgets.QTableWidgetItem(descSub))
                     self.twCaracteristicasC.setItem(rowPosition , 4, QtWidgets.QTableWidgetItem(str(idCarac)))
                     self.twCaracteristicasC.setItem(rowPosition , 5, QtWidgets.QTableWidgetItem(descCar))
+                    self.twCaracteristicasC.setItem(rowPosition , 6, QtWidgets.QTableWidgetItem(str(data['idCatUsoConstruccion'])))
+                    self.twCaracteristicasC.setItem(rowPosition , 7, QtWidgets.QTableWidgetItem(str(data['idCategoria'])))
 
+            # se llena las fracciones a fusionar
+            self.cmbConC.clear()
+            
+            indexV = self.cmbVolumenC.currentIndex()
+            dataV = self.cmbVolumenC.itemData(indexV)
+            fra = dataV['fracciones']
+
+            for f in fra:
+                fraccionAct = int(self.cmbFraccionesC.currentText())
+
+                if fraccionAct != int(f['volumen']):
+                    self.cmbConC.addItem(str(f['volumen']))
+            
+        # deshabilitar subdivision y fusion
+        self.deshFusionSubdiv(condo = True)
+
+    # - evento de cambio de volumen en condominios 
     def event_cambioVolCondo(self):
 
         if self.cmbVolumenC.count() > 0:
         
             index = self.cmbVolumenC.currentIndex()
             data = self.cmbVolumenC.itemData(index)
+
+
+            print(index, self.indexVolActualCondo)
+
 
             if self.indexVolActualCondo != -1:
                 # se manda a llamar el metodo que guarda de manera temporal
@@ -1868,7 +1979,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             # carga construcciones
             self.lbSupConstrC.setText(str(data['supConst']))
             self.lbNumNivC.setText(str(data['numNiveles']))
-            self.lbTipoConstC.setText(str(data['constTipo']))
+            self.lbTipoConstC.setText(data['constTipo'])
             
             # oculta los niveles y muestra claves de const. especial
             # cuando se trate de construccion especial
@@ -1886,6 +1997,18 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             
             for f in fra:
                 self.cmbFraccionesC.addItem(str(f['volumen']), f)
+
+            # -- subdivision y fusion de fracciones
+            self.cmbNvaFraccC.clear()
+
+            self.subdiv_fusion(condo = True)
+            # deshabilitar subdivision y fusion
+            self.deshFusionSubdiv(condo = True)
+
+            if data['accion'] == 'new':
+                self.leSupConstrFC.show()
+            else:
+                self.leSupConstrFC.hide()
             
     def event_cambioCategoriaCondo(self):
         
@@ -1931,6 +2054,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 self.twCaracteristicasC.setItem(rowPosition , 3, QtWidgets.QTableWidgetItem(descSub))
                 self.twCaracteristicasC.setItem(rowPosition , 4, QtWidgets.QTableWidgetItem(str(idCarac)))
                 self.twCaracteristicasC.setItem(rowPosition , 5, QtWidgets.QTableWidgetItem(descCar))
+                self.twCaracteristicasC.setItem(rowPosition , 6, QtWidgets.QTableWidgetItem(str(idUsoConst)))
+                self.twCaracteristicasC.setItem(rowPosition , 7, QtWidgets.QTableWidgetItem(str(idCate)))
 
     def event_agregaColin(self):
 
@@ -2133,6 +2258,67 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.lbValConstP.setText('${:,.2f}'.format(round(valor, 2)))
             self.lbCveUsoP.setText(cveUso + cveCat)
 
+    # -- metodo para calcular valor de construccion
+    def event_calcularValorConstrCond(self):
+
+        if self.cmbUsoConstrC.count() > 0:
+
+            # se obtienen los ids de uso de construccion y categoria para obtener el precio por M2
+            indexUC = self.cmbUsoConstrC.currentIndex()
+            idUsoConst = self.cmbUsoConstrC.itemData(indexUC)
+            if idUsoConst == -1:
+                self.createAlert('Seleccione un uso de construccion', icono = QMessageBox().Warning)
+                self.lbValM2C.setText('${:,.2f}'.format(0))
+                self.lbValConstC.setText('${:,.2f}'.format(0))
+                self.lbCveUsoC.setText('00')
+                return
+
+            indexC = self.cmbCategoriaC.currentIndex()
+            idCate = self.cmbCategoriaC.itemData(indexC)
+
+            if idCate is None:
+                self.createAlert('Seleccione una categoria', icono = QMessageBox().Warning)
+                self.lbValM2C.setText('${:,.2f}'.format(0))
+                self.lbValConstc.setText('${:,.2f}'.format(0))
+                self.lbCveUsoC.setText('00')
+                return
+
+            # se obtienen las claves de uso de construccion y categoria
+
+            cveUso = ''
+            for uc in self.usoConstrC:
+                l = list(uc.keys())
+
+                if l[0] == idUsoConst:
+                    values = list(uc.values())
+                    cveUso = values[0]['codigo']
+                    break
+
+            cveCat = ''
+            for cc in self.cateConstC:
+                l = list(cc.keys())
+
+                if l[0] == idCate:
+                    values = list(cc.values())
+                    cveCat = values[0]['clave']
+                    break
+
+            # consume el ws para obtener el valor de uso de construccion
+            data = self.obtieneValorUsoConstr(str(idUsoConst), str(idCate))
+
+            if len(data) == 0:
+                self.createAlert('Sin informacion necesaria para calculo de valor de contruccion', icono = QMessageBox().Information)
+
+            # calculos de valor catastral de construccion
+            precioM2 = data[0]['precioM2']
+            supConst = self.leSupConstrFC.text()
+
+            valor = precioM2 * float(supConst)
+
+            # asignacion de resultados
+            self.lbValM2C.setText('${:,.2f}'.format(precioM2))
+            self.lbValConstC.setText('${:,.2f}'.format(round(valor, 2)))
+            self.lbCveUsoC.setText(cveUso + cveCat)
     # -- subdividir fracciones
     def event_subdividirFraccPred(self):
 
@@ -2816,8 +3002,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.createAlert('Nada para guardar (condominios)', QMessageBox.Information)
             return
 
-        print(condSave)
-
         payload = []
         payload.append(condSave)
 
@@ -2846,28 +3030,27 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
                 if resp != 'OK':
                     return
-                    
+
             # - guardado de servicios de condominio
             self.createAlert('Guardado correcto', QMessageBox.Information)
-
 
     # --- CERRAR E V E N T O S   Widget ---
 
     # --- U T I L I D A D E S ---
 
-    def subdiv_fusion(self):
+    def subdiv_fusion(self, condo = False):
 
         # -- subdivision y fusion de fracciones
-        indexVolSel = self.cmbVolumenP.currentIndex()
-        dataV = self.cmbVolumenP.itemData(indexVolSel)
+        indexVolSel = self.cmbVolumenP.currentIndex() if not condo else self.cmbVolumenC.currentIndex()
+        dataV = self.cmbVolumenP.itemData(indexVolSel) if not condo else self.cmbVolumenC.itemData(indexVolSel)
 
         nivConst = dataV['numNiveles']
         resultado = []
 
         fra = []
-        count = self.cmbFraccionesP.count()
+        count = self.cmbFraccionesP.count() if not condo else self.cmbFraccionesC.count()
         for indx in range(0, count):
-            dataTemp = self.cmbFraccionesP.itemData(indx)
+            dataTemp = self.cmbFraccionesP.itemData(indx) if not condo else self.cmbFraccionesC.itemData(indx)
             fra.append(dataTemp)
 
         for i in range(0, nivConst):
@@ -2883,36 +3066,67 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             resultado.append(str(i + 1))
 
         if len(resultado) > 0:
-            self.leNivPropP.setText('1')
-            self.cmbNvaFraccP.addItems(resultado)
+            if not condo:
+                self.leNivPropP.setText('1')
+                self.cmbNvaFraccP.addItems(resultado)
+            else:
+                self.leNivPropC.setText('1')
+                self.cmbNvaFraccC.addItems(resultado)   
+
+        return
 
         # se llena las fracciones a fusionar
         for f in fra:
-            fraccionAct = int(self.cmbFraccionesP.currentText())
+            fraccionAct = int(self.cmbFraccionesP.currentText()) if not condo else int(self.cmbFraccionesC.currentText())
 
             if fraccionAct != int(f['volumen']):
-                self.cmbConP.addItem(str(f['volumen']))
+                if not condo:
+                    self.cmbConP.addItem(str(f['volumen']))
+                else:
+                    self.cmbConC.addItem(str(f['volumen']))
 
     # - habilita la subdivision y fusion (botones)
-    def deshFusionSubdiv(self):
-        # deshabilitar subdivision y fusion
-        # fusion
-        if self.cmbConP.count() == 0:
-            self.btnFusionarP.setEnabled(False)
-            self.cmbConP.setEnabled(False)
-        else:
-            self.btnFusionarP.setEnabled(True)
-            self.cmbConP.setEnabled(True)            
+    def deshFusionSubdiv(self, condo = False):
 
-        # subdivision
-        if self.cmbNvaFraccP.count() == 0:
-            self.btnSubdividirP.setEnabled(False)
-            self.cmbNvaFraccP.setEnabled(False)
-            self.leNivPropP.setEnabled(False)
-        else:            
-            self.btnSubdividirP.setEnabled(True)
-            self.cmbNvaFraccP.setEnabled(True)
-            self.leNivPropP.setEnabled(True)
+        if not condo:
+            # deshabilitar subdivision y fusion
+            # fusion
+            if self.cmbConP.count() == 0:
+                self.btnFusionarP.setEnabled(False)
+                self.cmbConP.setEnabled(False)
+            else:
+                self.btnFusionarP.setEnabled(True)
+                self.cmbConP.setEnabled(True)            
+
+            # subdivision
+            if self.cmbNvaFraccP.count() == 0:
+                self.btnSubdividirP.setEnabled(False)
+                self.cmbNvaFraccP.setEnabled(False)
+                self.leNivPropP.setEnabled(False)
+            else:            
+                self.btnSubdividirP.setEnabled(True)
+                self.cmbNvaFraccP.setEnabled(True)
+                self.leNivPropP.setEnabled(True)
+
+        if condo:
+            # deshabilitar subdivision y fusion
+            # fusion
+            if self.cmbConC.count() == 0:
+                self.btnFusionarC.setEnabled(False)
+                self.cmbConC.setEnabled(False)
+            else:
+                self.btnFusionarC.setEnabled(True)
+                self.cmbConC.setEnabled(True)            
+
+            # subdivision
+            if self.cmbNvaFraccC.count() == 0:
+                self.btnSubdividirC.setEnabled(False)
+                self.cmbNvaFraccC.setEnabled(False)
+                self.leNivPropC.setEnabled(False)
+            else:            
+                self.btnSubdividirC.setEnabled(True)
+                self.cmbNvaFraccC.setEnabled(True)
+                self.leNivPropC.setEnabled(True)
 
     # - ordena las construcciones por volumen
     def ordenaConstr(self, dataConstP):
