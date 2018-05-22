@@ -234,6 +234,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.btnGuardarCedCond.clicked.connect(self.event_guardarCondominio)
 
         self.btnGuardaVolP.clicked.connect(self.event_guardarVolP)
+        self.btnGuardaVolC.clicked.connect(self.event_guardarVolC)
         self.pushButton.clicked.connect(self.event_hasAlgo)
         self.btnColinAdd.clicked.connect(self.event_agregaColin)
         self.btnColinRemoveOne.clicked.connect(self.event_remueveColin)
@@ -247,7 +248,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.btnCalcValCatP.clicked.connect(self.event_calcularValorConstrPred)
         self.btnCalcValCatC.clicked.connect(self.event_calcularValorConstrCond)
         self.btnSubdividirP.clicked.connect(self.event_subdividirFraccPred)
+        self.btnSubdividirC.clicked.connect(self.event_subdividirFraccCond)
         self.btnFusionarP.clicked.connect(self.event_fusionarFraccPred)
+        self.btnFusionarC.clicked.connect(self.event_fusionarFraccCond)
 
         #self.pteObservaciones.keyPressEvent(self.event_keyPressObservaciones)
 
@@ -1510,8 +1513,19 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.indexVolActualCondo = -1
             self.indexFraActualCondo = -1
 
-
+            # - CARGA LAS CONSTRUCCIONES
             self.cargaConstrCondo(dataConstC)
+
+            # - VALIDACIONES PARA MANEJO DE CONSTRUCCIONES 
+            # si es vertical, NO se permiten agregar ni eliminar construcciones
+
+            if tipoCond == 'H': # <---------- HORIZONTAL
+                self.btnAddConstC.setEnabled(True)
+                self.btnDelConstrC.setEnabled(True)
+
+            elif tipoCond == 'V': # <-------- VERTICAL
+                self.btnAddConstC.setEnabled(False)
+                self.btnDelConstrC.setEnabled(False)
 
     def event_cambioUsoConstr(self):
 
@@ -2319,7 +2333,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.lbValM2C.setText('${:,.2f}'.format(precioM2))
             self.lbValConstC.setText('${:,.2f}'.format(round(valor, 2)))
             self.lbCveUsoC.setText(cveUso + cveCat)
-    # -- subdividir fracciones
+
+    # -- subdividir fracciones PREDIOS
     def event_subdividirFraccPred(self):
 
         self.constrTemp()
@@ -2454,7 +2469,111 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         # deshabilitar subdivision y fusion
         self.deshFusionSubdiv()
 
-    # -- fusionar fracciones
+    # -- subdividir fracciones CONDOMINIOS
+    def event_subdividirFraccCond(self):
+
+        # autoguardado
+        self.constrTempCondo()
+
+        if self.leNivPropC.text() == '':
+            self.createAlert('Llene el campo \'Nivel. Prop\' para continuar con la subdivision', icono = QMessageBox().Warning)
+            return
+
+        newFracc = int(self.leNivPropC.text())
+
+        if newFracc == 0:
+            self.createAlert('Defina un numero mayor de niveles para la nueva fraccion', icono = QMessageBox().Warning)
+            return
+
+        # se obtiene la fraccion seleccionada
+        indexFrSel = self.cmbFraccionesC.currentIndex()
+        if indexFrSel == -1:
+            return
+
+        # fraccion actual seleccionada
+        data = self.cmbFraccionesC.itemData(indexFrSel)
+
+        nivActualF = data['numNivel']
+
+        if int(nivActualF) == 1:
+            self.createAlert('No se puede subdividir una fraccion con un solo nivel', icono = QMessageBox().Warning)
+            return
+
+        nivActualC = self.leNivPropC.text()
+        if int(nivActualC) >= int(nivActualF):
+            self.createAlert('EL Nivel propuesto es mayor o igual al nivel global', icono = QMessageBox().Warning)
+            return
+
+        # sumatoria de las superficie de contruccion de todas las fracciones del volumen Y
+        # numero de niveles de todas las fracciones del volumen
+        count = self.cmbFraccionesC.count()
+        sumSupConstxFracc = 0
+        sumNumNivelConstxFracc = 0
+        for indx in range(0, count):
+            dataTemp = self.cmbFraccionesC.itemData(indx)
+            sumSupConstxFracc += float(dataTemp['supConstFraccion'])
+            sumNumNivelConstxFracc += int(dataTemp['numNivel'])
+
+        # quitar nivel a la fraccion a subdividir
+        # calcular la nueva superficie del nivel a subdividir
+        # 'nivActualF' -> nivel de la fraccion
+        # 'nivActualC' -> nivel propuesto (en el line edit)
+        newNum = int(nivActualF) - int(nivActualC)
+        newSuper = (sumSupConstxFracc / sumNumNivelConstxFracc) * newNum
+        data['supConstFraccion'] = round(newSuper, 2)
+        data['numNivel'] = newNum
+        data['precioM2'] = 0
+        data['valorConst'] = 0
+
+        self.lbNvlFraccC.setText(str(newNum))
+        self.lbSupConstrFC.setText(str(round(newSuper, 2)))
+        self.lbValM2C.setText('${:,.2f}'.format(0))
+        self.lbValConstC.setText('${:,.2f}'.format(0))
+
+        # nueva fraccion
+        fr = {}
+        fr['volumen'] = int(self.cmbNvaFraccC.currentText())
+        fr['numNivel'] = int(nivActualC)
+        fr['supConstFraccion'] = (sumSupConstxFracc / sumNumNivelConstxFracc) * int(nivActualC)
+        fr['idConstruccion'] = data['idConstruccion']
+        fr['idPredio'] = data['idPredio']
+        fr['cveCatastral'] = data['cveCatastral']
+        fr['codigoConstruccion'] = ''
+        fr['valorConst'] = 0
+        fr['precioM2'] = 0
+        fr['idCatUsoConstruccion'] = -1
+        fr['idCatUsoEspecifico'] = -1
+        fr['idCatDestino'] = -1
+        fr['nombre'] = ''
+        fr['nvlUbica'] = ''
+        fr['anioConstruccion'] = ''
+        fr['idCatEstadoConstruccion'] = -1
+        fr['idCategoria'] = -1
+        # fr['idFactor'] = -1
+        fr['caracCategorias'] = []
+
+        # realizar el cambio en la fraccion
+        self.cmbFraccionesC.setItemData(indexFrSel, data)
+        # agregar la nueva fraccion
+        self.cmbFraccionesC.addItem(str(fr['volumen']), fr)
+
+        # actualizar combo para fusionar y subdividir
+        # ---- CARGA DE FRACCIONES
+
+        indexVolSel = self.cmbVolumenC.currentIndex()
+        dataV = self.cmbVolumenC.itemData(indexVolSel)
+
+        # -- subdivision y fusion de fracciones
+        self.cmbNvaFraccC.clear()
+        self.cmbConC.clear()
+
+        self.subdiv_fusion(condo = True)
+        self.constrTempCondo()
+
+        # deshabilitar subdivision y fusion
+        self.deshFusionSubdiv(condo = True)
+
+    # -- fusionar fracciones PREDIO
     def event_fusionarFraccPred(self):
 
         # se guarda la fraccion
@@ -2588,6 +2707,138 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.constrTemp()
         self.subdiv_fusion()
         self.deshFusionSubdiv()
+
+    # -- fusionar fracciones CONDOMINIO
+    def event_fusionarFraccCond(self):
+
+        # se guarda la fraccion
+        self.fraccTempCondo()
+
+        # se obtiene la fraccion seleccionada
+        indexFrSel = self.cmbFraccionesC.currentIndex()
+        data1 = self.cmbFraccionesC.itemData(indexFrSel)
+
+        # se busca la fraccion que se selecciono como segunda parte de la fusion
+        numFracc = int(self.cmbConC.currentText())
+        data2 = None
+        indexFrSel2 = -1
+
+        count = self.cmbFraccionesC.count()
+        for indx in range(0, count):
+            dataTemp = self.cmbFraccionesC.itemData(indx)
+
+            if dataTemp['volumen'] == numFracc:
+                data2 = dataTemp
+                indexFrSel2 = indx
+                break
+
+        obj = fusionDialog(data1, data2)
+
+        # regresa un 0 o un 1
+        # 0 = RECHAZADO = CANCELAR
+        # 1 = ACEPTADO  = ACEPTAR
+        resultado = obj.exec()
+
+        if resultado == 0:
+            self.createAlert('Accion Cancelada', icono = QMessageBox().Warning)
+            return
+
+        # sumatoria de las superficie de contruccion de todas las fracciones del volumen Y
+        # numero de niveles de todas las fracciones del volumen
+        count = self.cmbFraccionesC.count()
+        sumSupConstxFracc = 0
+        sumNumNivelConstxFracc = 0
+        for indx in range(0, count):
+            dataTemp = self.cmbFraccionesC.itemData(indx)
+            sumSupConstxFracc += float(dataTemp['supConstFraccion'])
+            sumNumNivelConstxFracc += int(dataTemp['numNivel'])
+
+        # obj._seleccion booleano
+        # TRUE  = se selecciono una fraccion: se intercambia la fraccion seleccionada por la que esta seleccionada
+        # FALSE = no se selecciono ninguna: se crea una fraccion vacia y se queda en el lugar actual
+        if obj._seleccion:
+
+            newData = obj._seleccionada
+            oldData = obj._noSeleccionada
+
+            newNivel = int(data1['numNivel']) + int(data2['numNivel'])
+            newData['numNivel'] = newNivel
+            newData['supConstFraccion'] = (sumSupConstxFracc / sumNumNivelConstxFracc) * int(newNivel)
+            newData['precioM2'] = 0
+            newData['valorConst'] = 0
+
+            # realizar el cambio en la fraccion
+            # self.cmbFraccionesP.setItemData(indexFrSel, newData)
+            fraccionesTemp = []
+            count = self.cmbFraccionesC.count()
+            for indx in range(0, count):
+                dataTemp = self.cmbFraccionesC.itemData(indx)
+
+                if int(dataTemp['volumen']) == int(oldData['volumen']):
+                    continue
+
+                if int(dataTemp['volumen']) == int(newData['volumen']):
+                    fraccionesTemp.append(newData)
+                else:
+                    fraccionesTemp.append(dataTemp)
+
+            self.cmbFraccionesC.clear()
+
+            for ft in fraccionesTemp:
+                self.cmbFraccionesC.addItem(str(ft['volumen']), ft)
+
+        else:
+            # nueva fraccion
+            newNivel = int(data1['numNivel']) + int(data2['numNivel'])
+
+            fr = {}
+            fr['volumen'] = int(data1['volumen'])
+            fr['numNivel'] = newNivel
+            fr['supConstFraccion'] = (sumSupConstxFracc / sumNumNivelConstxFracc) * int(newNivel)
+            fr['idConstruccion'] = data1['idConstruccion']
+            fr['idPredio'] = data1['idPredio']
+            fr['cveCatastral'] = data1['cveCatastral']
+            fr['codigoConstruccion'] = ''
+            fr['valorConst'] = 0
+            fr['precioM2'] = 0
+            fr['idCatUsoConstruccion'] = -1
+            fr['idCatUsoEspecifico'] = -1
+            fr['idCatDestino'] = -1
+            fr['nombre'] = ''
+            fr['nvlUbica'] = ''
+            fr['anioConstruccion'] = ''
+            fr['idCatEstadoConstruccion'] = -1
+            fr['idCategoria'] = -1
+            # fr['idFactor'] = -1
+            fr['caracCategorias'] = []
+
+            # realizar el cambio en la fraccion
+            fraccionesTemp = []
+            fraccionesTemp.append(fr)
+            count = self.cmbFraccionesC.count()
+            for indx in range(0, count):
+                dataTemp = self.cmbFraccionesC.itemData(indx)
+
+                if int(dataTemp['volumen']) == int(data2['volumen']):
+                    continue
+
+                if int(dataTemp['volumen']) == int(data1['volumen']):
+                    continue
+
+                fraccionesTemp.append(dataTemp)
+
+            self.cmbFraccionesC.clear()
+
+            for ft in fraccionesTemp:
+                self.cmbFraccionesC.addItem(str(ft['volumen']), ft)
+
+        # eliminar la fraccion anterior
+        self.cmbConC.clear()
+        self.cmbNvaFraccC.clear()
+
+        self.constrTempCondo()
+        self.subdiv_fusion(condo = True)
+        self.deshFusionSubdiv(condo = True)
 
     # -- nueva construccion PREDIO
     def event_nuevaConstrC(self):
@@ -2979,6 +3230,67 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         if resp == 'OK':
             self.createAlert('Guardado correcto', QMessageBox.Information)
+
+    # GUARDAR   V O L U M E N   SELECCIONADO (C O N D O M I N I O)
+    def event_guardarVolC(self):
+
+        # autoguardado
+        self.constrTempCondo()
+
+        countVol = self.cmbVolumenC.count()
+
+        if countVol == 0:
+            return
+
+        # se obtiene el volumen
+        indexC = self.cmbVolumenC.currentIndex()
+        volumen = self.cmbVolumenC.itemData(indexC)
+        frTemp = volumen['fracciones']
+        fracciones = []
+
+        supConst = 0
+
+        for fr in frTemp:
+
+            # destino
+            fr['idCatDestino'] = None if str(fr['idCatDestino']) == '-1' else fr['idCatDestino']
+
+            # estado de construccion
+            fr['idCatEstadoConstruccion'] = None if str(fr['idCatEstadoConstruccion']) == '-1' else fr['idCatEstadoConstruccion']
+
+            # uso de construccion
+            fr['idCatUsoConstruccion'] = None if str(fr['idCatUsoConstruccion']) == '-1' else fr['idCatUsoConstruccion']
+
+            # uso especifico
+            fr['idCatUsoEspecifico'] = None if str(fr['idCatUsoEspecifico']) == '-1' else fr['idCatUsoEspecifico']
+            
+            # categoria
+            fr['idCategoria'] = None if str(fr['idCategoria']) == '-1' else fr['idCategoria']
+            
+            # factor
+            # fr['idFactor'] = None if str(fr['idFactor']) == '-1' else fr['idFactor']
+            
+            # tipo de factor
+            # fr['idTipoFactor'] = None if str(fr['idTipoFactor']) == '-1' else fr['idTipoFactor']
+
+            supConst += float(fr['supConstFraccion'])
+
+            fracciones.append(fr)
+
+
+        volumen['fracciones'] = fracciones
+
+        if volumen['accion'] == 'new':
+            volumen['supConst'] = round(supConst, 2)
+
+        payload = []
+        payload.append(volumen)
+
+        resp = self.guardaConstrPredWS(payload, volumen['accion'], url = self.CFG.urlGuardaVolumenP)
+
+        if resp == 'OK':
+            self.createAlert('Guardado correcto', QMessageBox.Information)
+
 
     # -- GUARDAR   C O N D O M I N I O   SELECCIONADO
     def event_guardarCondominio(self):
