@@ -253,7 +253,7 @@ Predio</string>
              <string notr="true"/>
             </property>
             <property name="currentIndex">
-             <number>4</number>
+             <number>5</number>
             </property>
             <widget class="QWidget" name="tUbicacion">
              <attribute name="title">
@@ -2827,7 +2827,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                       </widget>
                      </item>
                      <item row="4" column="0" alignment="Qt::AlignBottom">
-                      <widget class="QLabel" name="label_74">
+                      <widget class="QLabel" name="lbSupConstExcCond">
                        <property name="text">
                         <string>Superficie Exclusiva</string>
                        </property>
@@ -2904,7 +2904,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                       </widget>
                      </item>
                      <item row="4" column="1" alignment="Qt::AlignBottom">
-                      <widget class="QLabel" name="label_66">
+                      <widget class="QLabel" name="lbValConstExcCond">
                        <property name="text">
                         <string>Valor Exclusivo</string>
                        </property>
@@ -3025,7 +3025,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                       </widget>
                      </item>
                      <item row="4" column="0" alignment="Qt::AlignBottom">
-                      <widget class="QLabel" name="label_69">
+                      <widget class="QLabel" name="lbSupTerrExcCond">
                        <property name="text">
                         <string>Superficie Exclusiva</string>
                        </property>
@@ -3081,7 +3081,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                       </widget>
                      </item>
                      <item row="4" column="1" alignment="Qt::AlignBottom">
-                      <widget class="QLabel" name="label_67">
+                      <widget class="QLabel" name="lbValTerrExcCond">
                        <property name="text">
                         <string>Valor Exclusivo</string>
                        </property>
@@ -4067,6 +4067,1505 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
               </item>
              </layout>
             </widget>
+            <widget class="QWidget" name="tComparativo">
+             <attribute name="title">
+              <string>Comparativo</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_27">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QScrollArea" name="scrollArea_7">
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_7">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>944</width>
+                   <height>785</height>
+                  </rect>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_28">
+                  <property name="leftMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="spacing">
+                   <number>10</number>
+                  </property>
+                  <item row="9" column="0">
+                   <widget class="QLabel" name="label_116">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Construccion</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbSupTerrTotalC">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbSupTerrTotalC</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="label_106">
+                    <property name="font">
+                     <font>
+                      <pointsize>18</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Fiscal</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="20" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbValConsPrivF">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbValConsPrivF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="16" column="0">
+                   <widget class="QLabel" name="lbPrivadaTerrV">
+                    <property name="text">
+                     <string>Privada</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="20" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbValConsPrivC">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbValConsPrivC</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="20" column="0">
+                   <widget class="QLabel" name="lbPrivadaConsV">
+                    <property name="text">
+                     <string>Privada</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0">
+                   <widget class="QLabel" name="lbComunTerrS">
+                    <property name="text">
+                     <string>Comun</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="17" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbValTerrComC">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbValTerrComC</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="12" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbSupConsTotalC">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbSupConsTotalC</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbSupTerrTotalF">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbSupTerrTotalF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbSupTerrComC">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbSupTerrComC</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="11" column="0">
+                   <widget class="QLabel" name="lbComunConsS">
+                    <property name="text">
+                     <string>Comun</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="26" column="3" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbDiferencia">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbDiferencia</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="26" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbImpPredF">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbImpPredF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="label_107">
+                    <property name="font">
+                     <font>
+                      <pointsize>18</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Catastro</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="lbPrivadaTerrS">
+                    <property name="text">
+                     <string>Privada</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="18" column="0">
+                   <widget class="QLabel" name="lbTotalTerrV">
+                    <property name="text">
+                     <string>Total</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="17" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbValTerrComF">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbValTerrComF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="18" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbValTerrTotalF">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbValTerrTotalF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbSupTerrComF">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbSupTerrComF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="16" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbValTerrPrivC">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbValTerrPrivC</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="19" column="0">
+                   <widget class="QLabel" name="label_137">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Construccion</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="16" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbValTerrPrivF">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbValTerrPrivF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbSupTerrPrivF">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbSupTerrPrivF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="21" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbValConsComC">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbValConsComC</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="26" column="0">
+                   <widget class="QLabel" name="label_154">
+                    <property name="maximumSize">
+                     <size>
+                      <width>170</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Impuesto Predial</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0" colspan="3" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="label_98">
+                    <property name="font">
+                     <font>
+                      <pointsize>16</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>S u p e r f i c i e s</string>
+                    </property>
+                    <property name="openExternalLinks">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="11" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbSupConsComF">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbSupConsComF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="17" column="0">
+                   <widget class="QLabel" name="lbComunTerrV">
+                    <property name="text">
+                     <string>Comun</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="21" column="0">
+                   <widget class="QLabel" name="lbComunConsV">
+                    <property name="text">
+                     <string>Comun</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="11" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbSupConsComC">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbSupConsComC</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_115">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Terreno</string>
+                    </property>
+                    <property name="openExternalLinks">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="15" column="0">
+                   <widget class="QLabel" name="label_127">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Terreno</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="12" column="0">
+                   <widget class="QLabel" name="lbTotalConsS">
+                    <property name="text">
+                     <string>Total</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="12" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbSupConsTotalF">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbSupConsTotalF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="21" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbValConsComF">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbValConsComF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbSupTerrPrivC">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbSupTerrPrivC</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="10" column="0">
+                   <widget class="QLabel" name="lbPrivadaConsS">
+                    <property name="text">
+                     <string>Privada</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="26" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbImpPredC">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbImpPredC</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="22" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbValConsTotalF">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbValConsTotalF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="22" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbValConsTotalC">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbValConsTotalC</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="22" column="0">
+                   <widget class="QLabel" name="label_151">
+                    <property name="font">
+                     <font>
+                      <pointsize>8</pointsize>
+                      <weight>50</weight>
+                      <bold>false</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Total</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="18" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbValTerrTotalC">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbValTerrTotalC</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="14" column="0" colspan="3" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="label_126">
+                    <property name="font">
+                     <font>
+                      <pointsize>16</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>V a l o r e s   C a t a s t r a l e s</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="25" column="3" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="label_158">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Diferencia</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="24" column="0">
+                   <widget class="QLabel" name="label_152">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Valor Total</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="0">
+                   <widget class="QLabel" name="lbTotalTerrS">
+                    <property name="text">
+                     <string>Total</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="10" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbSupConsPrivC">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbSupConsPrivC</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="10" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbSupConsPrivF">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbSupConsPrivF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="24" column="2" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbValorCTotalF">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbValorCTotalF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="label_104">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>10</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>10</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="13" column="1">
+                   <widget class="QLabel" name="label_101">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>10</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>10</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="24" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="lbValorCTotalC">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbValorCTotalC</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="23" column="1">
+                   <widget class="QLabel" name="label_108">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>10</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>10</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="tIndiviso">
+             <attribute name="title">
+              <string>Indivisos</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_29">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QScrollArea" name="scrollArea_8">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_8">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>944</width>
+                   <height>640</height>
+                  </rect>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_30">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
+                  <item row="0" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QWidget" name="widget_14" native="true">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>200</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>200</height>
+                     </size>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_31">
+                     <item row="3" column="3">
+                      <widget class="QLabel" name="label_128">
+                       <property name="font">
+                        <font>
+                         <pointsize>13</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Total:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="4">
+                      <widget class="QLabel" name="lbComunC">
+                       <property name="font">
+                        <font>
+                         <pointsize>12</pointsize>
+                         <weight>50</weight>
+                         <italic>false</italic>
+                         <bold>false</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbComunC</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QLabel" name="label_132">
+                       <property name="maximumSize">
+                        <size>
+                         <width>50</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLabel" name="lbTotal">
+                       <property name="minimumSize">
+                        <size>
+                         <width>80</width>
+                         <height>24</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>80</width>
+                         <height>24</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <pointsize>12</pointsize>
+                         <weight>50</weight>
+                         <italic>false</italic>
+                         <bold>false</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbTotal</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_112">
+                       <property name="minimumSize">
+                        <size>
+                         <width>80</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>80</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <pointsize>13</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Total</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0" colspan="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_110">
+                       <property name="font">
+                        <font>
+                         <pointsize>15</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Indivisos</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="8">
+                      <widget class="QLabel" name="lbPrivadaT">
+                       <property name="minimumSize">
+                        <size>
+                         <width>120</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>120</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <pointsize>12</pointsize>
+                         <weight>50</weight>
+                         <italic>false</italic>
+                         <bold>false</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbPrivadaT</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="6">
+                      <widget class="QLabel" name="label_133">
+                       <property name="maximumSize">
+                        <size>
+                         <width>50</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="7">
+                      <widget class="QLabel" name="label_124">
+                       <property name="font">
+                        <font>
+                         <pointsize>13</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Comun:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="4">
+                      <widget class="QLabel" name="lbTotalC">
+                       <property name="font">
+                        <font>
+                         <pointsize>12</pointsize>
+                         <weight>50</weight>
+                         <italic>false</italic>
+                         <bold>false</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbTotalC</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="3" colspan="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_118">
+                       <property name="font">
+                        <font>
+                         <pointsize>15</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Sup. Construccion Total</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="7">
+                      <widget class="QLabel" name="label_114">
+                       <property name="minimumSize">
+                        <size>
+                         <width>90</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>90</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <pointsize>13</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Privada:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="8">
+                      <widget class="QLabel" name="lbComunT">
+                       <property name="maximumSize">
+                        <size>
+                         <width>120</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <pointsize>12</pointsize>
+                         <weight>50</weight>
+                         <italic>false</italic>
+                         <bold>false</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbComunT</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_120">
+                       <property name="font">
+                        <font>
+                         <pointsize>13</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Residuo</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="3">
+                      <widget class="QLabel" name="label_109">
+                       <property name="minimumSize">
+                        <size>
+                         <width>80</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>80</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <pointsize>13</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Privada:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="4">
+                      <widget class="QLineEdit" name="leComunC">
+                       <property name="font">
+                        <font>
+                         <pointsize>12</pointsize>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="7" colspan="2" alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_119">
+                       <property name="font">
+                        <font>
+                         <pointsize>15</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Sup. Terreno Total</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="4">
+                      <widget class="QLabel" name="lbPrivadaC">
+                       <property name="minimumSize">
+                        <size>
+                         <width>120</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>120</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <pointsize>12</pointsize>
+                         <weight>50</weight>
+                         <italic>false</italic>
+                         <bold>false</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbPrivadaC</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="3">
+                      <widget class="QLabel" name="label_122">
+                       <property name="font">
+                        <font>
+                         <pointsize>13</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Comun:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="8">
+                      <widget class="QLabel" name="lbTotalT">
+                       <property name="font">
+                        <font>
+                         <pointsize>12</pointsize>
+                         <weight>50</weight>
+                         <italic>false</italic>
+                         <bold>false</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbTotalT</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="lbResiduo">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>24</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>24</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <pointsize>12</pointsize>
+                         <weight>50</weight>
+                         <italic>false</italic>
+                         <bold>false</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbResiduo</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="7">
+                      <widget class="QLabel" name="label_130">
+                       <property name="font">
+                        <font>
+                         <pointsize>13</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Total:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="4">
+                      <widget class="QLineEdit" name="lePrivadaC">
+                       <property name="font">
+                        <font>
+                         <pointsize>12</pointsize>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="8">
+                      <widget class="QLineEdit" name="leComunT">
+                       <property name="font">
+                        <font>
+                         <pointsize>12</pointsize>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="8">
+                      <widget class="QLineEdit" name="lePrivadaT">
+                       <property name="font">
+                        <font>
+                         <pointsize>12</pointsize>
+                        </font>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="2" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QPushButton" name="btnBlocDesbloc">
+                    <property name="minimumSize">
+                     <size>
+                      <width>200</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>200</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>15</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Bloquear</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="1">
+                   <widget class="QLabel" name="label_138">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QLabel" name="label_139">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>10</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1">
+                   <widget class="QTableWidget" name="twIndivisos">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>300</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>300</height>
+                     </size>
+                    </property>
+                    <column>
+                     <property name="text">
+                      <string>Cuenta/Predio</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>% Indiviso</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Condominio</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Sup. Const. Priv.</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Sup. Const. Comun</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Sup. Terr. Priv.</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Sup. Terr. Comun</string>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="label_134">
+                    <property name="minimumSize">
+                     <size>
+                      <width>50</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>50</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="1">
+                   <widget class="QLabel" name="label_136">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="2">
+                   <widget class="QLabel" name="label_135">
+                    <property name="minimumSize">
+                     <size>
+                      <width>50</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>50</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="1" alignment="Qt::AlignHCenter">
+                   <widget class="QPushButton" name="btnActualizaInfo">
+                    <property name="minimumSize">
+                     <size>
+                      <width>300</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>300</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>15</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Actualizar Informacion</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="label_140">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>10</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </widget>
           </item>
          </layout>
@@ -4413,7 +5912,7 @@ de Actualizacion:   </string>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -86,6 +86,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.indexVolActualCondo = -1
         self.indexFraActualCondo = -1
         self.idCalleSelecc = -1
+        self.valorCalle = 0
 
         self.indexCondoActual = -1
 
@@ -100,6 +101,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.condominios = []
         self.constrCond = []
         self.servCuentaCond = []
+
+        self.bloqueado = False
 
         self.setupUi(self)
 
@@ -129,19 +132,19 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         
         self.leSupConstPrivCond.setValidator(QDoubleValidator(0.999,99.999,3))
         self.leSupConstComunCond.setValidator(QDoubleValidator(0.999,99.999,3))
-        self.leSupConstExcCond.setValidator(QDoubleValidator(0.999,99.999,3))
+        #self.leSupConstExcCond.setValidator(QDoubleValidator(0.999,99.999,3))
         self.leSupConstTotalCond.setValidator(QDoubleValidator(0.999,99.999,3))
         self.leValConstPrivCond.setValidator(QDoubleValidator(0.99,99.9,2))
         self.leValConstComunCond.setValidator(QDoubleValidator(0.99,99.99,2))
-        self.leValConstExcCond.setValidator(QDoubleValidator(0.99,99.99,2))
+        #self.leValConstExcCond.setValidator(QDoubleValidator(0.99,99.99,2))
         self.leValConstTotalCond.setValidator(QDoubleValidator(0.99,99.99,2))
         self.leSupTerrPrivCond.setValidator(QDoubleValidator(0.999,99.999,3))
         self.leSupTerrComunCond.setValidator(QDoubleValidator(0.999,99.999,3))
-        self.leSupTerrExcCond.setValidator(QDoubleValidator(0.999,99.999,3))
+        #self.leSupTerrExcCond.setValidator(QDoubleValidator(0.999,99.999,3))
         self.leSupTerrTotalCond.setValidator(QDoubleValidator(0.999,99.999,3))
         self.leValTerrPrivCond.setValidator(QDoubleValidator(0.99,99.99,2))
         self.leValTerrComunCond.setValidator(QDoubleValidator(0.99,99.99,2))
-        self.leValTerrExcCond.setValidator(QDoubleValidator(0.99,99.99,2))
+        #self.leValTerrExcCond.setValidator(QDoubleValidator(0.99,99.99,2))
         self.leValTerrTotalCond.setValidator(QDoubleValidator(0.99,99.99,2))
         
         self.leDispPerim.setValidator(QDoubleValidator(0.99,99.99,2))
@@ -252,6 +255,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.btnFusionarP.clicked.connect(self.event_fusionarFraccPred)
         self.btnFusionarC.clicked.connect(self.event_fusionarFraccCond)
 
+        self.btnBlocDesbloc.clicked.connect(self.event_bloqDesbloc)
+
         #self.pteObservaciones.keyPressEvent(self.event_keyPressObservaciones)
 
         # Eventos - construcciones predios
@@ -310,6 +315,40 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             # quita las tab que corresponden a condominios
             self.tabwCedula.removeTab(3)
             self.tabwCedula.removeTab(3)
+            self.tabwCedula.removeTab(4)
+
+            # quitar las superficies privadas y comunes del comparativo
+            # ya que se muestra informacion del predio
+            # Superficie
+            self.lbPrivadaTerrS.hide()
+            self.lbSupTerrPrivC.hide()
+            self.lbSupTerrPrivF.hide()
+            self.lbComunTerrS.hide()
+            self.lbSupTerrComC.hide()
+            self.lbSupTerrComF.hide()
+
+            self.lbPrivadaConsS.hide()
+            self.lbSupConsPrivC.hide()
+            self.lbSupConsPrivF.hide()
+            self.lbComunConsS.hide()
+            self.lbSupConsComC.hide()
+            self.lbSupConsComF.hide()
+
+            # valores catastrales
+            self.lbPrivadaTerrV.hide()
+            self.lbValTerrPrivC.hide()
+            self.lbValTerrPrivF.hide()
+            self.lbComunTerrV.hide()
+            self.lbValTerrComC.hide()
+            self.lbValTerrComF.hide()
+
+            self.lbPrivadaConsV.hide()
+            self.lbValConsPrivC.hide()
+            self.lbValConsPrivF.hide()
+            self.lbComunConsV.hide()
+            self.lbValConsComC.hide()
+            self.lbValConsComF.hide()
+
             
         # muestra siempre la primer tab
         self.tabwCedula.setCurrentIndex(0)
@@ -320,6 +359,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.cargaConstrPred(dataConstP)
 
         self.cargada = True
+
+        self.tabwCedula.blockSignals(True)
+        self.tabwCedula.currentChanged.connect(self.event_cambioPestania)
+        self.tabwCedula.blockSignals(False)
+        self.twIndivisos.setEnabled(False)
 
     # --- M E T O D O S ---
 
@@ -657,7 +701,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 return
 
             self.cedula = dataCed[0]
-
             # -- UBICACION -- 
             self.lbNoExt.setText(self.cedula['numExt'])
             self.leNoExteriorAlf.setText(self.cedula['numExteriorAlf'])
@@ -703,6 +746,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 self.lbNomCalle.setText(c['calle'])
                 idCalle = c['id']
                 self.idCalleSelecc = idCalle
+                self.valorCalle = c['valor']
             else:
                 self.lbNomCalle.setText('')
 
@@ -831,32 +875,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         except Exception as e:
             self.errorCerrar = True
             self.createAlert('Error durante la carga de informacion "cargaCedula()": ' + str(e))
-
-    # - descomone clave
-    def descomponeCveCata(self, cveCata):
-
-        clave = cveCata[0:2] + '-'
-        clave += cveCata[2:5] + '-'
-        clave += cveCata[5:8] + '-'
-        clave += cveCata[8:10] + '-'
-        clave += cveCata[10:14] + '-'
-        clave += cveCata[14:17] + '-'
-        clave += cveCata[17:20] + '-'
-        clave += cveCata[20:25]
-
-        return clave
-
-    # - muestra clave global
-    def muestraClaveGlobal(self, cveCata):
-
-        self.lbEdo.setText(cveCata[0:2])
-        self.lbRegCat.setText(cveCata[2:5])
-        self.lbMpio.setText(cveCata[5:8])
-        self.lbSecc.setText(cveCata[8:10])
-        self.lbLoc.setText(cveCata[10:14])
-        self.lbSec.setText(cveCata[14:17])
-        self.lbMza.setText(cveCata[17:20])
-        self.lbPredio.setText(cveCata[20:25])
 
     # - guarda de manera temporal los valores de construcciones
     def constrTemp(self):
@@ -990,20 +1008,20 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         dataTemp['cveCatAnt'] = self.leCveCatAntCond.text()
 
         # construccion
-        dataTemp['supConstruccionPrivada'] = float(0 if self.leSupConstPrivCond.text() == '' else self.leSupConstPrivCond.text())
-        dataTemp['supConstruccionComun'] = float(0 if self.leSupConstComunCond.text() == '' else self.leSupConstComunCond.text())
-        dataTemp['supConstComunEx'] = float(0 if self.leSupConstExcCond.text() == '' else self.leSupConstExcCond.text())
-        dataTemp['valorConstruccionPriv'] = float(0 if self.leValConstPrivCond.text() == '' else self.leValConstPrivCond.text())
-        dataTemp['valorConstruccionComun'] = float(0 if self.leValConstComunCond.text() == '' else self.leValConstComunCond.text())
-        dataTemp['valorConstExc'] = float(0 if self.leValConstExcCond.text() == '' else self.leValConstExcCond.text())
+        dataTemp['supConstruccionPrivada'] = float(0 if self.leSupConstPrivCond.text() == '' else self.leSupConstPrivCond.text().replace(',', '').replace('$', ''))
+        dataTemp['supConstruccionComun'] = float(0 if self.leSupConstComunCond.text() == '' else self.leSupConstComunCond.text().replace(',', '').replace('$', ''))
+        # dataTemp['supConstComunEx'] = float(0 if self.leSupConstExcCond.text() == '' else self.leSupConstExcCond.text().replace(',', '').replace('$', ''))
+        dataTemp['valorConstruccionPriv'] = float(0 if self.leValConstPrivCond.text() == '' else self.leValConstPrivCond.text().replace(',', '').replace('$', ''))
+        dataTemp['valorConstruccionComun'] = float(0 if self.leValConstComunCond.text() == '' else self.leValConstComunCond.text().replace(',', '').replace('$', ''))
+        #dataTemp['valorConstExc'] = float(0 if self.leValConstExcCond.text() == '' else self.leValConstExcCond.text().replace(',', '').replace('$', ''))
 
         # terreno
-        dataTemp['supTerPrivada'] = float(0 if self.leSupTerrPrivCond.text() == '' else self.leSupTerrPrivCond.text())
-        dataTemp['supTerComun'] = float(0 if self.leSupTerrComunCond.text() == '' else self.leSupTerrComunCond.text())
-        dataTemp['supTerrComunEx'] = float(0 if self.leSupTerrExcCond.text() == '' else self.leSupTerrExcCond.text())
-        dataTemp['valorTerrenoPriv'] = float(0 if self.leValTerrPrivCond.text() == '' else self.leValTerrPrivCond.text())
-        dataTemp['valorTerrenoComun'] = float(0 if self.leValTerrComunCond.text() == '' else self.leValTerrComunCond.text())
-        dataTemp['valorTerrExc'] = float(0 if self.leValTerrExcCond.text() == '' else self.leValTerrExcCond.text())
+        dataTemp['supTerPrivada'] = float(0 if self.leSupTerrPrivCond.text() == '' else self.leSupTerrPrivCond.text().replace(',', '').replace('$', ''))
+        dataTemp['supTerComun'] = float(0 if self.leSupTerrComunCond.text() == '' else self.leSupTerrComunCond.text().replace(',', '').replace('$', ''))
+        #dataTemp['supTerrComunEx'] = float(0 if self.leSupTerrExcCond.text() == '' else self.leSupTerrExcCond.text().replace(',', '').replace('$', ''))
+        dataTemp['valorTerrenoPriv'] = float(0 if self.leValTerrPrivCond.text() == '' else self.leValTerrPrivCond.text().replace(',', '').replace('$', ''))
+        dataTemp['valorTerrenoComun'] = float(0 if self.leValTerrComunCond.text() == '' else self.leValTerrComunCond.text().replace(',', '').replace('$', ''))
+        #dataTemp['valorTerrExc'] = float(0 if self.leValTerrExcCond.text() == '' else self.leValTerrExcCond.text().replace(',', '').replace('$', ''))
 
         # servicios de cuenta
         servicios = []
@@ -1179,6 +1197,50 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         self.cmbFraccionesC.setItemData(self.indexFraActualCondo, dataTemp)
 
+    def muestraComparativoFiscal(self):
+
+        # SUPERFICIES
+        # terreno
+        self.lbSupTerrPrivF.setText('0')
+        self.lbSupTerrComF.setText('0')
+
+        self.lbSupTerrTotalF.setText('0')
+
+        # construcciones
+        self.lbSupConsPrivF.setText('0')
+        self.lbSupConsComF.setText('0')
+
+        self.lbSupConsTotalF.setText('0')
+
+
+        # VALORES
+        # terreno
+        self.lbValTerrPrivF.setText('${:,.2f}'.format(0))
+        self.lbValTerrComF.setText('${:,.2f}'.format(0))
+
+        self.lbValTerrTotalF.setText('${:,.2f}'.format(0))
+
+        # construcciones
+        self.lbValConsPrivF.setText('${:,.2f}'.format(0))
+        self.lbValConsComF.setText('${:,.2f}'.format(0))
+
+        self.lbValConsTotalF.setText('${:,.2f}'.format(0))
+
+
+        # totales
+        self.lbValorCTotalF.setText('${:,.2f}'.format(0))
+
+        # impuesto
+        self.lbImpPredF.setText('${:,.2f}'.format(0))
+
+        # diferencia
+
+
+        print(self.lbImpPredC.text())
+
+        self.lbImpPredC.setText('')
+        impCatastro = 0 if self.lbImpPredC.text() == '' else float(self.lbImpPredC.text().replace('$', '').replace(',', ''))
+        self.lbDiferencia.setText('${:,.2f}'.format(impCatastro - 0))
 
     # --- M E T O D O S   CIERRA ---
 
@@ -1426,37 +1488,37 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             # - superficies
             self.leSupConstPrivCond.setText(str(dc['supConstruccionPrivada'] or 0))
             self.leSupConstComunCond.setText(str(dc['supConstruccionComun'] or 0))
-            self.leSupConstExcCond.setText(str(dc['supConstComunEx'] or 0))
+            # self.leSupConstExcCond.setText(str(dc['supConstComunEx'] or 0))
 
-            supC = (dc['supConstruccionPrivada'] or 0) + (dc['supConstruccionComun'] or 0) + (dc['supConstComunEx'] or 0)
+            supC = (dc['supConstruccionPrivada'] or 0) + (dc['supConstruccionComun'] or 0)# + (dc['supConstComunEx'] or 0)
 
             self.leSupConstTotalCond.setText(str(round(supC, 3)))
             # - valores
-            self.leValConstPrivCond.setText(str(dc['valorConstruccionPriv'] or 0))
-            self.leValConstComunCond.setText(str(dc['valorConstruccionComun'] or 0))
-            self.leValConstExcCond.setText(str(dc['valorConstExc'] or 0))
+            self.leValConstPrivCond.setText('${:,.2f}'.format(dc['valorConstruccionPriv'] or 0))
+            self.leValConstComunCond.setText('${:,.2f}'.format(dc['valorConstruccionComun'] or 0))
+            #self.leValConstExcCond.setText('${:,.2f}'.format(dc['valorConstExc'] or 0))
 
-            valC = (dc['valorConstruccionPriv'] or 0) + (dc['valorConstruccionComun'] or 0) + (dc['valorConstExc'] or 0)
+            valC = (dc['valorConstruccionPriv'] or 0) + (dc['valorConstruccionComun'] or 0)# + (dc['valorConstExc'] or 0)
 
-            self.leValConstTotalCond.setText(str(round(valC, 2)))
+            self.leValConstTotalCond.setText('${:,.2f}'.format(round(valC, 2)))
 
             # --- terreno
             # - superficies
             self.leSupTerrPrivCond.setText(str(dc['supTerPrivada'] or 0))
             self.leSupTerrComunCond.setText(str(dc['supTerComun'] or 0))
-            self.leSupTerrExcCond.setText(str(dc['supTerrComunEx'] or 0))
+            #self.leSupTerrExcCond.setText(str(dc['supTerrComunEx'] or 0))
 
-            supT = (dc['supTerPrivada'] or 0) + (dc['supTerComun'] or 0) + (dc['supTerrComunEx'] or 0)
+            supT = (dc['supTerPrivada'] or 0) + (dc['supTerComun'] or 0)# + (dc['supTerrComunEx'] or 0)
 
             self.leSupTerrTotalCond.setText(str(round(supT, 3)))
             # - valores
-            self.leValTerrPrivCond.setText(str(dc['valorTerrenoPriv'] or 0))
-            self.leValTerrComunCond.setText(str(dc['valorTerrenoComun'] or 0))
-            self.leValTerrExcCond.setText(str(dc['valorTerrExc'] or 0))
+            self.leValTerrPrivCond.setText('${:,.2f}'.format(dc['valorTerrenoPriv'] or 0))
+            self.leValTerrComunCond.setText('${:,.2f}'.format(dc['valorTerrenoComun'] or 0))
+            #self.leValTerrExcCond.setText('${:,.2f}'.format(dc['valorTerrExc'] or 0))
 
-            valT = (dc['valorTerrenoPriv'] or 0) + (dc['valorTerrenoComun'] or 0) + (dc['valorTerrExc'] or 0)
+            valT = (dc['valorTerrenoPriv'] or 0) + (dc['valorTerrenoComun'] or 0)# + (dc['valorTerrExc'] or 0)
 
-            self.leValTerrTotalCond.setText(str(round(valT, 2)))
+            self.leValTerrTotalCond.setText('${:,.2f}'.format(round(valT, 2)))
 
             # cargar servicios de condomino
             dataServCuenta = []
@@ -1526,6 +1588,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             elif tipoCond == 'V': # <-------- VERTICAL
                 self.btnAddConstC.setEnabled(False)
                 self.btnDelConstrC.setEnabled(False)
+
+            currentIndex = self.tabwCedula.currentIndex()
+            self.event_cambioPestania(index = currentIndex)
 
     def event_cambioUsoConstr(self):
 
@@ -1980,10 +2045,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             index = self.cmbVolumenC.currentIndex()
             data = self.cmbVolumenC.itemData(index)
 
-
-            print(index, self.indexVolActualCondo)
-
-
             if self.indexVolActualCondo != -1:
                 # se manda a llamar el metodo que guarda de manera temporal
                 self.constrTempCondo()
@@ -2145,6 +2206,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             nombreCalle = feat['calle']
             self.idCalleSelecc = feat['id']
+            self.valorCalle = feat['valor']
             self.lbNomCalle.setText(nombreCalle)
 
             # busca los servicios asociados a la calle
@@ -2398,7 +2460,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         fr = {}
         fr['volumen'] = int(self.cmbNvaFraccP.currentText())
         fr['numNivel'] = int(nivActualC)
-        fr['supConstFraccion'] = (sumSupConstxFracc / sumNumNivelConstxFracc) * int(nivActualC)
+        fr['supConstFraccion'] = round((sumSupConstxFracc / sumNumNivelConstxFracc) * int(nivActualC), 2)
         fr['idConstruccion'] = data['idConstruccion']
         fr['idPredio'] = data['idPredio']
         fr['cveCatastral'] = data['cveCatastral']
@@ -2763,7 +2825,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             newNivel = int(data1['numNivel']) + int(data2['numNivel'])
             newData['numNivel'] = newNivel
-            newData['supConstFraccion'] = (sumSupConstxFracc / sumNumNivelConstxFracc) * int(newNivel)
+            newData['supConstFraccion'] = round(((sumSupConstxFracc / sumNumNivelConstxFracc) * int(newNivel)), 2)
             newData['precioM2'] = 0
             newData['valorConst'] = 0
 
@@ -2794,7 +2856,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             fr = {}
             fr['volumen'] = int(data1['volumen'])
             fr['numNivel'] = newNivel
-            fr['supConstFraccion'] = (sumSupConstxFracc / sumNumNivelConstxFracc) * int(newNivel)
+            fr['supConstFraccion'] = round(((sumSupConstxFracc / sumNumNivelConstxFracc) * int(newNivel)), 2)
             fr['idConstruccion'] = data1['idConstruccion']
             fr['idPredio'] = data1['idPredio']
             fr['cveCatastral'] = data1['cveCatastral']
@@ -3023,6 +3085,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
     def event_guardarPredio(self):
         data = self.cedula
         
+        self.event_cambioPestania(index = 3)
+
         # --- VALIDACIONES --- 
         texto = self.pteObservaciones.toPlainText()
         if len(texto) >= 200:
@@ -3134,6 +3198,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         index = self.cmbTipoRelieve.currentIndex()
         idTipoRelieve = self.cmbTipoRelieve.itemData(index)
         data['idTipoRelieve'] = None if int(idTipoRelieve) == -1 else idTipoRelieve
+
+        # valores catastrales
+        data['valorCatastral'] = self.lbValorCTotalC.text().replace('$', '').replace(',', '')
+        data['valorConstruccion'] = self.lbValConsTotalC.text().replace('$', '').replace(',', '')
+        data['valorTerreno'] = self.lbValTerrTotalC.text().replace('$', '').replace(',', '')
 
         # nombre
         data['nombre'] = None if self.leNombre.text() == '' else self.leNombre.text()
@@ -3291,7 +3360,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         if resp == 'OK':
             self.createAlert('Guardado correcto', QMessageBox.Information)
 
-
     # -- GUARDAR   C O N D O M I N I O   SELECCIONADO
     def event_guardarCondominio(self):
 
@@ -3299,6 +3367,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         index = self.cmbCondo.currentIndex()
         tipoCond = self.cmbCondo.itemData(index) # <---- tipo de condominio
         clave = self.cmbCondo.currentText()      # <---- clave de condominio
+
+        self.event_cambioPestania(index = 5)
 
         # guardado temporal
         self.condoTemp(self.cveCatastral + clave)
@@ -3317,6 +3387,15 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         payload = []
         payload.append(condSave)
 
+        '''
+        condSave['valorConstruccionPriv'] = condSave['valorConstruccionPriv'].replace('$', '').replace(',', '')
+        condSave['valorConstruccionComun'] = condSave['valorConstruccionComun'].replace('$', '').replace(',', '')
+        condSave['valorConstExc'] = condSave['valorConstExc'].replace('$', '').replace(',', '')
+
+        condSave['valorTerrenoPriv'] = condSave['valorTerrenoPriv'].replace('$', '').replace(',', '')
+        condSave['valorTerrenoComun'] = condSave['valorTerrenoComun'].replace('$', '').replace(',', '')
+        condSave['valorTerrExc'] = condSave['valorTerrExc'].replace('$', '').replace(',', '')
+        '''
         # --- G U A R D A D O   D E   C O N D O M I N I O S ---
         resp = self.guardaCondominioWS(payload, tipoCond, url = self.CFG.urlGuardaCondominio)
 
@@ -3345,6 +3424,206 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             # - guardado de servicios de condominio
             self.createAlert('Guardado correcto', QMessageBox.Information)
+
+    # -- cambio de pestania para detectar cuando se abra la del COMPARATIVO
+    # -- para realizar calculos cada vez que se entre a dicha pestania
+    def event_cambioPestania(self, index): #changed!
+
+        # index = 5: se trata de la posicion de la pestania del COMPARATIVO cuando se abra un CONDOMINIO
+        # index = 3: se trata de la posicion de la pestania del COMPARATIVO cuando se abra un PREDIO
+        if index == 5 or index == 3:
+
+            # -- TRUE  -> es condominio
+            # -- FALSE -> NO es condominio
+            if self.cond:
+
+                # carga condominios en pestania 3 (Condominio)
+
+
+                # seleccion del condominio actual
+                index = self.cmbCondo.currentIndex()
+                tipoCond = self.cmbCondo.itemData(index) # <---- tipo de condominio
+                clave = self.cmbCondo.currentText()      # <---- clave de condominio
+
+                condSave = None
+
+                for cond in self.condominios:
+                    if cond['cveCat'] == self.cveCatastral + clave:
+                        condSave = cond
+                        break
+
+                if condSave is None:
+                    return
+
+                # autoguardado condominio
+                self.condoTemp(self.cveCatastral + clave)
+
+                # --- SUPERFICIES
+                # - TERRENO
+                self.lbSupTerrPrivC.setText(str(condSave['supTerPrivada'] or 0))
+                self.lbSupTerrComC.setText(str(condSave['supTerComun'] or 0))
+
+                supT = (condSave['supTerPrivada'] or 0) + (condSave['supTerComun'] or 0)
+
+                self.lbSupTerrTotalC.setText(str(round(supT, 2)))
+                # self.leSupConstTotalCond.setText(str(round(supT + (condSave['supTerrComunEx'] or 0), 2)))
+                self.leSupConstTotalCond.setText(str(round(supT)))
+
+                # - CONSTRUCCION
+                self.lbSupConsPrivC.setText(str(condSave['supConstruccionPrivada'] or 0))
+                self.lbSupConsComC.setText(str(condSave['supConstruccionComun'] or 0))
+
+                supC = (condSave['supConstruccionPrivada'] or 0) + (condSave['supConstruccionComun'] or 0)
+
+                self.lbSupConsTotalC.setText(str(round(supC, 2)))
+                #self.leSupConstTotalCond.setText(str(round(supC + (condSave['supConstComunEx'] or 0), 2)))
+                self.leSupConstTotalCond.setText(str(round(supC)))
+
+                # --- VALORES CATASTRALES
+                # - TERRENO
+                self.lbValTerrPrivC.setText('${:,.2f}'.format(condSave['valorTerrenoPriv']))
+                self.lbValTerrComC.setText('${:,.2f}'.format(condSave['valorTerrenoComun']))
+
+                valT = (condSave['valorTerrenoPriv'] or 0) + (condSave['valorTerrenoComun'] or 0)
+
+                self.lbValTerrTotalC.setText('${:,.2f}'.format(round(valT, 2)))
+                # self.leValTerrTotalCond.setText('${:,.2f}'.format(round(valT + (condSave['valorTerrExc'] or 0), 2)))
+                self.leValTerrTotalCond.setText('${:,.2f}'.format(round(valT)))
+
+                # - CONSTRUCCION
+
+
+
+
+                fracciones = []
+                valorConst = 0
+
+                # guardado temporal
+                self.constrTempCondo()
+                # se obtienen todos los volumenes de predios
+                count = self.cmbVolumenC.count()
+                for index in range(0, count):
+                    
+                    fracciones = self.cmbVolumenC.itemData(index)['fracciones']
+                    
+                    if len(fracciones) == 0:
+                        continue
+
+                    for fr in fracciones:
+                        valorConst += float(fr['valorConst'] or 0)
+
+                valorPRIVADO = '${:,.2f}'.format(round(valorConst, 2))
+
+
+                self.lbValConsTotalC.setText(valorPRIVADO)
+
+
+
+
+
+
+                # self.lbValConsPrivC.setText(str(condSave['valorConstruccionPriv']))
+                self.lbValConsPrivC.setText(valorPRIVADO)
+                self.leValConstPrivCond.setText(valorPRIVADO)
+
+                self.lbValConsComC.setText('${:,.2f}'.format(condSave['valorConstruccionComun']))
+
+                # valC = (condSave['valorConstruccionPriv'] or 0) + (condSave['valorConstruccionComun'] or 0)
+                valC = valorConst + (condSave['valorConstruccionComun'] or 0)
+
+                self.lbValConsTotalC.setText('${:,.2f}'.format(round(valC, 2)))
+                # self.leValConstTotalCond.setText('${:,.2f}'.format(round(valC + (condSave['valorConstExc'] or 0), 2)))
+                self.leValConstTotalCond.setText('${:,.2f}'.format(round(valC)))
+
+                # - TOTAL 
+                valorTotal = valT + valC
+                self.lbValorCTotalC.setText('${:,.2f}'.format(round(valorTotal, 2)))
+
+                self.lbImpPredC.setText('${:,.2f}'.format(round(((valorTotal * 12) / 1000), 2)))
+
+
+                #self.createAlert('es un condominio', QMessageBox.Information ) #changed!
+            else:
+
+                # --- S U P E R F I C I E S
+                # - TERRENO
+                self.lbSupTerrTotalC.setText(str(self.cedula['supTerr']))
+                # - CONSTRUCCION
+                count = self.cmbVolumenP.count()
+                superficie = 0
+
+                for index in range(0, count):
+                    superficie += self.cmbVolumenP.itemData(index)['supConst'] or 0
+
+                self.lbSupConsTotalC.setText(str(0 if superficie is None else round(superficie, 2)))
+
+                # --- VALORES CATASTRALES
+                # - TERRENO
+                superficie = self.cedula['supTerr']
+                valorTerr = self.valorCalle * superficie
+
+                valorTerrS = '${:,.2f}'.format(round(valorTerr, 2))
+
+                self.lbValTerrTotalC.setText(valorTerrS)
+
+                # - CONSTRUCCIONES
+                fracciones = []
+                valorConst = 0
+
+                # guardado temporal
+                self.constrTemp()
+                # se obtienen todos los volumenes de predios
+                count = self.cmbVolumenP.count()
+                idPredio = None
+                for index in range(0, count):
+                    
+                    fracciones = self.cmbVolumenP.itemData(index)['fracciones']
+                    
+                    if len(fracciones) == 0:
+                        continue
+
+                    for fr in fracciones:
+                        valorConst += float(fr['valorConst'] or 0)
+
+                valorS = '${:,.2f}'.format(round(valorConst, 2))
+                self.lbValConsTotalC.setText(valorS)
+
+                # totales 
+                valorTotal = valorTerr + valorConst
+                self.lbValorCTotalC.setText('${:,.2f}'.format(round(valorTerr + valorConst, 2)))
+                # impuesto predial
+                self.lbImpPredC.setText('${:,.2f}'.format(round(((valorTotal * 12) / 1000), 2)))
+
+                # self.createAlert('NOOOOO es un condominio', QMessageBox.Information ) #changed!
+
+            # --- calcula y muestra informacion del fiscal ----> Deshabilitado por mientras, no se cuenta con la info de padron <----
+            self.muestraComparativoFiscal()
+
+        # index = 6: se trata de la posicion de la pestania del INDIVISOS cuando se abra un CONDOMINIO
+        if index == 6:
+            pass
+
+
+    # --- INDIVISOS ---
+    # - bloquear o desbloquear la tabla de indivisos
+    def event_bloqDesbloc(self):
+
+        if self.bloqueado:
+            self.btnBlocDesbloc.setText('Bloquear')
+            self.twIndivisos.setEnabled(False)
+            self.lePrivadaC.show()
+            self.leComunC.show()
+            self.lePrivadaT.show()
+            self.leComunT.show()
+            self.bloqueado = False
+        else:
+            self.btnBlocDesbloc.setText('Desbloquear')
+            self.twIndivisos.setEnabled(True)
+            self.lePrivadaC.hide()
+            self.leComunC.hide()
+            self.lePrivadaT.hide()
+            self.leComunT.hide()
+            self.bloqueado = True
 
     # --- CERRAR E V E N T O S   Widget ---
 
@@ -3462,6 +3741,32 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                     result.append(d)
 
         return result
+
+    # - descomone clave
+    def descomponeCveCata(self, cveCata):
+
+        clave = cveCata[0:2] + '-'
+        clave += cveCata[2:5] + '-'
+        clave += cveCata[5:8] + '-'
+        clave += cveCata[8:10] + '-'
+        clave += cveCata[10:14] + '-'
+        clave += cveCata[14:17] + '-'
+        clave += cveCata[17:20] + '-'
+        clave += cveCata[20:25]
+
+        return clave
+
+    # - muestra clave global
+    def muestraClaveGlobal(self, cveCata):
+
+        self.lbEdo.setText(cveCata[0:2])
+        self.lbRegCat.setText(cveCata[2:5])
+        self.lbMpio.setText(cveCata[5:8])
+        self.lbSecc.setText(cveCata[8:10])
+        self.lbLoc.setText(cveCata[10:14])
+        self.lbSec.setText(cveCata[14:17])
+        self.lbMza.setText(cveCata[17:20])
+        self.lbPredio.setText(cveCata[20:25])
 
     # - Crea una alerta para ser mostrada como ventana de advertencia
     def createAlert(self, mensaje, icono = QMessageBox().Critical, titulo = 'Cedula'):
