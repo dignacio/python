@@ -270,7 +270,7 @@ class EliminarPoligonos:
                 elif nombreCapa == 'horizontales.geom':
                     mensajeCapa = 'Condominio horizontal con clave: ' + str(feat['clave']) + '\nNOTA: Se eliminaran todos los numeros oficiales del condominio'
                 elif nombreCapa == 'horizontales.num':
-                    mensajeCapa = 'Condominio horizontal con numero oficial: ' + str(feat['numOfi'])
+                    mensajeCapa = 'Condominio horizontal con numero oficial: ' + str(feat['num_ofi'])
                 elif nombreCapa == 'verticales':
                     mensajeCapa = 'Condominio vertical con clave: ' + str(feat['clave']) +  '\nNOTA: Se eliminaran todas las claves verticales del condominio'
                 elif nombreCapa == 'cves_verticales':
@@ -445,7 +445,7 @@ class EliminarPoligonos:
                 feat['numExt'] = puntoOficial['numExt']
                 feat['geom_num'] = puntoOficial.geometry().asWkt()
             elif capa == self.capaHorizontalesGeom:
-                feat['numOfi'] = punto['numOfi']
+                feat['num_ofi'] = punto['num_ofi']
                 feat['geom_num'] = punto.geometry().asWkt()
             
             capaPuntos.startEditing()

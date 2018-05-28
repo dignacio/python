@@ -253,7 +253,7 @@ Predio</string>
              <string notr="true"/>
             </property>
             <property name="currentIndex">
-             <number>5</number>
+             <number>6</number>
             </property>
             <widget class="QWidget" name="tUbicacion">
              <attribute name="title">
@@ -4878,7 +4878,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-16</y>
                    <width>944</width>
                    <height>640</height>
                   </rect>
@@ -5200,6 +5200,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <pointsize>12</pointsize>
                         </font>
                        </property>
+                       <property name="maxLength">
+                        <number>10</number>
+                       </property>
                       </widget>
                      </item>
                      <item row="0" column="7" colspan="2" alignment="Qt::AlignHCenter">
@@ -5320,6 +5323,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <pointsize>12</pointsize>
                         </font>
                        </property>
+                       <property name="maxLength">
+                        <number>10</number>
+                       </property>
                       </widget>
                      </item>
                      <item row="2" column="8">
@@ -5329,6 +5335,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                          <pointsize>12</pointsize>
                         </font>
                        </property>
+                       <property name="maxLength">
+                        <number>10</number>
+                       </property>
                       </widget>
                      </item>
                      <item row="1" column="8">
@@ -5337,6 +5346,9 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                         <font>
                          <pointsize>12</pointsize>
                         </font>
+                       </property>
+                       <property name="maxLength">
+                        <number>10</number>
                        </property>
                       </widget>
                      </item>
@@ -5425,35 +5437,56 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                      <property name="text">
                       <string>Cuenta/Predio</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignVCenter</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>% Indiviso</string>
+                     </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignVCenter</set>
                      </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Condominio</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignVCenter</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Sup. Const. Priv.</string>
+                     </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignVCenter</set>
                      </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Sup. Const. Comun</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignVCenter</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Sup. Terr. Priv.</string>
                      </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignVCenter</set>
+                     </property>
                     </column>
                     <column>
                      <property name="text">
                       <string>Sup. Terr. Comun</string>
+                     </property>
+                     <property name="textAlignment">
+                      <set>AlignLeading|AlignVCenter</set>
                      </property>
                     </column>
                    </widget>
@@ -5912,7 +5945,7 @@ de Actualizacion:   </string>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

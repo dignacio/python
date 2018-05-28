@@ -102,7 +102,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.constrCond = []
         self.servCuentaCond = []
 
-        self.bloqueado = False
+        self.bloqueado = True
+
+        self.indivisos = []
 
         self.setupUi(self)
 
@@ -146,6 +148,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.leValTerrComunCond.setValidator(QDoubleValidator(0.99,99.99,2))
         #self.leValTerrExcCond.setValidator(QDoubleValidator(0.99,99.99,2))
         self.leValTerrTotalCond.setValidator(QDoubleValidator(0.99,99.99,2))
+
+        self.lePrivadaC.setValidator(QDoubleValidator(0.999,99.999,3))
+        self.leComunC.setValidator(QDoubleValidator(0.999,99.999,3))
+        self.lePrivadaT.setValidator(QDoubleValidator(0.999,99.999,3))
+        self.leComunT.setValidator(QDoubleValidator(0.999,99.999,3))
         
         self.leDispPerim.setValidator(QDoubleValidator(0.99,99.99,2))
         self.twColindancias.setColumnHidden(0, True)
@@ -172,6 +179,15 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
         header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
 
+        header = self.twIndivisos.horizontalHeader()
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(6, QtWidgets.QHeaderView.ResizeToContents)
+        
         self.twCaracteristicasC.setColumnHidden(0, True)
         self.twCaracteristicasC.setColumnHidden(2, True)
         self.twCaracteristicasC.setColumnHidden(4, True)
@@ -197,6 +213,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         header = self.twServiciosCondo.horizontalHeader()
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         self.twServiciosCondo.setColumnHidden(1, True)
+
+        self.twIndivisos.cellChanged.connect(self.event_updateIndivisos)
 
         self.leNivPropP.setAlignment(Qt.AlignCenter)
         self.leNivPropP.setValidator(QIntValidator(0,99,None))
@@ -256,8 +274,13 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.btnFusionarC.clicked.connect(self.event_fusionarFraccCond)
 
         self.btnBlocDesbloc.clicked.connect(self.event_bloqDesbloc)
+        self.btnActualizaInfo.clicked.connect(self.event_actualizaInfo)
 
         #self.pteObservaciones.keyPressEvent(self.event_keyPressObservaciones)
+        self.lePrivadaC.textChanged.connect(self.event_textoCambioPrivC)
+        self.leComunC.textChanged.connect(self.event_textoCambioPrivC)
+        self.lePrivadaT.textChanged.connect(self.event_textoCambioPrivC)
+        self.leComunT.textChanged.connect(self.event_textoCambioPrivC)
 
         # Eventos - construcciones predios
         self.cmbVolumenP.currentIndexChanged.connect(self.event_cambioVolPred)
@@ -297,11 +320,18 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             dataCond = self.consumeWSGeneral(self.CFG.urlCedCondominios + self.cveCatastral)
             self.defineComboCond(dataCond)
 
+            # carga indivisos
+            self.cargaIndivisos()
+
             # se selecciona el condominio abierto
             if len(self.cveCondSel) > 0:
                 index = self.cmbCondo.findText(self.cveCondSel, QtCore.Qt.MatchFixedString)
                 if index >= 0:
                     self.cmbCondo.setCurrentIndex(index)
+
+            self.event_bloqDesbloc()
+            # indivisos
+            self.factorIndiviso()
         
         else: # P R E D I O S
 
@@ -363,7 +393,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.tabwCedula.blockSignals(True)
         self.tabwCedula.currentChanged.connect(self.event_cambioPestania)
         self.tabwCedula.blockSignals(False)
-        self.twIndivisos.setEnabled(False)
 
     # --- M E T O D O S ---
 
@@ -393,6 +422,75 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             clave = dc['label'][25:]
             self.cmbCondo.addItem(clave, dc['other'])
+
+    # - carga los indivisos de los condominios
+    def cargaIndivisos(self):
+
+        self.indivisos.clear()
+        # consume ws para obtener info
+        # llena self.indivisos
+        self.indivisos = self.obtieneIndivisos(self.cveCatastral)
+
+        supConstPriv = 0
+        supConstComun = 0
+        supTerrPriv = 0
+        supTerrComun = 0
+
+        for ind in self.indivisos:
+            supConstPriv += ind['supConstPriv'] or 0
+            supConstComun += ind['supConstComun']or 0
+            supTerrPriv += ind['supTerrPriv'] or 0
+            supTerrComun += ind['supTerrComun'] or 0
+
+        '''
+        self.lbPrivadaC.setText(str(supConstPriv))
+        self.lbComunC.setText(str(supConstComun))
+        self.lbPrivadaT.setText(str(supTerrPriv))
+        self.lbComunT.setText(str(supTerrComun))
+        '''
+        self.lePrivadaC.setText(str(round(supConstPriv, 3)))
+        self.leComunC.setText(str(round(supConstComun, 3)))
+        self.lePrivadaT.setText(str(round(supTerrPriv, 3)))
+        self.leComunT.setText(str(round(supTerrComun, 3)))
+
+        # carga informacion en la tabla
+        for ind in self.indivisos:
+
+            rowPosition = self.twIndivisos.rowCount()
+            self.twIndivisos.insertRow(rowPosition)
+
+            # cuenta
+            item0 = QtWidgets.QTableWidgetItem(ind['cuenta'])
+            item0.setFlags(QtCore.Qt.ItemIsEnabled)
+
+            self.twIndivisos.setItem(rowPosition, 0, item0)
+
+            # % indiviso
+            #self.twIndivisos.setCellWidget(rowPosition, 1, self.spinBoxQTableWidgetItem(0, 100, 5, ind['factor']))
+            self.twIndivisos.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(str(ind['factor'])))
+
+            # condominio (tipo)
+            item2 = QtWidgets.QTableWidgetItem(ind['tipo'])
+            item2.setFlags(QtCore.Qt.ItemIsEnabled)
+
+            self.twIndivisos.setItem(rowPosition, 2, item2)
+
+            # superficie de Construccion Privada
+            #self.twIndivisos.setCellWidget(rowPosition, 3, self.spinBoxQTableWidgetItem(0, 999999, 3, ind['supConstPriv']))
+            self.twIndivisos.setItem(rowPosition, 3, QtWidgets.QTableWidgetItem(str(ind['supConstPriv'])))
+
+            # superficie de Construccion comun
+            #self.twIndivisos.setCellWidget(rowPosition, 4, self.spinBoxQTableWidgetItem(0, 999999, 3, ind['supConstComun']))
+            self.twIndivisos.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(str(ind['supConstComun'])))
+
+            # superficie de terreno privada
+            #self.twIndivisos.setCellWidget(rowPosition, 5, self.spinBoxQTableWidgetItem(0, 999999, 3, ind['supTerrPriv']))
+            self.twIndivisos.setItem(rowPosition, 5, QtWidgets.QTableWidgetItem(str(ind['supTerrPriv'])))
+
+            # superficie de terreno comun
+            #self.twIndivisos.setCellWidget(rowPosition, 6, self.spinBoxQTableWidgetItem(0, 999999, 3, ind['supTerrComun']))
+            self.twIndivisos.setItem(rowPosition, 6, QtWidgets.QTableWidgetItem(str(ind['supTerrComun'])))
+
 
     # - carga la informacion de los catalogos
     def cargaCatalogos(self, dataCat):
@@ -528,6 +626,12 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
     def obtieneCatMpio(self):
         return self.consumeWSGeneral(self.CFG.urlMunicipio)
+
+    def obtieneIndivisos(self, cveCata):
+        return self.consumeWSGeneral(self.CFG.urlIndivisos + cveCata)
+
+    def guardaIndivisos(self, listaInd):
+        return self.consumeWSGuardadoIndiv(listaInd, self.CFG.urlGuardaIndivisos)
 
     # - carga la informacion de las construcciones
     def cargaConstrPred(self, dataConstP):
@@ -1234,10 +1338,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.lbImpPredF.setText('${:,.2f}'.format(0))
 
         # diferencia
-
-
-        print(self.lbImpPredC.text())
-
         self.lbImpPredC.setText('')
         impCatastro = 0 if self.lbImpPredC.text() == '' else float(self.lbImpPredC.text().replace('$', '').replace(',', ''))
         self.lbDiferencia.setText('${:,.2f}'.format(impCatastro - 0))
@@ -1329,6 +1429,26 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         return json.loads(data)
 
+    def consumeWSGuardadoIndiv(self, listaInd, url):
+
+        data = ""
+        jsonListInd = json.dumps(listaInd)
+
+        try:
+            self.headers['Authorization'] = self.UTI.obtenerToken()
+            response = requests.put(url, headers = self.headers, data = jsonListInd)
+        except requests.exceptions.RequestException as e:
+            self.createAlert("Error de servidor, 'consumeWSGuardadoIndiv()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
+            return
+
+        if response.status_code == 200:
+            data = response.content
+        else:
+            self.createAlert('Error en peticion "consumeWSGuardadoIndiv()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
+            return response.text
+
+        return 'OK'
+
     # - manda al ws un predio a guardar
     def guardaPredioWS(self, predio, url):
         data = ""
@@ -1417,6 +1537,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
     # -- metodo general que se puede usar para cualquier cosa
     # * cerrar la ventana
     def event_hasAlgo(self):
+
         self.errorCerrar = True
         self.close()
         # clave = "-";
@@ -3599,11 +3720,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             # --- calcula y muestra informacion del fiscal ----> Deshabilitado por mientras, no se cuenta con la info de padron <----
             self.muestraComparativoFiscal()
 
-        # index = 6: se trata de la posicion de la pestania del INDIVISOS cuando se abra un CONDOMINIO
-        if index == 6:
-            pass
-
-
     # --- INDIVISOS ---
     # - bloquear o desbloquear la tabla de indivisos
     def event_bloqDesbloc(self):
@@ -3617,17 +3733,154 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.leComunT.show()
             self.bloqueado = False
         else:
+
+            if self.lePrivadaC.text() == '' or self.lePrivadaC.text() == '' or self.lePrivadaC.text() == '' or self.lePrivadaC.text() == '':
+                self.createAlert('Defina todas las superficies')
+                return
+
             self.btnBlocDesbloc.setText('Desbloquear')
             self.twIndivisos.setEnabled(True)
             self.lePrivadaC.hide()
             self.leComunC.hide()
             self.lePrivadaT.hide()
             self.leComunT.hide()
+
+            self.lbPrivadaC.setText(self.lePrivadaC.text())
+            self.lbComunC.setText(self.leComunC.text())
+            self.lbPrivadaT.setText(self.lePrivadaT.text())
+            self.lbComunT.setText(self.leComunT.text())
+
             self.bloqueado = True
+
+    # 
+    def event_updateIndivisos(self):
+
+        col = self.twIndivisos.currentColumn()
+        row = self.twIndivisos.currentRow()
+
+        if row == -1 or col == -1:
+            return
+
+        item = self.twIndivisos.item(row, col).text()
+
+        flotante = self.detectFloats(item)
+
+        if not flotante:
+            self.twIndivisos.setItem(row, col, QtWidgets.QTableWidgetItem('0'))
+
+        # indivisos
+        self.factorIndiviso()
+
+    def event_spinBox(self, cadena):
+
+        col = self.twIndivisos.currentColumn()
+        row = self.twIndivisos.currentRow()
+
+        # print(row, col, cadena)
+
+    def event_textoCambioPrivC(self, texto):
+        self.totalesSuperf(self.lePrivadaC.text(), self.leComunC.text(), 'C')
+        self.totalesSuperf(self.lePrivadaT.text(), self.leComunT.text(), 'T')
+
+    def event_actualizaInfo(self):
+
+        # calcula los porcentajes de indivisos
+        if self.twIndivisos.rowCount() > 0:       
+
+            totalInd = 0 if self.lbTotal.text() == '' else float(self.lbTotal.text())
+
+            if self.lbTotal.text() != '1.0':
+                reply = QMessageBox.question(self,'Condominios', 'EL total de los indivisos no es la unidad ¿Desea continuar con el guardado?', QMessageBox.Yes, QMessageBox.No)
+                if reply != QMessageBox.Yes:
+                    return
+
+            tablaIndivisos = self.twIndivisos
+            listaInd = []
+
+            for x in range(0, tablaIndivisos.rowCount()):
+
+                indiviso = {}
+                indiviso['cuenta'] = tablaIndivisos.item(x,0).text()
+                indiviso['factor'] = 0 if tablaIndivisos.item(x,1).text() == '' else float(tablaIndivisos.item(x,1).text())
+                indiviso['tipo'] = tablaIndivisos.item(x,2).text()
+                indiviso['supConstPriv'] = 0 if tablaIndivisos.item(x,3).text() == '' else float(tablaIndivisos.item(x,3).text())
+                indiviso['supConstComun'] = 0 if tablaIndivisos.item(x,4).text() == '' else float(tablaIndivisos.item(x,4).text())
+                indiviso['supTerrPriv'] = 0 if tablaIndivisos.item(x,5).text() == '' else float(tablaIndivisos.item(x,5).text())
+                indiviso['supTerrComun'] = 0 if tablaIndivisos.item(x,6).text() == '' else float(tablaIndivisos.item(x,6).text())
+
+                listaInd.append(indiviso)
+
+            respuesta = self.guardaIndivisos(listaInd)
+
+            if respuesta == 'OK':
+                self.createAlert('Proceso Concluido', QMessageBox.Information)
 
     # --- CERRAR E V E N T O S   Widget ---
 
     # --- U T I L I D A D E S ---
+
+    # calculo indivisos
+    def factorIndiviso(self):
+
+        # calcula los porcentajes de indivisos
+        if self.twIndivisos.rowCount() > 0:       
+
+            tablaIndivisos = self.twIndivisos
+
+            indiviso = 0
+
+            for x in range(0, tablaIndivisos.rowCount()):
+
+                indiviso += 0 if tablaIndivisos.item(x,1).text() == '' else float(tablaIndivisos.item(x,1).text())
+
+            ind = round((indiviso / 100), 3)
+            self.lbTotal.setText(str(ind))
+            self.lbResiduo.setText(str(round(1 - ind, 3)))
+
+    # - total Construcciones de condominio
+    def totalesSuperf(self, priv = '0', comu = '0', tipo = 'C'):
+
+        total = 0
+
+        try:
+            privada = float(priv)
+        except Exception:
+            privada = 0
+
+        try:
+            comun = float(comu)
+        except Exception:
+            comun = 0
+
+        total = round((privada + comun), 3)
+
+        if tipo == 'C':
+            self.lbTotalC.setText(str(total))
+        elif tipo == 'T':
+            self.lbTotalT.setText(str(total))
+
+    # - detectar flotantes
+    def detectFloats(self, number):
+
+        try:
+            number = float(number)
+        except Exception:
+            return False
+        
+        return True
+
+    # - spinBox
+    def spinBoxQTableWidgetItem(self, rangeInit, rangeEnd, decimals, sBValue):
+
+        spinvalue = QtWidgets.QDoubleSpinBox()
+        spinvalue.setRange(rangeInit, rangeEnd)
+        spinvalue.setDecimals(decimals)
+        spinvalue.setSingleStep(0.01);
+        spinvalue.setValue(sBValue)
+
+        spinvalue.valueChanged.connect(self.event_spinBox)
+
+        return spinvalue
 
     def subdiv_fusion(self, condo = False):
 
@@ -3782,3 +4035,4 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.msg.show()
          # Run the dialog event loop
         result = self.msg.exec_()
+

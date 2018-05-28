@@ -503,7 +503,7 @@ class actualizacioncatastralv2:
             etiquetaField = "numExt"
             colorCapa = QColor(0,255,0)
         elif mem_layer.id() == self.obtenerIdCapa("horizontales.num"):
-            etiquetaField = "numOfi"
+            etiquetaField = "num_ofi"
             colorCapa = QColor(198,140,33)
 
         type(data)
@@ -763,7 +763,7 @@ class actualizacioncatastralv2:
                     self.listaAtributos = ['clave']
                     self.listaEtiquetas = ['Clave']
                 elif self.capaActiva.id() == self.obtenerIdCapa('horizontales.num'):
-                    self.listaAtributos = ['numOfi']
+                    self.listaAtributos = ['num_ofi']
                     self.listaEtiquetas = ['Numero Oficial']
                 elif self.capaActiva.id() == self.obtenerIdCapa('verticales'):
                     self.listaAtributos = ['clave']
@@ -1338,7 +1338,7 @@ font: 10pt "Bahnschrift";"""
 
             lenText = len(texto.strip())
             if lenText < 21 and lenText > 0: #Validacion de longitud
-                feat['numOfi'] = texto
+                feat['num_ofi'] = texto
             else:
                 banderaCompleta = False
             

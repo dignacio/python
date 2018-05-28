@@ -70,3 +70,5 @@ class Configuracion():
         self.urlGuardaVolumenP = self.servidorIP + 'featureswkn/api/cedula/construccion/'
         self.urlVerifSiTieneGeomConstP = self.servidorIP + 'busquedasimplewkn/api/construccion/geom/'
         self.urlGuardaCondominio = self.servidorIP + 'featureswkn/api/cedula/condominios/'
+        self.urlIndivisos = self.servidorIP + 'busquedasimplewkn/api/cedula/condo/indivisos/'
+        self.urlGuardaIndivisos = self.servidorIP + 'featureswkn/api/condominios/updateIndiviso'
