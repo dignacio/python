@@ -398,13 +398,13 @@ class actualizacioncatastralv2:
             
             if not self.pintarUnaCapa(self.xPredGeom):
                 return
-            
+            """
             if not self.pintarNum(self.xPredNum):
                 return
-            """
+            
             if not self.pintarUnaCapa(self.xConst):
                 return
-            """
+            
             if not self.pintarUnaCapa(self.xHoriGeom):
                 return
             
@@ -415,7 +415,7 @@ class actualizacioncatastralv2:
                 return
             if not self.pintarUnaCapa(self.xCvesVert):
                 return
-            
+            """
             print ("Capas cargadas con exito")
 
         else:
