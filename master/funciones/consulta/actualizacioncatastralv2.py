@@ -143,7 +143,7 @@ class actualizacioncatastralv2:
                 self.idManzana = ' '
 
                 #Modo desarrollor
-                self.modoDesarrollo = True
+                self.modoDesarrollo = False
                 
                 if self.capaEnEdicion != '':
 
@@ -866,6 +866,10 @@ class actualizacioncatastralv2:
                 self.cambiarStatusCedula("Abriendo cedula...", "ok")
 
                 feat = features[0]
+
+                if len(feat['cve_cat']) < 25:
+                    self.UTI.mostrarAlerta('La clave catastral tiene un formato incorrecto, guarde la manzana e intente de nuevo', QMessageBox().Warning, 'Cedula Catastral')
+                    return
 
                 #validar si la clave ya existe
                 for key, value in self.dockwidget.lista.items():
