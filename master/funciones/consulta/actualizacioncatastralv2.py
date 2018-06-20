@@ -398,19 +398,19 @@ class actualizacioncatastralv2:
             
             if not self.pintarUnaCapa(self.xPredGeom):
                 return
-            """
+            
             if not self.pintarNum(self.xPredNum):
                 return
-            
+            """
             if not self.pintarUnaCapa(self.xConst):
                 return
-            
+            """
             if not self.pintarUnaCapa(self.xHoriGeom):
                 return
             
             if not self.pintarNum(self.xHoriNum):
                 return
-            
+            """
             if not self.pintarUnaCapa(self.xVert):
                 return
             if not self.pintarUnaCapa(self.xCvesVert):
@@ -435,7 +435,7 @@ class actualizacioncatastralv2:
             return False
         
         data = self.obtenerAPintar(mem_layer.id())
-
+        print(data)
 
         type(data)
         srid = QSettings().value("srid")
@@ -674,9 +674,12 @@ class actualizacioncatastralv2:
         try:
             headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
 
+            print(url)
+
             if self.traducirIdCapa(idCapa) == 'predios.num' or self.traducirIdCapa(idCapa) == 'horizontales.num':
                 response = requests.get(url + self.idManzana, headers = headers)
             else:
+                print(self.payload)
                 response = requests.post(url + self.idManzana, headers = headers, data = self.payload)
 
 

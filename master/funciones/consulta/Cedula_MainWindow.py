@@ -424,6 +424,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.tabwCedula.currentChanged.connect(self.event_cambioPestania)
         self.tabwCedula.blockSignals(False)
 
+        self.progressBar.hide()
+
     # --- M E T O D O S ---
 
     def disenioCombosCondos(self):
@@ -743,8 +745,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         except Exception as e:
             self.errorCerrar = True
             self.createAlert('Error durante la carga de informacion "cargaConstrPred()": ' + str(e))
-
-        
 
     # - carga la informacion de las construcciones condominios
     def cargaConstrCondo(self, dataConstC):
@@ -3994,7 +3994,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         if not checked:
             return
 
-        self.scaleFactor = 4
+        self.scaleFactor = 1
         self.countID = 0
         self.countIM = 0
         self.countIF = 0
@@ -4438,3 +4438,30 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
          # Run the dialog event loop
         result = self.msg.exec_()
 
+
+'''
+class progressThread(QThread):
+
+    progress_update = QtCore.Signal(int) # or pyqtSignal(int)
+
+    def __init__(self):
+        QThread.__init__(self)
+
+    def __del__(self):
+        self.wait()
+
+
+    def run(self):
+        # your logic here
+        while 1:      
+            maxVal = 1 # NOTE THIS CHANGED to 1 since updateProgressBar was updating the value by 1 every time
+            self.progress_update.emit(maxVal) # self.emit(SIGNAL('PROGRESS'), maxVal)
+            # Tell the thread to sleep for 1 second and let other things run
+            time.sleep(1)
+
+
+    def updateProgressBar(self, maxVal):
+        self.progressBar.setValue(self.ui.progressBar.value() + maxVal)
+        if maxVal == 0:
+            self.ui.progressBar.setValue(100)
+'''

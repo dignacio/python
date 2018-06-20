@@ -27,10 +27,10 @@ class Configuracion():
         self.urlTipoConst = self.servidorIP + 'configuracion/api/cat-tipo-construccions/?page=0&size=1000'
         self.urlValoresTerrenos = self.servidorIP + 'configuracion/api/cat-valores-terrenos?page=0&size=1000'
         self.urlTipoAsentamiento = self.servidorIP + 'configuracion/api/cat-tipo-asentamiento-humanos?page=0&size=1000'
-        self.urlTipoVialidad = self.servidorIP + 'configuracion/api/cat-tipo-asentamiento-humanos?page=0&size=1000'
+        self.urlTipoVialidad = self.servidorIP + 'configuracion/api/cat-vialidads?page=0&size=1000'
         self.urlServCalle = self.servidorIP + 'busquedasimplewkn/api/cat-servicio/calle/'
         self.urlConsultaReferencia = self.servidorIP + 'busquedasimplewkn/api/busqueda/simple'
-        
+
         #Urls para obtener campos dinamicos
         self.urlCamposCalles = self.servidorIP + 'busquedasimplewkn/api/thematics/lista/campos/sig:e_calle'
         self.urlCamposCapas = self.servidorIP + 'busquedasimplewkn/api/thematics/lista/campos/'

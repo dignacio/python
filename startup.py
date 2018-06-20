@@ -336,7 +336,7 @@ class Startup():
                 elif capa.id() == self.obtenerIdCapa('horizontales.geom'):
                     punto = self.exteriorCondom(feat.geometry())
                     if punto != None:
-                        atributos['numOfi'] = punto['numOfi']
+                        atributos['num_ofi'] = punto['num_ofi']
                         atributos['geom_num'] = punto.geometry().asWkt()
                     
             campos['attr'] = atributos
@@ -458,7 +458,7 @@ class Startup():
             etiquetaField = "clave"
             colorCapa = QColor(198,140,33)
         elif nombreCapa == "horizontales.num":
-            etiquetaField = "numOfi"
+            etiquetaField = "num_ofi"
             colorCapa = QColor(198,140,33)
         elif nombreCapa == "verticales":
             etiquetaField = "clave"
@@ -858,11 +858,11 @@ class Startup():
         if capaParam == 'predios.num':
             stringCapa = 'Point?crs=epsg:' +str(QSettings().value('srid')) +'&field=numExt:string(50)'
         elif capaParam == 'horizontales.num':
-            stringCapa = 'Point?crs=epsg:' +str(QSettings().value('srid')) +'&field=numOfi:string(50)'
+            stringCapa = 'Point?crs=epsg:' +str(QSettings().value('srid')) +'&field=num_ofi:string(50)'
 
         else:
             stringTabla = diccionarioTabla[capaParam]
-            urlCapas = 'http://192.168.0.40:8080/busquedasimplewkn/api/thematics/lista/campos/' + stringTabla
+            urlCapas = 'http://192.168.0.40:8080/busquedasimplewkn/api/thematics/lista/campos/' + stringTabla + '/false'
             respuesta = requests.post(urlCapas, headers = headers)
             
             stringCapa = tipoGeom + "?crs=epsg:" + str(QSettings().value('srid'))
