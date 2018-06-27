@@ -401,21 +401,21 @@ class actualizacioncatastralv2:
             
             if not self.pintarNum(self.xPredNum):
                 return
-            """
+            
             if not self.pintarUnaCapa(self.xConst):
                 return
-            """
+            
             if not self.pintarUnaCapa(self.xHoriGeom):
                 return
             
             if not self.pintarNum(self.xHoriNum):
                 return
-            """
+            
             if not self.pintarUnaCapa(self.xVert):
                 return
             if not self.pintarUnaCapa(self.xCvesVert):
                 return
-            """
+            
             print ("Capas cargadas con exito")
 
         else:

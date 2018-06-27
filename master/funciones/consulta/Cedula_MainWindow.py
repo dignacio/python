@@ -8,13 +8,13 @@ from PyQt5 import QtWidgets
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QMessageBox, QListView, QGraphicsView, QGraphicsScene, QFileDialog
+from PyQt5.QtWidgets import QMessageBox, QListView, QGraphicsView, QGraphicsScene, QFileDialog, QVBoxLayout
 
 from qgis.utils import iface
 from qgis.core import QgsProject
 from .fusion_dialog import fusionDialog
 
-import os, json, requests, sys, datetime, base64
+import os, json, requests, sys, datetime, base64, time
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'mainWindow.ui'))
@@ -424,9 +424,54 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.tabwCedula.currentChanged.connect(self.event_cambioPestania)
         self.tabwCedula.blockSignals(False)
 
-        self.progressBar.hide()
+
+        '''
+        #self.progressBar.hide()
+        #self.pushButton_2.hide()
+        self.pushButton_2.clicked.connect(self.progressbar)
+        #self.pushButton.hide()
+
+
+
+
+
+        self.movie = QMovie("C:\\Users\\cianet45\\Downloads\\qnvjMmA.gif", QByteArray(), self)
+
+         # Create the layout
+        main_layout = QVBoxLayout()
+        main_layout.addWidget(self.label_9)
+
+        self.setLayout(main_layout)
+
+        # Add the QMovie object to the label
+        self.movie.setCacheMode(QMovie.CacheAll)
+        self.movie.setSpeed(100)
+        self.label_9.setMovie(self.movie)
+        #self.movie.start()
+
+
+        '''
 
     # --- M E T O D O S ---
+
+    def progressbar(self):
+
+        
+        self.completed = 0
+
+        self.movie.start()
+        while self.completed < 100:
+            self.completed += 0.0001
+            self.progressBar.setValue(self.completed)
+        #self.movie.stop()
+
+        '''
+        print('Before: %s' % time.ctime())
+
+        time.sleep(20)
+
+        print('After: %s\n' % time.ctime())
+        '''
 
     def disenioCombosCondos(self):
         self.cmbUsoConstrC.setView(self.generaQListView())
