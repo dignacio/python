@@ -79,6 +79,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         # almacena la cedula de la clave global
         self.cedula = {}
+        self.padron = {}
         self.calle = None
         self.eventoCalleActivo = False
         self.indexVolActual = -1
@@ -142,6 +143,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.twColindancias.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
         self.twVialidades.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
         self.twCaracteristicasC.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+        self.twPropFiscal.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+        self.twPropPred.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
         
         self.leSupConstPrivCond.setValidator(QDoubleValidator(0.999,99.999,3))
         self.leSupConstComunCond.setValidator(QDoubleValidator(0.999,99.999,3))
@@ -226,6 +229,23 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.twServiciosCondo.setColumnHidden(1, True)
 
         self.twIndivisos.cellChanged.connect(self.event_updateIndivisos)
+
+        header = self.twPropFiscal.horizontalHeader()
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
+        self.twPropFiscal.setColumnHidden(0, True)
+        self.twPropFiscal.itemClicked.connect(self.event_itemClicked)
+
+        header = self.twPropPred.horizontalHeader()
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        self.twPropPred.setColumnHidden(0, True)
+        self.twPropPred.itemClicked.connect(self.event_itemClickedProp)
+        
+
 
         self.leNivPropP.setAlignment(Qt.AlignCenter)
         self.leNivPropP.setValidator(QIntValidator(0,99,None))
@@ -326,6 +346,14 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         # -- carga informacion de la cedula segun la clave global
         dataCed = self.consumeWSCedula(self.cveCatastral[0:25])
         self.cargaCedula(dataCed)
+
+        # -- carga informacion de PADRON
+        dataPadron = self.obtienePadron(self.cedula['id'])
+        self.cargaPadron(dataPadron)
+
+        # -- carga propietarios de PREDIOS
+        dataPropPredio = self.obtienePropPredio(self.cedula['id'])
+        self.cargaPropPredio(dataPropPredio)
 
         if self.cond: # C O N D O M I N I O S
 
@@ -668,6 +696,12 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.errorCerrar = True
             self.createAlert('Error durante la carga de informacion "cargaCatalogos()": ' + str(e))
 
+    def obtienePadron(self, idPredio):
+        return self.consumeWSGeneral(self.CFG.urlGetPadron + str(idPredio))
+
+    def obtienePropPredio(self, idPredio):
+        return self.consumeWSGeneral(self.CFG.urlGetPropPredio + str(idPredio))
+
     def catalogoTipoAsentH(self):
         return self.consumeWSGeneral(self.CFG.urlTipoAsentamiento)
 
@@ -747,11 +781,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 # solo se deja agregar nuevas
                 self.deshabilitaConstr()
                 return
-            print('enrta')
 
             # ordena las construcciones segun el volumen
             construcciones = self.ordenaConstr(dataConstP)
-            print('enrta')
 
             for dcp in construcciones:
 
@@ -1088,6 +1120,142 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         except Exception as e:
             self.errorCerrar = True
             self.createAlert('Error durante la carga de informacion "cargaCedula()": ' + str(e))
+
+    # - carga informacion de padron junto con propietarios
+    def cargaPadron(self, dataPadron):
+
+        try:
+
+            if len(dataPadron) == 0:
+                self.muestraComparativoFiscal()
+                return
+
+            self.padron = dataPadron[0]
+
+            # -- CARGA PADRON --
+            # - carga ubicacion
+            self.lbCallePF.setText(self.padron['eUbCalle'])
+            self.lbNumExtPF.setText(self.padron['eUbNumexterior'])
+            self.lbNumInteriorPF.setText(self.padron['eUbNuminterior'])
+            self.lbCodPostalPF.setText(self.padron['eUbCodigoPostal'])
+            self.lbColoniaPF.setText(self.padron['eUbColonia'])
+
+            # - carga comparativo
+            # superficies terreno
+            self.lbSupTerrPrivF.setText(str(self.padron['eSupTerPriv']))
+            self.lbSupTerrComF.setText(str(self.padron['eSupTerComun']))
+
+            supTerrTotal = (self.padron['eSupTerPriv'] or 0) + (self.padron['eSupTerComun'] or 0)
+            self.lbSupTerrTotalF.setText(str(supTerrTotal))
+
+            # superficies construccion
+            self.lbSupConsPrivF.setText(str(self.padron['eSupConstPriv']))
+            self.lbSupConsComF.setText(str(self.padron['eSupConstComun']))
+
+            supConsTot = (self.padron['eSupConstPriv'] or 0) + (self.padron['eSupConstComun'] or 0)
+            self.lbSupConsTotalF.setText(str(supConsTot))
+
+            self.lbValTerrPrivF.setText('-')
+            self.lbValTerrComF.setText('-')
+            self.lbValTerrTotalF.setText('${:,.2f}'.format(self.padron['eValorTer']))
+            self.lbValConsPrivF.setText('-')
+            self.lbValConsComF.setText('-')
+            self.lbValConsTotalF.setText('${:,.2f}'.format(self.padron['eValorConst']))
+            self.lbValorCTotalF.setText('${:,.2f}'.format(self.padron['eValorCat']))
+
+            valC = (self.padron['eValorCat'] or 0)
+
+            self.lbImpPredF.setText('${:,.2f}'.format(round(((valC * 12) / 1000), 2)))
+
+            # - carga propietarios
+            self.propPadron = self.padron['propietarios']
+
+            if len(self.propPadron) > 0:
+
+                for prop in self.propPadron:
+                    # agrega un renglon a las coindancias
+                    claveProp = prop['claveProp']
+                    nombre = prop['razonSocial'] if not prop['nombre'] else prop['nombre'] + ' ' + prop['apellidop'] + ' ' + prop['apellidom']
+                    persona = prop['personafisicamoral']
+                    tipo = prop['propocop']
+                    porcentaje = prop['porcProp']
+
+                    rowPosition = self.twPropFiscal.rowCount()
+                    self.twPropFiscal.insertRow(rowPosition)
+
+                    item1 = QtWidgets.QTableWidgetItem(str(claveProp))
+                    item1.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+
+                    item2 = QtWidgets.QTableWidgetItem(nombre.strip())
+
+                    item3 = QtWidgets.QTableWidgetItem(persona)
+                    item3.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+
+                    item4 = QtWidgets.QTableWidgetItem(tipo)
+                    item4.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+                    
+                    item5 = QtWidgets.QTableWidgetItem(str(porcentaje))
+                    item5.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+
+                    self.twPropFiscal.setItem(rowPosition , 0, item1)
+                    self.twPropFiscal.setItem(rowPosition , 1, item2)
+                    self.twPropFiscal.setItem(rowPosition , 2, item3)
+                    self.twPropFiscal.setItem(rowPosition , 3, item4)
+                    self.twPropFiscal.setItem(rowPosition , 4, item5)
+
+                self.twPropFiscal.setCurrentCell(0, 1)
+                self.event_itemClicked(None)
+
+        except Exception as e:
+            self.errorCerrar = True
+            self.createAlert('Error durante la carga de informacion "cargaPadron()": ' + str(e))
+
+    # - carga informacion sobre los propietarios de un predio
+    def cargaPropPredio(self, dataPropPredio):
+
+        try:
+
+            if len(dataPropPredio) == 0:
+                self.muestraPropPredio()
+                return
+
+            # - carga propietarios
+            self.propPropPred = dataPropPredio
+
+            if len(self.propPropPred) > 0:
+
+                for prop in self.propPropPred:
+                    # agrega un renglon a las coindancias
+                    ident = prop['id']
+                    nombre = prop['nombre'] + ' ' + prop['aPaterno'] + ' ' + prop['aMaterno']
+                    tipo = prop['tipo']
+                    porcentaje = prop['porcentaje']
+
+                    rowPosition = self.twPropPred.rowCount()
+                    self.twPropPred.insertRow(rowPosition)
+
+                    item1 = QtWidgets.QTableWidgetItem(str(ident))
+                    item1.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+
+                    item2 = QtWidgets.QTableWidgetItem(nombre.strip())
+
+                    item3 = QtWidgets.QTableWidgetItem(tipo)
+                    item3.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+
+                    item4 = QtWidgets.QTableWidgetItem(str(porcentaje))
+                    item4.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+                    
+                    self.twPropPred.setItem(rowPosition , 0, item1)
+                    self.twPropPred.setItem(rowPosition , 1, item2)
+                    self.twPropPred.setItem(rowPosition , 2, item3)
+                    self.twPropPred.setItem(rowPosition , 3, item4)
+
+                self.twPropPred.setCurrentCell(0, 1)
+                self.event_itemClickedProp(None)
+
+        except Exception as e:
+            self.errorCerrar = True
+            self.createAlert('Error durante la carga de informacion "cargaPadron()": ' + str(e))
 
     # - limpia los constroles de construcciones
     def limpiaConstrucciones(self):
@@ -1518,6 +1686,51 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         impCatastro = 0 if self.lbImpPredC.text() == '' else float(self.lbImpPredC.text().replace('$', '').replace(',', ''))
         self.lbDiferencia.setText('${:,.2f}'.format(impCatastro - 0))
 
+        # ---- limpia ubicacion fiscal ----
+        self.lbCallePF.setText('')
+        self.lbNumExtPF.setText('')
+        self.lbNumInteriorPF.setText('')
+        self.lbCodPostalPF.setText('')
+        self.lbColoniaPF.setText('')
+        self.lbNumeroPPad.setText('')
+
+        # ---- limpia ubicacion fiscal ----
+        self.lbNombrePPad.setText('')
+        self.lbRazonSocPPad.setText('')
+        self.lbCallePPad.setText('')
+        self.lbColoniaPPad.setText('')
+        self.lbCodPosPPad.setText('')
+
+        self.lbRFCPPad.setText('')
+        self.lbTelefonoPPad.setText('')
+        self.lbCorreoElecPPad.setText('')
+        self.lbCiudadPPad.setText('')
+        self.lbMunicipioPPad.setText('')
+        self.lbEstadoPPad.setText('')
+
+        self.lbCalleNPPad.setText('')
+        self.lbNumOfiNPPad.setText('')
+        self.lbNumInteriorNPPad.setText('')
+        self.lbColoniaNPPad.setText('')
+        self.lbCodPostNPPad.setText('')
+        self.lbEstadoNPPad.setText('')
+        self.lbCiudadNPPad.setText('')
+
+    def muestraPropPredio(self):
+
+        self.lbNombrePPred.setText('')
+        self.lbApPaternoPPred.setText('')
+        self.lbApMaternoPPred.setText('')
+        self.lbCallePPred.setText('')
+        self.lbNumExtPPred.setText('')
+        self.lbNumInteriorPPred.setText('')
+
+        self.lbColoniaPPred.setText('')
+        self.lbCodPosPPred.setText('')
+        self.lbMunicipioPPred.setText('')
+        self.lbEstadoPPred.setText('')
+        self.lbPaisPPred.setText('')
+
     # --- M E T O D O S   CIERRA ---
 
     # --- S E R V I C I O S   W E B ---
@@ -1671,7 +1884,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         data = ""
         
         jsonGuardaVolumen = json.dumps(volumen)
-        print(jsonGuardaVolumen)
         try:
             self.headers['Authorization'] = self.UTI.obtenerToken()
             response = requests.post(url + accion, headers = self.headers, data = jsonGuardaVolumen)
@@ -3924,7 +4136,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 # self.createAlert('NOOOOO es un condominio', QMessageBox.Information ) #changed!
 
             # --- calcula y muestra informacion del fiscal ----> Deshabilitado por mientras, no se cuenta con la info de padron <----
-            self.muestraComparativoFiscal()
+            #self.muestraComparativoFiscal()
+
+            impCatastro = 0 if self.lbImpPredC.text() == '' else float(self.lbImpPredC.text().replace('$', '').replace(',', ''))
+            impFiscal = 0 if self.lbImpPredF.text() == '' else float(self.lbImpPredF.text().replace('$', '').replace(',', ''))
+            self.lbDiferencia.setText('${:,.2f}'.format(impCatastro - impFiscal))
 
     # --- INDIVISOS ---
     # - bloquear o desbloquear la tabla de indivisos
@@ -3958,7 +4174,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             self.bloqueado = True
 
-    # 
+    # - evento que se lanza cuando se edita un elemento
     def event_updateIndivisos(self):
 
         col = self.twIndivisos.currentColumn()
@@ -3977,12 +4193,81 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         # indivisos
         self.factorIndiviso()
 
+    # - seleccion del item del propietario
+    def event_itemClicked(self, item):
+
+        row = self.twPropFiscal.currentRow()
+        claveProp = self.twPropFiscal.item(row,0)
+        nombre = self.twPropFiscal.item(row,1)
+
+        propietario = None
+        # buscar entre todos los propietarios el seleccionado para imprimir sus valores
+        for prop in self.propPadron:
+
+            if str(prop['claveProp']) == claveProp.text():
+                propietario = prop
+                break
+
+        # muestra informacion completa de propietarios
+        if propietario is not None:
+
+            self.lbNombrePPad.setText(propietario['nombre'] + ' ' + propietario['apellidop'] + ' ' + propietario['apellidom'])
+            self.lbRazonSocPPad.setText(propietario['razonSocial'])
+            self.lbCallePPad.setText(propietario['calle'])
+            self.lbColoniaPPad.setText(propietario['colonia'])
+            self.lbCodPosPPad.setText(propietario['cp'])
+            self.lbNumeroPPad.setText(propietario['numExt'])
+
+            self.lbRFCPPad.setText(propietario['rfc'])
+            self.lbTelefonoPPad.setText(propietario['telefono'])
+            self.lbCorreoElecPPad.setText(propietario['eMail'])
+            self.lbCiudadPPad.setText(propietario['ciudad'])
+            self.lbMunicipioPPad.setText(propietario['municipio'])
+            self.lbEstadoPPad.setText(propietario['estado'])
+
+            self.lbCalleNPPad.setText(propietario['calleNotificacion'])
+            self.lbNumOfiNPPad.setText(propietario['numofNotificacion'])
+            self.lbNumInteriorNPPad.setText(propietario['numintNotificacion'])
+            self.lbColoniaNPPad.setText(propietario['coloniaNotificacion'])
+            self.lbCodPostNPPad.setText(propietario['cpNotificacion'])
+            self.lbEstadoNPPad.setText(propietario['estadoNotificacion'])
+            self.lbCiudadNPPad.setText(propietario['ciudadNotificacion'])
+
+    def event_itemClickedProp(self, item):
+
+        row = self.twPropPred.currentRow()
+        ident = self.twPropPred.item(row,0)
+        nombre = self.twPropPred.item(row,1)
+
+        propietario = None
+        # buscar entre todos los propietarios el seleccionado para imprimir sus valores
+
+        for prop in self.propPropPred:
+
+            if str(prop['id']) == ident.text():
+                propietario = prop
+                break
+
+        # muestra informacion completa de propietarios
+        if propietario is not None:
+
+            self.lbNombrePPred.setText(propietario['nombre'])
+            self.lbApPaternoPPred.setText(propietario['aPaterno'])
+            self.lbApMaternoPPred.setText(propietario['aMaterno'])
+            self.lbCallePPred.setText(propietario['calle'])
+            self.lbNumExtPPred.setText(propietario['numExt'])
+            self.lbNumInteriorPPred.setText(propietario['numInt'])
+
+            self.lbColoniaPPred.setText(propietario['colonia'])
+            self.lbCodPosPPred.setText(propietario['cp'])
+            self.lbMunicipioPPred.setText(propietario['municipio'])
+            self.lbEstadoPPred.setText(propietario['estado'])
+            self.lbPaisPPred.setText(propietario['pais'])
+
     def event_spinBox(self, cadena):
 
         col = self.twIndivisos.currentColumn()
         row = self.twIndivisos.currentRow()
-
-        # print(row, col, cadena)
 
     def event_textoCambioPrivC(self, texto):
         self.totalesSuperf(self.lePrivadaC.text(), self.leComunC.text(), 'C')
@@ -4219,7 +4504,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         imagen = {}
         if v[0] is None:
 
-            print('consume', tipo)
             # consume ws para obtener la imagen
             imagen = self.obtieneImagen(k[0], tipo)
             if tipo == 'M':

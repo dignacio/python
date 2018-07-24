@@ -74,3 +74,5 @@ class Configuracion():
         self.urlGuardaIndivisos = self.servidorIP + 'featureswkn/api/condominios/updateIndiviso'
         self.urlObtIdsImagenes = self.servidorIP + 'archivoswkn/api/archivo/getIdsArchivos/'
         self.urlImagenByIdAndCveCata = self.servidorIP + 'archivoswkn/api/archivo/getArchivo/'
+        self.urlGetPadron = self.servidorIP + 'busquedasimplewkn/api/cedula/padron/'
+        self.urlGetPropPredio = self.servidorIP + 'busquedasimplewkn/api/cedula/propietario/'

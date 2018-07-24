@@ -143,7 +143,7 @@ class actualizacioncatastralv2:
                 self.idManzana = ' '
 
                 #Modo desarrollor
-                self.modoDesarrollo = False
+                self.modoDesarrollo = True
                 
                 if self.capaEnEdicion != '':
 
@@ -401,10 +401,10 @@ class actualizacioncatastralv2:
             
             if not self.pintarNum(self.xPredNum):
                 return
-            
+            '''
             if not self.pintarUnaCapa(self.xConst):
                 return
-            
+            '''
             if not self.pintarUnaCapa(self.xHoriGeom):
                 return
             

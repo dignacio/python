@@ -283,7 +283,7 @@ Predio</string>
              <string notr="true"/>
             </property>
             <property name="currentIndex">
-             <number>2</number>
+             <number>5</number>
             </property>
             <widget class="QWidget" name="tUbicacion">
              <attribute name="title">
@@ -321,8 +321,8 @@ Predio</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>807</width>
-                   <height>660</height>
+                   <width>790</width>
+                   <height>814</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
@@ -341,12 +341,18 @@ Predio</string>
                   <property name="spacing">
                    <number>5</number>
                   </property>
-                  <item row="10" column="0" colspan="4">
+                  <item row="11" column="0" colspan="4">
                    <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
                       <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>16777215</height>
                      </size>
                     </property>
                     <property name="title">
@@ -362,6 +368,18 @@ Predio</string>
                      </item>
                      <item row="2" column="1">
                       <widget class="QTableWidget" name="twVialidades">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>100</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>100</height>
+                        </size>
+                       </property>
                        <column>
                         <property name="text">
                          <string>VIALIDAD</string>
@@ -801,8 +819,20 @@ Predio</string>
                     </layout>
                    </widget>
                   </item>
-                  <item row="11" column="0" colspan="4">
+                  <item row="12" column="0" colspan="4">
                    <widget class="QgsCollapsibleGroupBox" name="mGroupBox_2">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
                     <property name="title">
                      <string>Colindancias</string>
                     </property>
@@ -1336,6 +1366,137 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                     <property name="text">
                      <string>Num. Max. de niveles</string>
                     </property>
+                   </widget>
+                  </item>
+                  <item row="10" column="0" colspan="4">
+                   <widget class="QgsCollapsibleGroupBox" name="mGroupBox_3">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="title">
+                     <string>Domicilio Padron Fiscal</string>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_32">
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="label_117">
+                       <property name="text">
+                        <string>Num Interior</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_66">
+                       <property name="text">
+                        <string>Calle</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLabel" name="lbNumInteriorPF">
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbNumInteriorPF</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_69">
+                       <property name="text">
+                        <string>Num Exterior</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="label_111">
+                       <property name="text">
+                        <string>Colonia</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="lbNumExtPF">
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbNumExtPF</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2">
+                      <widget class="QLabel" name="label_123">
+                       <property name="text">
+                        <string>Codigo Postal</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="2">
+                      <widget class="QLabel" name="lbCodPostalPF">
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbCodPostalPF</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0" colspan="3">
+                      <widget class="QLabel" name="lbColoniaPF">
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbColoniaPF</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0" colspan="3">
+                      <widget class="QLabel" name="lbCallePF">
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbCallePF</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                  </layout>
@@ -4126,7 +4287,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-125</y>
                    <width>790</width>
                    <height>785</height>
                   </rect>
@@ -5621,6 +5782,822 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                       </widget>
                      </item>
                     </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="tab">
+             <attribute name="title">
+              <string>Propietarios</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_33">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>0</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QScrollArea" name="scrollArea_10">
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_10">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>790</width>
+                   <height>1061</height>
+                  </rect>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_34">
+                  <property name="leftMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="spacing">
+                   <number>5</number>
+                  </property>
+                  <item row="17" column="0">
+                   <widget class="QLabel" name="label_183">
+                    <property name="text">
+                     <string>Calle</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="15" column="0">
+                   <widget class="QLabel" name="label_187">
+                    <property name="text">
+                     <string>Nombre (s)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="18" column="1">
+                   <widget class="QLabel" name="lbNumExtPPred">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbNumExtPPred</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="16" column="0">
+                   <widget class="QLabel" name="lbNombrePPred">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbNombrePPred</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0" colspan="3" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="label_176">
+                    <property name="font">
+                     <font>
+                      <pointsize>20</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Propietarios Fiscal</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0" colspan="3">
+                   <widget class="QLabel" name="label_113">
+                    <property name="text">
+                     <string>Razon Social</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="0" colspan="2">
+                   <widget class="QLabel" name="label_142">
+                    <property name="text">
+                     <string>Colonia</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="12" column="0" colspan="3">
+                   <widget class="Line" name="line">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="10" column="0" colspan="3">
+                   <widget class="QgsCollapsibleGroupBox" name="mGroupBox_4">
+                    <property name="title">
+                     <string>Datos Adicionales</string>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_37">
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_148">
+                       <property name="text">
+                        <string>Ciudad</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="lbRFCPPad">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbRFCPPad</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QLabel" name="lbCorreoElecPPad">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbCorreoElecPPad</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="label_160">
+                       <property name="text">
+                        <string>Telefono</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QLabel" name="label_161">
+                       <property name="text">
+                        <string>Correo Electronico</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLabel" name="lbTelefonoPPad">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbTelefonoPPad</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_146">
+                       <property name="text">
+                        <string>RFC</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="lbCiudadPPad">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbCiudadPPad</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="label_155">
+                       <property name="text">
+                        <string>Municipio</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLabel" name="lbMunicipioPPad">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbMunicipioPPad</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2">
+                      <widget class="QLabel" name="label_156">
+                       <property name="text">
+                        <string>Estado</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="2">
+                      <widget class="QLabel" name="lbEstadoPPad">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbEstadoPPad</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="18" column="2">
+                   <widget class="QLabel" name="lbNumInteriorPPred">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbNumInteriorPPred</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="17" column="1">
+                   <widget class="QLabel" name="label_178">
+                    <property name="text">
+                     <string>Numero Exterior</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="2">
+                   <widget class="QLabel" name="label_144">
+                    <property name="text">
+                     <string>Codigo Postal</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="9" column="2">
+                   <widget class="QLabel" name="lbCodPosPPad">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbCodPosPPad</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0" colspan="3">
+                   <widget class="QLabel" name="label_67">
+                    <property name="text">
+                     <string>Nombre (s)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="2">
+                   <widget class="QLabel" name="lbNumeroPPad">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbNumeroPPad</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0" colspan="3">
+                   <widget class="QLabel" name="lbNombrePPad">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbNombrePPad</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="0" colspan="2">
+                   <widget class="QLabel" name="label_129">
+                    <property name="text">
+                     <string>Calle</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" colspan="3">
+                   <widget class="QTableWidget" name="twPropFiscal">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>140</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>140</height>
+                     </size>
+                    </property>
+                    <column>
+                     <property name="text">
+                      <string>claveProp</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Nombre</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Persona</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Tipo</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Porcentaje</string>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
+                  <item row="13" column="0" colspan="3" alignment="Qt::AlignHCenter">
+                   <widget class="QLabel" name="label_177">
+                    <property name="font">
+                     <font>
+                      <pointsize>20</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Propietarios Predios</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="9" column="0" colspan="2">
+                   <widget class="QLabel" name="lbColoniaPPad">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbColoniaPPad</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="11" column="0" colspan="3">
+                   <widget class="QgsCollapsibleGroupBox" name="mGroupBox_5">
+                    <property name="title">
+                     <string>Notificacion</string>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_35">
+                     <item row="4" column="2">
+                      <widget class="QLabel" name="label_171">
+                       <property name="text">
+                        <string>Codigo Postal</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="0" colspan="2">
+                      <widget class="QLabel" name="label_166">
+                       <property name="text">
+                        <string>Estado</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="0" colspan="2">
+                      <widget class="QLabel" name="lbEstadoNPPad">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbEstadoNPPad</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0" colspan="2">
+                      <widget class="QLabel" name="lbCalleNPPad">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbCalleNPPad</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="0" colspan="2">
+                      <widget class="QLabel" name="lbColoniaNPPad">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbColoniaNPPad</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="3">
+                      <widget class="QLabel" name="lbNumInteriorNPPad">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbNumInteriorNPPad</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0" colspan="2">
+                      <widget class="QLabel" name="label_164">
+                       <property name="text">
+                        <string>Colonia</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QLabel" name="label_174">
+                       <property name="text">
+                        <string>Num Oficial</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="2">
+                      <widget class="QLabel" name="lbNumOfiNPPad">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbNumOfiNPPad</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="2">
+                      <widget class="QLabel" name="label_169">
+                       <property name="text">
+                        <string>Ciudad</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="2">
+                      <widget class="QLabel" name="lbCiudadNPPad">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbCiudadNPPad</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="2">
+                      <widget class="QLabel" name="lbCodPostNPPad">
+                       <property name="font">
+                        <font>
+                         <pointsize>14</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>lbCodPostNPPad</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0" colspan="2">
+                      <widget class="QLabel" name="label_162">
+                       <property name="text">
+                        <string>Calle</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="3">
+                      <widget class="QLabel" name="label_175">
+                       <property name="text">
+                        <string>Num Interior</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="17" column="2">
+                   <widget class="QLabel" name="label_191">
+                    <property name="text">
+                     <string>Numero Interior</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="14" column="0" colspan="3">
+                   <widget class="QTableWidget" name="twPropPred">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>140</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>140</height>
+                     </size>
+                    </property>
+                    <column>
+                     <property name="text">
+                      <string>idProp</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Nombre</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Tipo</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Porcentaje</string>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
+                  <item row="20" column="0" colspan="2">
+                   <widget class="QLabel" name="lbColoniaPPred">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbColoniaPPred</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="18" column="0">
+                   <widget class="QLabel" name="lbCallePPred">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbCallePPred</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="2">
+                   <widget class="QLabel" name="label_125">
+                    <property name="text">
+                     <string>Numero</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="19" column="2">
+                   <widget class="QLabel" name="label_184">
+                    <property name="text">
+                     <string>Codigo Postal</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="19" column="0" colspan="2">
+                   <widget class="QLabel" name="label_179">
+                    <property name="text">
+                     <string>Colonia</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="20" column="2">
+                   <widget class="QLabel" name="lbCodPosPPred">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbCodPosPPred</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="15" column="2">
+                   <widget class="QLabel" name="label_195">
+                    <property name="text">
+                     <string>Apellido Materno</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0" colspan="3">
+                   <widget class="QLabel" name="lbRazonSocPPad">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbRazonSocPPad</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="22" column="0">
+                   <widget class="QLabel" name="lbMunicipioPPred">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbMunicipioPPred</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="15" column="1">
+                   <widget class="QLabel" name="label_194">
+                    <property name="text">
+                     <string>Apellido Paterno</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="16" column="2">
+                   <widget class="QLabel" name="lbApMaternoPPred">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbApMaternoPPred</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="16" column="1">
+                   <widget class="QLabel" name="lbApPaternoPPred">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbApPaternoPPred</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="21" column="2">
+                   <widget class="QLabel" name="label_197">
+                    <property name="text">
+                     <string>Pais</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="21" column="0">
+                   <widget class="QLabel" name="label_198">
+                    <property name="text">
+                     <string>Municipio</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="21" column="1">
+                   <widget class="QLabel" name="label_196">
+                    <property name="text">
+                     <string>Estado</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="22" column="1">
+                   <widget class="QLabel" name="lbEstadoPPred">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbEstadoPPred</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="22" column="2">
+                   <widget class="QLabel" name="lbPaisPPred">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbPaisPPred</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0" colspan="2">
+                   <widget class="QLabel" name="lbCallePPad">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>lbCallePPad</string>
+                    </property>
                    </widget>
                   </item>
                  </layout>
