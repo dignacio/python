@@ -32,7 +32,7 @@ class Configuracion():
         self.urlConsultaReferencia = self.servidorIP + 'busquedasimplewkn/api/busqueda/simple'
 
         #Urls para obtener campos dinamicos
-        self.urlCamposCalles = self.servidorIP + 'busquedasimplewkn/api/thematics/lista/campos/sig:e_calle'
+        self.urlCamposCalles = self.servidorIP + 'busquedasimplewkn/api/thematics/lista/campos/sig:e_calle/true'
         self.urlCamposCapas = self.servidorIP + 'busquedasimplewkn/api/thematics/lista/campos/'
 
         #Urls para autenticacion
@@ -41,7 +41,7 @@ class Configuracion():
         #Guardado
         self.urlGuardadoRef = 'http://192.168.0.40:6543/api/etables/'
         self.urlGuardadoCon = self.servidorIP + 'featureswkn/api/manzana/'
-
+        
         #SRID
         self.urlMunicipio = self.servidorIP + 'busquedasimplewkn/api/cat/municipio/'
         

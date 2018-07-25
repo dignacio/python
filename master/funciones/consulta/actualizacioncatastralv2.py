@@ -19,14 +19,18 @@ from .Cedula_MainWindow import CedulaMainWindow
 
 class actualizacioncatastralv2:
 
-    def __init__(self, iface, CFG, UTI):
+    def __init__(self, iface):
 
         # Save reference to the QGIS interface
         self.iface = iface
 
-        self.CFG = CFG
-        self.UTI = UTI
-
+        self.CFG = None
+        self.UTI = None
+        self.DFS = None
+        self.DBJ = None
+        self.ELM = None
+        self.DFS = None
+        self.TPG = None
 
         self.pluginIsActive = False
         self.dockwidget = None
@@ -37,7 +41,6 @@ class actualizacioncatastralv2:
 
         self.dockwidget.botonEditar.clicked.connect(self.actualizarFeature)
         self.dockwidget.botonActualizarRef.clicked.connect(self.actualizarFeatureRef)
-        self.dockwidget.botonGuardarRef.clicked.connect(self.guardarCapaReferencia)
         self.dockwidget.botonCancelarReferencia.clicked.connect(self.rollbackCapa)
         self.dockwidget.botonCargar.clicked.connect(self.pintarCapas)
         self.dockwidget.comboLocalidad.currentIndexChanged.connect(self.obtenerSectoresPorLocalidad)
@@ -50,7 +53,7 @@ class actualizacioncatastralv2:
         self.diccServiciosCalle = {}
 
         self.capaEnEdicion = ''
-        #QSettings().setValue('capaRefEdicion', 'None')
+        QSettings().setValue('capaRefEdicion', 'None')
         self.manzanaPrincipal = None
         self.tablasReferencias = {
         'Estado' : 'e_estado',
@@ -143,14 +146,17 @@ class actualizacioncatastralv2:
                 self.idManzana = ' '
 
                 #Modo desarrollor
-                self.modoDesarrollo = True
-                
+                self.modoDesarrollo = False
+                self.cargaRapida = False
+                #01001001020004054011
+                #01001001020004027003
+                #01001001020004063010
+
                 if self.capaEnEdicion != '':
 
                     self.dockwidget.comboCapasEdicion.setEnabled(False)
                     self.dockwidget.botonActivarEdicion.setEnabled(False)
                     self.dockwidget.botonActualizarRef.setEnabled(True)
-                    self.dockwidget.botonGuardarRef.setEnabled(True)
                     self.dockwidget.botonCancelarReferencia.setEnabled(True)
 
                 else:
@@ -158,7 +164,6 @@ class actualizacioncatastralv2:
                     self.dockwidget.comboCapasEdicion.setEnabled(True)
                     self.dockwidget.botonActivarEdicion.setEnabled(True)
                     self.dockwidget.botonActualizarRef.setEnabled(False)
-                    self.dockwidget.botonGuardarRef.setEnabled(False)
                     self.dockwidget.botonCancelarReferencia.setEnabled(False)
 
                 if self.capaEnEdicion == self.obtenerIdCapa('Calles'):
@@ -216,9 +221,22 @@ class actualizacioncatastralv2:
         #Obtener el identificador de la manzana
         if self.modoDesarrollo:
            
-            #self.idManzana = '01001001020004016031'
-            self.idManzana = '01001001020004060004'
+            #self.idManzana = '01001001020004016031' #Esta es la chida
+            #self.idManzana = '01001001020004026039' #Cortita y chiquita
+            #self.idManzana = '01001001020004026040' #Cortita y chiquita
+            self.idManzana = '01001001020004060004' 
+                             #01001001020  4026040
+            #self.idManzana = '01001001020004060004'  #La larga que le gusta a mi jefe
             
+            #01001001020004026039
+            #01001001020  4026039
+
+            #self.idManzana = '01001001020004017005' #esta es la mala krnal
+            #self.idManzana =  '010010010204050001' #Esta calamos guardado
+            #self.idManzana = '01001001020004026040'
+            #self.idManzana = '01001001020004021016'
+            
+
         else:
             index = self.dockwidget.comboManzana.currentIndex()
             self.idManzana = self.dockwidget.comboManzana.itemData(index)
@@ -364,11 +382,13 @@ class actualizacioncatastralv2:
         return geoTemp
 
 
+
 #####################################################################################################
 
     #Pintar todas las capas
     def pintarCapas(self):
 
+        QSettings().setValue('listaEliminada', [])
         root = QgsProject.instance().layerTreeRoot()
 
         group = root.findGroup('ERRORES DE TOPOLOGIA')
@@ -391,36 +411,91 @@ class actualizacioncatastralv2:
             self.vaciarCapa(self.xVert)
             self.vaciarCapa(self.xCvesVert)
 
-            if not self.pintarUnaCapa(self.xManzana):
-                return
-            self.zoomManzana()
-        
-            
-            if not self.pintarUnaCapa(self.xPredGeom):
-                return
-            
-            if not self.pintarNum(self.xPredNum):
-                return
-            '''
-            if not self.pintarUnaCapa(self.xConst):
-                return
-            '''
-            if not self.pintarUnaCapa(self.xHoriGeom):
-                return
-            
-            if not self.pintarNum(self.xHoriNum):
-                return
-            
-            if not self.pintarUnaCapa(self.xVert):
-                return
-            if not self.pintarUnaCapa(self.xCvesVert):
-                return
+            if self.cargaRapida:
+                if not self.pintarUnaCapa(self.xManzana):
+                    return
+                self.zoomManzana()
+                
+                if not self.pintarUnaCapa(self.xPredGeom):
+                    return
+
+                if not self.pintarNum(self.xPredNum):
+                    return
+
+                if not self.pintarUnaCapa(self.xHoriGeom):
+                    return
+
+                if not self.pintarNum(self.xHoriNum):
+                    return
+                
+
+            else:
+                if not self.pintarUnaCapa(self.xManzana):
+                    return
+                self.zoomManzana()
+                
+                if not self.pintarUnaCapa(self.xPredGeom):
+                    return
+
+                if not self.pintarNum(self.xPredNum):
+                    return
+                
+                if not self.pintarUnaCapa(self.xConst):
+                    return
+                
+                if not self.pintarUnaCapa(self.xHoriGeom):
+                    return
+
+                if not self.pintarNum(self.xHoriNum):
+                    return
+
+                if not self.pintarUnaCapa(self.xVert):
+                    return
+                
+                if not self.pintarUnaCapa(self.xCvesVert):
+                    return
             
             print ("Capas cargadas con exito")
 
         else:
             self.UTI.mostrarAlerta('No se han seleccionado manzanas para cargar', QMessageBox.Critical, 'Capas de consulta')
 
+##############################################################################################################
+
+    def pintarCapasCampo(self):
+        self.vaciarCapa(self.xManzana)
+        self.vaciarCapa(self.xPredGeom)
+        self.vaciarCapa(self.xPredNum)
+        self.vaciarCapa(self.xConst)
+        self.vaciarCapa(self.xHoriGeom)
+        self.vaciarCapa(self.xHoriNum)
+        self.vaciarCapa(self.xVert)
+        self.vaciarCapa(self.xCvesVert)
+
+        
+        if not self.pintarUnaCapa(self.xManzana):
+            return
+        self.zoomManzana()
+        
+        if not self.pintarUnaCapa(self.xPredGeom):
+            return
+
+        if not self.pintarNum(self.xPredNum):
+            return
+        
+        if not self.pintarUnaCapa(self.xHoriGeom):
+            return
+
+        if not self.pintarNum(self.xHoriNum):
+            return
+
+        if not self.pintarUnaCapa(self.xVert):
+            return
+        
+        if not self.pintarUnaCapa(self.xCvesVert):
+            return
+        
+        print ("Capas cargadas con exito")
 
 ########################################################################################################
 
@@ -435,7 +510,8 @@ class actualizacioncatastralv2:
             return False
         
         data = self.obtenerAPintar(mem_layer.id())
-        print(data)
+
+        
 
         type(data)
         srid = QSettings().value("srid")
@@ -449,14 +525,20 @@ class actualizacioncatastralv2:
             print('ERROR: CAP000')
 
         #Obtenemos todos los atributos del JSON
+        #print(data)
         if data['features'] == []:
+            print('no se han traido ', nombreCapa)
             return True
         
         varKeys = data['features'][0]['properties']
 
         keys = list(varKeys.keys())
+
         properties = []
         geoms = []
+
+        
+
         for feature in data['features']:
 
             geom = feature['geometry']
@@ -479,6 +561,9 @@ class actualizacioncatastralv2:
             feat.setGeometry(QgsGeometry.fromWkt(geoms[i]))
 
         prov.addFeatures(feats)
+
+        if nombreCapa == 'predios.geom':
+            self.cargarPrediosEnComboDividir(feats)
 
         mem_layer.triggerRepaint()
         return True
@@ -524,6 +609,7 @@ class actualizacioncatastralv2:
         polys = []
         listNum = []
 
+        print ('==============', data)
         for feature in data:
             wkt = feature['geomNum']
             listNum.append(feature[etiquetaField])
@@ -603,6 +689,10 @@ class actualizacioncatastralv2:
         geometria = QgsGeometry()
 
         rango = len(listaManzanas)
+
+        if rango == 0:
+            return
+
         geometria = listaManzanas[0].geometry()
         final = QgsGeometry()
 
@@ -674,12 +764,9 @@ class actualizacioncatastralv2:
         try:
             headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
 
-            print(url)
-
             if self.traducirIdCapa(idCapa) == 'predios.num' or self.traducirIdCapa(idCapa) == 'horizontales.num':
                 response = requests.get(url + self.idManzana, headers = headers)
             else:
-                print(self.payload)
                 response = requests.post(url + self.idManzana, headers = headers, data = self.payload)
 
 
@@ -697,7 +784,11 @@ class actualizacioncatastralv2:
             self.UTI.mostrarAlerta('Error en peticion:\n' + response.text, QMessageBox().Critical, "Cargar capa")
             print('ERROR: CAP001')
 
-        return json.loads(data)
+        #if self.traducirIdCapa(idCapa) == 'horizontales.geom':
+        #    print(json.loads(data.decode('utf-8')))
+
+        #print(json.loads(data.decode('utf-8')))
+        return json.loads(data.decode('utf-8'))
 
 
         #Metodo que crea un elemento QMessageBox
@@ -818,6 +909,8 @@ class actualizacioncatastralv2:
                 if self.dockwidget.lista[key].isVisible() == False:
                     listElim.append(key)
 
+
+
             for key in listElim:
                 del self.dockwidget.lista[key]
 
@@ -874,16 +967,18 @@ class actualizacioncatastralv2:
                     self.UTI.mostrarAlerta('La clave catastral tiene un formato incorrecto, guarde la manzana e intente de nuevo', QMessageBox().Warning, 'Cedula Catastral')
                     return
 
+                
+
                 #validar si la clave ya existe
                 for key, value in self.dockwidget.lista.items():
                     if str(key) == str(feat['cve_cat'][0:25]):
-                        self.UTI.mostrarAlerta('La Clave: \'' + str(feat['cve_cat'][0:25]) + '\' se encuentra abierta', QMessageBox.Information, 'Cedula Catastral')
+                        self.UTI.createAlert('La Clave: \'' + str(feat['cve_cat'][0:25]) + '\' se encuentra abierta', QMessageBox.Information, 'Cedula Catastral')
                         self.cancelaAperturaCedula()
                         return
 
                 # limite de cedulas abiertas
                 if len(self.dockwidget.lista) == 5:
-                    self.UTI.mostrarAlerta('Excedio el limite de cedulas abiertas', QMessageBox().Warning, 'Cedula Catastral')
+                    self.UTI.createAlert('Excedio el limite de cedulas abiertas', QMessageBox().Warning, 'Cedula Catastral')
                     return
 
                 # abrir Cedula
@@ -900,7 +995,7 @@ class actualizacioncatastralv2:
 
             if self.validarEdicion():
                 
-                self.UTI.mostrarAlerta('Se guardo correctamente', QMessageBox().Information, 'Edicion de atributos')
+                self.UTI.mostrarAlerta('Se actualizo correctamente', QMessageBox().Information, 'Edicion de atributos')
                 self.cargarTablita()
             
         else:
@@ -1019,12 +1114,11 @@ class actualizacioncatastralv2:
                         self.diccionarioTipoVia = {}
                         self.diccionarioTipoVia['NULL'] = 'Ninguno'
                         if respuesta.status_code == 200:
-                            for resp in respuesta.json():
 
+                            for resp in respuesta.json():
+                                
                                 self.comboTipoVia.addItem(str(resp['cTipoVialidad']), str(resp['id']))
                                 self.diccionarioTipoVia[str(resp['id'])] = str(resp['cTipoVialidad'])
-
-
 
                         else:
                             self.UTI.mostrarAlerta("No se han podido cargar los tipos de asentamiento\nError de servidor", QMessageBox().Critical, "Cargar tipos de vialidad")
@@ -1175,7 +1269,7 @@ class actualizacioncatastralv2:
 
             if self.validarEdicionRef():
                 
-                self.UTI.mostrarAlerta('Se guardo correctamente', QMessageBox().Information, 'Edicion de atributos')
+                self.UTI.mostrarAlerta('Se actualizo correctamente', QMessageBox().Information, 'Edicion de atributos')
                 self.cargarTablitaRef()
             
         else:
@@ -1416,13 +1510,13 @@ font: 10pt "Bahnschrift";"""
             else:
                 #try:
                 texto = self.dockwidget.tablaEdicion.item(1, 1).text()
-                
-                if len(texto) > 0 and int(texto) < 999 and self.UTI.esEntero(texto):
-                    feat['num_niveles'] = texto
-                else:
+                try:
+                    if len(texto) > 0 and int(texto) < 999 and self.UTI.esEntero(texto):
+                        feat['num_niveles'] = texto
+                    else:
+                        bandera2 = False
+                except:
                     bandera2 = False
-                #except:
-                #    bandera2 = False
 
             if not bandera2:
                 self.UTI.mostrarAlerta('El numero de niveles debe ser numerico y no exceder 999', QMessageBox().Critical, 'Error de entrada')
@@ -1604,9 +1698,9 @@ font: 10pt "Bahnschrift";"""
 
             if self.UTI.esFloat(texto): #Cuando es entero
                 if len(texto) < 12: #Validacion de longitud
-                    #print(float(texto))
+                    
                     feat['valor'] = float(texto)
-                    #print(feat['valor'])
+                    
                 else:
                     banderaValor = False
             else: #Cuando no es numerico
@@ -1903,6 +1997,7 @@ font: 10pt "Bahnschrift";"""
 
     def pintarCapasReferencia(self, nameCapa, bound, edicion):
         #Nombre de la capa de acuerdo al valor del ComboBox de capas a cargar
+        
 
         self.vaciarTablitaRef()
         self.manzanaPrincipal = self.xManzana
@@ -1943,154 +2038,150 @@ font: 10pt "Bahnschrift";"""
                 self.UTI.mostrarAlerta('Error de servidor', QMessageBox().Critical, "Cargar capa de referencia")
                 print('ERROR: REF000')
             
-        if data['features'] != []:
-
-            varKeys = data['features'][0]['properties']
-
-            keys = list(varKeys.keys())
-            properties = []
-            geoms = []
-            for feature in data['features']:
-                geom = feature['geometry']
-                
-                property = feature['properties']
-                geom = json.dumps(geom)
-                geometry = ogr.CreateGeometryFromJson(geom)
-                geometry.Transform(coordTrans)
-                geoms.append(geometry.ExportToWkt())
-                l = []
-                for i in range(0, len(keys)):
-                    l.append(property[keys[i]])
-                properties.append(l)
-
-
-        if nameCapa != 'Calles':    
             if data['features'] != []:
-                fields = ""
-                for k in keys:
-                    fields = fields + "&field=" + k + ":string(15)"
 
-                uriFigura = 'Polygon'
+                varKeys = data['features'][0]['properties']
 
-                uri = str(uriFigura)+"?crs=epsg:" + str(srid) + fields + "&index=yes"
+                keys = list(varKeys.keys())
+                properties = []
+                geoms = []
+                for feature in data['features']:
+                    geom = feature['geometry']
+                    
+                    if geom == None:
+                        continue
+
+                    property = feature['properties']
+                    geom = json.dumps(geom)
+                    geometry = ogr.CreateGeometryFromJson(geom)
+                    geometry.Transform(coordTrans)
+                    geoms.append(geometry.ExportToWkt())
+                    l = []
+                    for i in range(0, len(keys)):
+                        l.append(property[keys[i]])
+                    properties.append(l)
+
+
+            if nameCapa != 'Calles':    
+                if data['features'] != []:
+                    fields = ""
+                    for k in keys:
+                        fields = fields + "&field=" + k + ":string(15)"
+
+                    uriFigura = 'Polygon'
+
+                    uri = str(uriFigura)+"?crs=epsg:" + str(srid) + fields + "&index=yes"
+                else:
+                    uri = self.obtenerCampos(nameCapa)
+
             else:
-                uri = self.obtenerCampos(nameCapa)
+                stringCalles = self.obtenerCamposCalles()
+                uri = stringCalles
 
-        else:
-            stringCalles = self.obtenerCamposCalles()
-            uri = stringCalles
-
-        if capaAPintar == None:
-
-            mem_layer = QgsVectorLayer(uri, nameCapa, 'memory')
-            
-        else:
-            
-            mem_layer = capaAPintar
-
-
-        mem_layer.selectionChanged.connect(self.cargarTablitaRef)
-        self.setearIdReferencia(nameCapa, mem_layer.id())
-
-
-        mem_layer.setReadOnly(not edicion)
-
-        if data['features'] != []:
-            prov = mem_layer.dataProvider()
-            feats = [ QgsFeature() for i in range(len(geoms)) ]
-            for i, feat in enumerate(feats):
-                feat.setAttributes(properties[i])
-                feat.setGeometry(QgsGeometry.fromWkt(geoms[i]))
-
-            
-
-            if nameCapa != 'Manzanas' and nameCapa != 'Predios':
-                prov.addFeatures(feats)
-            
+            if capaAPintar == None:
+                mem_layer = QgsVectorLayer(uri, nameCapa, 'memory')
             else:
-                for feat in feats:
-                    bandera = True
-                    for manzana in self.manzanaPrincipal.getFeatures():
-                        if feat.geometry().intersects(manzana.geometry()):
-                            bandera = False
-                            break
-                    if bandera:                
-                        prov.addFeatures([feat])
+                mem_layer = capaAPintar
+
+            mem_layer.selectionChanged.connect(self.cargarTablitaRef)
+            self.setearIdReferencia(nameCapa, mem_layer.id())
+
+            mem_layer.setReadOnly(not edicion)
+
+            if data['features'] != []:
+                prov = mem_layer.dataProvider()
+                feats = [ QgsFeature() for i in range(len(geoms)) ]
+                for i, feat in enumerate(feats):
+                    feat.setAttributes(properties[i])
+                    feat.setGeometry(QgsGeometry.fromWkt(geoms[i]))
+
+                if nameCapa != 'Manzanas' and nameCapa != 'Predios':
+                    prov.addFeatures(feats)
+                
+                else:
+                    for feat in feats:
+                        bandera = True
+                        for manzana in self.manzanaPrincipal.getFeatures():
+                            if feat.geometry().intersects(manzana.geometry()):
+                                bandera = False
+                                break
+                        if bandera:                
+                            prov.addFeatures([feat])
 
 
-        etiquetaField = ""
+            etiquetaField = ""
 
-        if nameCapa == 'Estado':
-            etiquetaField = 'nombre'
-        elif nameCapa == 'Region Catastral':
-            etiquetaField = 'clave'
-        elif nameCapa == 'Municipios':
-            etiquetaField = 'nombre'
-        elif nameCapa == 'Secciones':
-            etiquetaField = 'clave'
-        elif nameCapa == 'Localidades':
-            etiquetaField = 'nombre'
-        elif nameCapa == 'Sectores':
-            etiquetaField = 'nombre'
-        elif nameCapa == 'Manzanas':
-            etiquetaField = 'clave'
-        elif nameCapa == 'Predios':
-            etiquetaField = 'clave'
-        elif nameCapa == 'Calles':
-            etiquetaField = 'calle'
-        elif nameCapa == 'Colonias':
-            etiquetaField = 'descripcion'
-        elif nameCapa == 'Codigo Postal':
-            etiquetaField = 'cve_cp'
-        elif nameCapa == 'Zona Uno':
-            etiquetaField = 'clave'
-        elif nameCapa == 'Zona Dos':
-            etiquetaField = 'clave'
-        elif nameCapa == 'Area de Valor':
-            etiquetaField = 'valor'
+            if nameCapa == 'Estado':
+                etiquetaField = 'nombre'
+            elif nameCapa == 'Region Catastral':
+                etiquetaField = 'clave'
+            elif nameCapa == 'Municipios':
+                etiquetaField = 'nombre'
+            elif nameCapa == 'Secciones':
+                etiquetaField = 'clave'
+            elif nameCapa == 'Localidades':
+                etiquetaField = 'nombre'
+            elif nameCapa == 'Sectores':
+                etiquetaField = 'nombre'
+            elif nameCapa == 'Manzanas':
+                etiquetaField = 'clave'
+            elif nameCapa == 'Predios':
+                etiquetaField = 'clave'
+            elif nameCapa == 'Calles':
+                etiquetaField = 'calle'
+            elif nameCapa == 'Colonias':
+                etiquetaField = 'descripcion'
+            elif nameCapa == 'Codigo Postal':
+                etiquetaField = 'cve_cp'
+            elif nameCapa == 'Zona Uno':
+                etiquetaField = 'clave'
+            elif nameCapa == 'Zona Dos':
+                etiquetaField = 'clave'
+            elif nameCapa == 'Area de Valor':
+                etiquetaField = 'valor'
 
 
-        placeo = QgsPalLayerSettings.AroundPoint
+            placeo = QgsPalLayerSettings.AroundPoint
 
-        if nameCapa == 'Calles':
-            placeo = QgsPalLayerSettings.Line  
+            if nameCapa == 'Calles':
+                placeo = QgsPalLayerSettings.Line  
 
-        settings = QgsPalLayerSettings()
-        settings.placement = placeo
-        settings.fieldName = etiquetaField
-        settings.enabled = True
-        settings.isExpression = True
-        
-        settings.centroidWhole = True
-
-        textFormat = QgsTextFormat()
-        textFormat.setSize(8)
-        textFormat.setNamedStyle('Bold')
-
-        settings.setFormat(textFormat)
-
-        #settings.placement= QgsPalLayerSettings.OverPoint
-        labeling = QgsVectorLayerSimpleLabeling(settings)
-
-        mem_layer.setLabeling(labeling)
-        mem_layer.setLabelsEnabled(True)
-
-        mem_layer.triggerRepaint()
-        root = QgsProject.instance().layerTreeRoot()
-        if not edicion:
-            grupo = root.findGroup('referencia')
-        else:
-            grupo = root.findGroup('edicion')
+            settings = QgsPalLayerSettings()
+            settings.placement = placeo
+            settings.fieldName = etiquetaField
+            settings.enabled = True
+            settings.isExpression = True
             
-            self.capaEnEdicion = self.obtenerIdCapa(nameCapa)
-            #QSettings().setValue('capaRefEdicion', self.capaEnEdicion)
+            settings.centroidWhole = True
 
-        if not vaciada or edicion:
-            QgsProject.instance().addMapLayers([mem_layer], False)
-            
-            mzaNL = QgsLayerTreeLayer(mem_layer)
+            textFormat = QgsTextFormat()
+            textFormat.setSize(8)
+            textFormat.setNamedStyle('Bold')
 
-            grupo.insertChildNode(0, mzaNL)
+            settings.setFormat(textFormat)
+
+            #settings.placement= QgsPalLayerSettings.OverPoint
+            labeling = QgsVectorLayerSimpleLabeling(settings)
+
+            mem_layer.setLabeling(labeling)
+            mem_layer.setLabelsEnabled(True)
+
+            mem_layer.triggerRepaint()
+            root = QgsProject.instance().layerTreeRoot()
+            if not edicion:
+                grupo = root.findGroup('referencia')
+            else:
+                grupo = root.findGroup('edicion')
+                
+                self.capaEnEdicion = self.obtenerIdCapa(nameCapa)
+                QSettings().setValue('capaRefEdicion', self.capaEnEdicion)
+
+            if not vaciada or edicion:
+                QgsProject.instance().addMapLayers([mem_layer], False)
+                
+                mzaNL = QgsLayerTreeLayer(mem_layer)
+
+                grupo.insertChildNode(0, mzaNL)
 
 
 ######################################################################################################
@@ -2115,7 +2206,7 @@ font: 10pt "Bahnschrift";"""
         response = requests.post(self.CFG.urlConsultaReferencia, headers = headers, data = payload)
         if response.status_code == 200:
             data = response.content
-            data = json.loads(data)
+            data = json.loads(data.decode('utf-8'))
 
             return data
 
@@ -2225,11 +2316,8 @@ font: 10pt "Bahnschrift";"""
 
 ######################################################################################################################
     
-    
-    
     def activarEdicion(self):
         
-
         try:
             bound = self.obtenerBoundingBox().asWkt()
         except:
@@ -2238,13 +2326,6 @@ font: 10pt "Bahnschrift";"""
 
         nombreCapa = self.dockwidget.comboCapasEdicion.currentText()
         
-        #try:
-        #    bound = self.obtenerBoundingBox().asWkt()
-        #except:
-        #    self.UTI.mostrarAlerta('No se ha cargado ninguna Manzana', QMessageBox().Critical, 'Cargar referencia')
-        #    return
-        
-
         root = QgsProject.instance().layerTreeRoot()
         grupoEdicion = root.findGroup('edicion')
         cargar = False
@@ -2252,59 +2333,13 @@ font: 10pt "Bahnschrift";"""
             root.insertGroup(0, 'edicion')
             grupoEdicion = root.findGroup('edicion')
 
-        if len(list(grupoEdicion.children())) >= 1:
-            if self.capaEnEdicion != self.obtenerIdCapa(nombreCapa):
-                mensaje = "Quieres guardar?"
-                respuesta = QMessageBox.question(iface.mainWindow(), "Nota de cambio de capa", mensaje, QMessageBox.Yes, QMessageBox.No)
-            
-                if respuesta == QMessageBox.No:
-                    
-                    group = root.findGroup('edicion')
-                    if not group is None:
-                        for child in group.children():
-                            dump = child.dump()
-                            id = dump.split("=")[-1].strip()
-                            QgsProject.instance().removeMapLayer(id)
-                    
-                    self.quitarDeGrupo(self.capaEnEdicion, 'edicion')
-                    self.quitarDeGrupo(self.obtenerIdCapa(nombreCapa), 'referencia')
-                    self.pintarCapasReferencia(nombreCapa, None, True)
-                    self.ineditarCampos(nombreCapa)
-                    
-                elif respuesta == QMessageBox.Yes:
-                    
-                    self.guardarCapaReferencia()
-                    #self.quitarDeGrupo(self.capaEnEdicion, 'edicion')
-                   # self.pintarCapasReferencia(self.capaEnEdicion, self.obtenerBoundingBox().asWkt(), False)
-                    self.quitarDeGrupo(self.obtenerIdCapa(nombreCapa), 'referencia')
-                    self.pintarCapasReferencia(nombreCapa, None, True)
-                    self.ineditarCampos(nombreCapa)
-            else:
-                mensaje = "Quieres recargar la capa?"
-                respuesta = QMessageBox.question(iface.mainWindow(), "Nota de cambio de capa", mensaje, QMessageBox.Yes, QMessageBox.No)
-
-                if respuesta == QMessageBox.Yes:
-                    group = root.findGroup('edicion')
-                    if not group is None:
-                        for child in group.children():
-                            dump = child.dump()
-                            id = dump.split("=")[-1].strip()
-                            QgsProject.instance().removeMapLayer(id)
-                    self.capaEnEdicion = self.obtenerIdCapa(nombreCapa)
-                    #QSettings().setValue('capaRefEdicion', self.capaEnEdicion)
-                    self.pintarCapasReferencia(nombreCapa, None, True)
-                    self.quitarDeGrupo(self.obtenerIdCapa(nombreCapa), 'referencia')
-                    self.ineditarCampos(nombreCapa)
-
-        else:
-            self.quitarDeGrupo(self.obtenerIdCapa(nombreCapa), 'referencia')
-            self.pintarCapasReferencia(nombreCapa, None, True)
+        self.quitarDeGrupo(self.obtenerIdCapa(nombreCapa), 'referencia')
+        self.pintarCapasReferencia(nombreCapa, None, True)
             #self.ineditarCampos(nombreCapa)
 
         self.dockwidget.comboCapasEdicion.setEnabled(False)
         self.dockwidget.botonActivarEdicion.setEnabled(False)
         self.dockwidget.botonActualizarRef.setEnabled(True)
-        self.dockwidget.botonGuardarRef.setEnabled(True)
         self.dockwidget.botonCancelarReferencia.setEnabled(True)
 
         if nombreCapa == 'Calles':
@@ -2350,7 +2385,7 @@ font: 10pt "Bahnschrift";"""
 
     def guardarCapaReferencia(self):
 
-        if QSettings().value('posibleGuardarRef') == 'True' or True:
+        if QSettings().value('posibleGuardarRef') == 'True':
             idCapa = self.capaEnEdicion
             capa = QgsProject.instance().mapLayer(self.capaEnEdicion)
             listaAGuardar = []
@@ -2378,7 +2413,7 @@ font: 10pt "Bahnschrift";"""
                     if self.traducirIdCapa(idCapa) == 'Calles' and nombres[x] == 'c_tipo_vialidad':
                         continue
                     atributo = feat.attributes()[x]
-                    #print(atributo, type(atributo))
+                    
                     if str(feat.attributes()[x]) == "NULL":
                         atributo = None
                     atributos[str(nombres[x])] = atributo
@@ -2422,15 +2457,15 @@ font: 10pt "Bahnschrift";"""
             if response.status_code == 200:
                 self.UTI.mostrarAlerta("Cambios guardados con exito", QMessageBox.Information, "Guardar Cambios")
                 QSettings().setValue('listaEliminadaRef', [])
+                QSettings().setValue('posibleGuardarRef', 'False') 
                 self.dockwidget.comboCapasEdicion.setEnabled(True)
                 self.dockwidget.botonActivarEdicion.setEnabled(True)
                 self.dockwidget.botonActualizarRef.setEnabled(False)
-                self.dockwidget.botonGuardarRef.setEnabled(False)
                 self.dockwidget.botonCancelarReferencia.setEnabled(False)
                 self.quitarDeGrupo(self.capaEnEdicion, 'edicion')
                 self.pintarCapasReferencia(self.traducirIdCapa( self.capaEnEdicion), self.obtenerBoundingBox().asWkt(), False)
                 self.capaEnEdicion = ''
-                #QSettings().setValue('capaRefEdicion', self.capaEnEdicion)
+                QSettings().setValue('capaRefEdicion', self.capaEnEdicion)
                 self.dockwidget.tablaServiciosCalles.setVisible(False)
                 self.dockwidget.botonActualizarServiciosCalles.setVisible(False)
                 self.dockwidget.tituloServiciosCalles.setVisible(False)
@@ -2453,13 +2488,12 @@ font: 10pt "Bahnschrift";"""
         self.dockwidget.comboCapasEdicion.setEnabled(True)
         self.dockwidget.botonActivarEdicion.setEnabled(True)
         self.dockwidget.botonActualizarRef.setEnabled(False)
-        self.dockwidget.botonGuardarRef.setEnabled(False)
         self.dockwidget.botonCancelarReferencia.setEnabled(False)
         self.dockwidget.tablaServiciosCalles.setVisible(False)
         self.dockwidget.botonActualizarServiciosCalles.setVisible(False)
         self.dockwidget.tituloServiciosCalles.setVisible(False)
         self.capaEnEdicion = ''
-        #QSettings().setValue('capaRefEdicion', self.capaEnEdicion)
+        QSettings().setValue('capaRefEdicion', self.capaEnEdicion)
 
 ##########################################################################################################################
 
@@ -2703,4 +2737,311 @@ font: 10pt "Bahnschrift";"""
         # regresa herramienta de seleccion normal
         self.iface.actionSelect().trigger()
         self.cambiarStatusCedula("Listo...", "ok")
+
+#################################################################
+
+
+    def segmentar(self):
+        #-Irrelevante-#
+        capaManzana = QgsProject.instance().mapLayersByName('manzana')[0]
+        capaAux = QgsProject.instance().mapLayersByName('cves_verticales')[0]
+        #capaCalles = QgsProject.instance().mapLayersByName('Calles')[0]
+        
+        listaM = self.pruebaObtenerManzana('manzana')
+        #print(listaM)
+        
+        self.manzanaChidotota = listaM[0]
+        geomManzana = self.manzanaChidotota.geometry()
+
+
+        simple = geomManzana.simplify(1)
+
+        n   = 0
+        ver = simple.vertexAt(1)
+        points=[]
+
+        while(ver != QgsPoint(0,0)):
+            n +=1
+            points.append(ver)
+            ver=simple.vertexAt(n)
+
+        #points.append(points[0])
+        segmentos = []
+        rango = len(points)
+        centroides = []
+
+
+
+        for x in range(0, rango-1):
+            line_start = points[x]
+            line_end = points[x+1]
+            line = QgsGeometry.fromPolyline([line_start,line_end])
+            feat = QgsFeature()
+            feat.setGeometry(QgsGeometry(line.centroid()))
+            centroides.append(feat)
+            #capaAux.dataProvider().addFeatures([feat])
+            #capaAux.triggerRepaint()
+            #capaAux.commitChanges()
+
+        callesColindantes = []
+        listaToques = []
+
+        listaCalles = self.pruebaObtenerCalles(geomManzana)
+        #Ya con centroides
+
+        for punto in centroides:
+            
+            geomPunto = punto.geometry()
+            tamanoBuff = 3
+            bandera = False
+
+            while tamanoBuff <= 30:
+
+                bufferPredio = geomPunto.buffer(tamanoBuff,16)
+            
+                for calle in listaCalles:
+                    
+                    geomCalle = calle.geometry()
+                    bufferCalle = geomCalle.buffer(0.1,1)
+
+                    if bufferCalle.intersects(bufferPredio):
+                        bandera = True
+
+                        listaToques.append(calle)
+
+                if not bandera:
+                    tamanoBuff += 1
+                else:
+                    distancia = 999999
+                    calleElegida = QgsGeometry()
+                    for calleC in listaToques:
+                        #print(type(calleC))
+                        geomC = calleC.geometry()
+                        if geomPunto.distance(geomC) < distancia:
+                            distancia = geomPunto.distance(geomC)
+                            calleElegida = calleC
+                    
+                    #st = str(calleElegida['id']) + ' - ' +  str(calleElegida['calle'])
+                        
+                    if not calleElegida in callesColindantes:
+                        callesColindantes.append(calleElegida)
+
+                    tamanoBuff = 99
+
+        return callesColindantes
+        
+#####################################
+
+    def checarPrincipal(self):
+
+        capaManzana = QgsProject.instance().mapLayersByName('manzana')[0]
+        capaPuntos = QgsProject.instance().mapLayersByName('predios.num')[0]
+        capaPredios = QgsProject.instance().mapLayersByName('predios.geom')[0]
+        capaConstru = QgsProject.instance().mapLayersByName('construcciones')[0]
+        listaCalles = self.segmentar()
+        
+        manzana = self.manzanaChidotota
+        geomManzana = manzana.geometry()
+
+        listaPuntosP = self.pruebaObtenerManzana('predios.num')
+        listaPredios = self.pruebaObtenerManzana('predios.geom')
+
+        relacionPredios = {}
+        for puntito in listaPuntosP:
+            geomPuntito = puntito.geometry()
+            for predito in listaPredios:
+                geomPredito = predito.geometry()
+                if geomPuntito.intersects(geomPredito):
+                    relacionPredios[puntito.attributes()[0]] = predito.attributes()[1]
+                    break
+
+        #print(relacionPredios)
+
+
+
+         
+        for punto in listaPuntosP:
+            
+            geomPredio = punto.geometry()
+
+            if not geomPredio.intersects(geomManzana):
+                continue
+
+            tamanoBuff = 3
+            bandera = False
+            listaToques = []
+            salidaCalles = []
+
+            while tamanoBuff <= 30:
+
+                bufferPredio = geomPredio.buffer(tamanoBuff,16)
+            
+                for calle in listaCalles:
+                    
+                    geomCalle = calle.geometry()
+                    bufferCalle = geomCalle.buffer(0.1,1)
+
+                    if bufferCalle.intersects(bufferPredio):
+                        bandera = True
+                        listaToques.append(calle)
+
+                if not bandera:
+                    tamanoBuff += 1
+                else:
+                    #print('tenemos un else con ' + str(punto.id()))
+                    distancia = 999999
+                    calleElegida = QgsGeometry()
+                    for calleC in listaToques:
+                        geomC = calleC.geometry()
+                        if geomPredio.distance(geomC) < distancia:
+                            distancia = geomPredio.distance(geomC)
+                            calleElegida = calleC
+                   
+                    #if not st in callesColindantes:
+                    #salidaCalles.append(st)
+
+                    tamanoBuff = 99
+        
+###############################################################################################
+
+    def pruebaObtenerManzana(self, nombreCapa):
+        #Nombre de la capa de acuerdo al valor del ComboBox de capas a cargar
+        
+        data = self.obtenerAPintar(self.obtenerIdCapa(nombreCapa))
+        
+        type(data)
+        srid = 32614
+        inSpatialRef = osr.SpatialReference()
+        inSpatialRef.ImportFromEPSG(int(srid))
+        outSpatialRef = osr.SpatialReference()
+        outSpatialRef.ImportFromEPSG(int(srid))
+        coordTrans = osr.CoordinateTransformation(inSpatialRef, outSpatialRef)
+        
+        if nombreCapa != 'predios.num':
+            if not bool(data):
+                raise Exception('Error')
+
+            if data['features'] == []:
+                return
+
+            varKeys = data['features'][0]['properties']
+
+            keys = list(varKeys.keys())
+            #print(keys)
+
+            
+            properties = []
+            geoms = []
+            for feature in data['features']:
+                geom = feature['geometry']
+                
+                property = feature['properties']
+                geom = json.dumps(geom)
+                geometry = ogr.CreateGeometryFromJson(geom)
+                geometry.Transform(coordTrans)
+                geoms.append(geometry.ExportToWkt())
+
+                l = []
+                for i in range(0, len(keys)):
+                    
+                    l.append(property[keys[i]])
+                    
+                properties.append(l)
+
+            feats = [ QgsFeature() for i in range(len(geoms)) ]
+            for i, feat in enumerate(feats):
+                feat.setGeometry(QgsGeometry.fromWkt(geoms[i]))
+                feat.setAttributes(properties[i])
+                #print(properties[i])
+
+            return feats
+
+        else:
+            polys = []
+            for feature in data:
+                wkt = feature['geomNum']
+                gem = QgsGeometry.fromWkt(wkt)
+                polys.append(gem)
+
+            feats = [ QgsFeature() for i in range(len(polys)) ]
+
+            for i, feat in enumerate(feats):  
+                feat.setGeometry(polys[i])
+                feat.setAttributes([i])
+                #print(feat.attributes())
+                #prov.addFeature(feat)
+                #feat[etiquetaField] = listNum[i]
+                #mem_layer.updateFeature(feat)
+                #mem_layer.changeAttributeValue(feat.id(), 0, listNum[i])
+
+            return feats
+
+
+
+
+
+###
+
+    def pruebaObtenerCalles(self, param):
+        #Nombre de la capa de acuerdo al valor del ComboBox de capas a cargar
+        
+        geoTemp = (QgsGeometry.fromWkt(param.boundingBox().asWktPolygon())).buffer(60, 0)
+        #print('la copia')
+        #print(type(geoTemp))
+        data = self.obtenerCapasDeReferencia(self.tablasReferencias['Calles'], geoTemp.asWkt())
+        
+        type(data)
+        srid = 32614
+        inSpatialRef = osr.SpatialReference()
+        inSpatialRef.ImportFromEPSG(int(srid))
+        outSpatialRef = osr.SpatialReference()
+        outSpatialRef.ImportFromEPSG(int(srid))
+        coordTrans = osr.CoordinateTransformation(inSpatialRef, outSpatialRef)
+        if not bool(data):
+            raise Exception('Error')
+
+        if data['features'] == []:
+            return
+
+        varKeys = data['features'][0]['properties']
+
+        keys = list(varKeys.keys())
+        
+
+        properties = []
+        geoms = []
+        for feature in data['features']:
+            geom = feature['geometry']
+            
+            property = feature['properties']
+            geom = json.dumps(geom)
+            geometry = ogr.CreateGeometryFromJson(geom)
+            geometry.Transform(coordTrans)
+            geoms.append(geometry.ExportToWkt())
+
+            l = []
+            for i in range(0, len(keys)):
+                
+                l.append(property[keys[i]])
+            properties.append(l)
+
+        feats = [ QgsFeature() for i in range(len(geoms)) ]
+        for i, feat in enumerate(feats):
+            feat.setGeometry(QgsGeometry.fromWkt(geoms[i]))
+            feat.setAttributes(properties[i])
+            #print(properties[i])
+        return feats
+
+#---------------------------------------------------------------------------
+
+    def cargarPrediosEnComboDividir(self, listaPredios):
+        
+        self.DFS.dlg.comboPredios.clear()
+        lista = []
+        for predio in listaPredios:
+            lista.append(str(predio.attributes()[1]))
+
+        lista.sort()
+        for elemento in lista:
+            self.DFS.dlg.comboPredios.addItem(elemento)
 

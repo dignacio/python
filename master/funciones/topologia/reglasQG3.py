@@ -1,7 +1,7 @@
 
 
 from qgis.utils import iface
-from qgis.core import QgsProject, QgsVectorLayer, QgsLayerTreeLayer, QgsWkbTypes, QgsFillSymbol, QgsMarkerSymbol, QgsRenderContext
+from qgis.core import *
 from PyQt5.QtCore import QFileInfo, QSettings, QPoint
 from PyQt5.QtWidgets import QToolBar, QDockWidget, QMenuBar, QMenu, QAction, QMessageBox
 from PyQt5.QtGui import QIcon, QColor
@@ -9,11 +9,19 @@ from qgis import *
 import os.path
 import os, json, requests
 from osgeo import ogr, osr
+import math
 
 class Reglas:
 
     def __init__(self, ACA):
         self.ACA = ACA
+        self.idManzanas = self.ACA.obtenerIdCapa('manzana')
+        self.idPredios = self.ACA.obtenerIdCapa('predios.geom')
+        self.idConst = self.ACA.obtenerIdCapa('construcciones')
+
+        self.manzanasMalas = []
+        self.prediosMalos = []
+        self.constMalas = []
 
 ############################################################################
 
@@ -24,6 +32,7 @@ class Reglas:
 
         #print(QSettings().value('capaEnEdicion'))
         if tipoConsulta == 'objeto' and QSettings().value('capaRefEdicion') == self.ACA.obtenerIdCapa( nameCapa):
+            print('namecapa', nameCapa)
             return QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa( nameCapa)).getFeatures()
 
         self.manzanaPrincipal = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('manzana'))
@@ -123,7 +132,8 @@ class Reglas:
                         interseccion = feat1.geometry().buffer(-0.0000001,1).intersection(feat2.geometry().buffer(-0.0000001,1))
                         if (interseccion.area() > tolerancia):
                             listaErrores.append(interseccion.asWkt())
-        
+                            self.checarMalos(capa1, feat1)
+                            self.checarMalos(capa2, feat2)
         #Cuandolas capas a comparar son la misma
         else:
             rango1 = len(listaCapa1)
@@ -135,7 +145,8 @@ class Reglas:
                         interseccion = feat1.geometry().buffer(-0.0000001,1).intersection(feat2.geometry().buffer(-0.0000001,1))
                         if(interseccion.area() > tolerancia):
                             listaErrores.append(interseccion.asWkt()) 
-
+                            self.checarMalos(capa1, feat1)
+                            self.checarMalos(capa1, feat2)
         self.cuentaError = len(listaErrores)
 
         if (self.cuentaError == 0):
@@ -187,7 +198,7 @@ class Reglas:
             if(diferencia.area() > 0.0000001): #Agregamos los errores a la lista
 
                 listDiferencias.append(diferencia.asWkt())
-        
+                self.checarMalos(capaBase, listaBase[i])
         self.cuentaError = len(listDiferencias)
 
         if (self.cuentaError == 0):
@@ -235,10 +246,11 @@ class Reglas:
                     if (diferencia > tolerancia):
                         salida = objeto.difference(contenedor)
                         listaSalidas.append(salida.asWkt())
+                        self.checarMalos(capaObjeto, featObj)
             if not bandera:
-                print ('no bandera')
+
                 listaSalidas.append(objeto.asWkt())
-              
+                self.checarMalos(capaObjeto, featObj)
 
         self.cuentaError = len(listaSalidas)
 
@@ -275,6 +287,7 @@ class Reglas:
 
             if not geom.isGeosValid():
                 geoms.append(geom.asWkt())
+                self.checarMalos(capa, s)
 
         self.cuentaError = len(geoms)
 
@@ -317,7 +330,8 @@ class Reglas:
                 geometria2 = listaFeatures[j].geometry()
                 if(geometria1.equals(geometria2)):
                     geoms.append(geometria1.asWkt())
-
+                    self.checarMalos(capa, listaFeatures[i])
+                    self.checarMalos(capa, listaFeatures[j])
         self.cuentaError = len(geoms)
 
         if (self.cuentaError == 0):
@@ -368,7 +382,7 @@ class Reglas:
                     area = gb.intersection(gb1).area()
                     if area > 0.01:
                         geoms.append(geometria1.asWkt())
-                    
+                        self.checarMalos(capa, listaFeatures[i])
         self.cuentaError = len(geoms)
 
         if (self.cuentaError == 0):
@@ -404,7 +418,7 @@ class Reglas:
                 lista = geom.asMultiPolygon()
                 if len(lista) > 1:
                     geoms.append(geom.asWkt())
-
+                    self.checarMalos(capa, f)
         if len(geoms) == 0:
             return
 
@@ -441,11 +455,12 @@ class Reglas:
                     lista = geom.asPolygon()
                     if len(lista) > 1:
                         geoms.append(geom.asWkt())
-
+                        self.checarMalos(capa, f)
                 if geom.wkbType() == 6: # multipoligono
                     lista = geom.asMultiPolygon()[0]
                     if len(lista) > 1:
                         geoms.append(geom.asWkt())
+                        self.checarMalos(capa, f)
         if len(geoms) == 0:
             return
 
@@ -482,7 +497,7 @@ class Reglas:
                     cuentaPunto += 1
             if cuentaPunto != 1:
                 geoms.append(punto.geometry().asWkt())
-
+                self.checarMalos(capaPunto, punto)
         self.cuentaError = len(geoms)
 
         if self.cuentaError == 0:
@@ -544,7 +559,7 @@ class Reglas:
 
                         bandera = False
                         listaError.append(objeto.asWkt())
-
+                        self.checarMalos(capaObjeto, featObj)
                 
             if bandera:
                 listaRayada.append(featObj)
@@ -577,12 +592,12 @@ class Reglas:
 
                 if cuentaExcede > 1:
                     listaError.append(objeto.asWkt())
-
+                    self.checarMalos(capaObjeto, feat1)
             #De aqui para abajo esta bien
             if len(listaCompartida) == 0:
                 #print("Le falto - "  "id: " + str(feat1.id()) + " - Lista compartida: " + str(len(listaCompartida)))
                 listaError.append(objeto.asWkt())
-
+                self.checarMalos(capaObjeto, feat1)
         self.cuentaError = len(listaError)
 
         if self.cuentaError == 0:
@@ -604,7 +619,7 @@ class Reglas:
         grupoErrores = root.findGroup('ERRORES DE TOPOLOGIA')
         capaError = QgsLayerTreeLayer(capa)
         capa.startEditing()
-
+        
         for inter in listaErrores:
             
             geom = QgsGeometry()
@@ -628,6 +643,8 @@ class Reglas:
 
         #Cambiamos el color de la capa a rojo
         renderer  = capa.renderer()
+
+        
 
         if capa.wkbType() == 3 or capa.wkbType() == 6:
             symbol = QgsFillSymbol.createSimple({'color':'#F5A9A9', 'color_border':'#FF0000', 'width_border':'0.5'})
@@ -677,12 +694,13 @@ class Reglas:
 
                 if geometria1.equals(geometria2):
                     geoms.append(geometria1.asWkt())
-                
+                    self.checarMalos(capa, listaFeatures[i])
                 else:
                     area = geometria1.intersection(geometria2).area() - geometria1.area()
 
                     if (geometria1.area() == geometria2.area() and area < 0.0000001 and area > -0.0000001) or listaFeatures[i] == listaFeatures[j]:
                         geoms.append(geometria1.asWkt())
+                        self.checarMalos(capa, listaFeatures[i])
 
         self.cuentaError = len(geoms)
 
@@ -724,6 +742,7 @@ class Reglas:
                     cuentaPunto += 1
             if cuentaPunto != 1:
                 geoms.append(poli.geometry().asWkt())
+                self.checarMalos(capaPoligono, poli)
 
         self.cuentaError = len(geoms)
 
@@ -735,6 +754,120 @@ class Reglas:
         capa = QgsVectorLayer('Polygon?crs=epsg:32614&field=cve_cat:string(15)&index=yes',  "Puntos de la capa: " + nombrePunto + " no incluidos en poligonos de la capa " + nombrePoligono, 'memory')
 
         self.pintarErrores(capa, geoms)
+
+####################################################################################################################
+
+    def validarInscritasEnPrediosIrregulares(self):
+        capaAreasInscritas = QgsProject.instance().mapLayer(QSettings().value('xAreasInscritas'))
+        capaPredios = QgsProject.instance().mapLayer(QSettings().value('xPredGeom'))
+
+        if capaAreasInscritas == None or capaPredios == None:
+            return
+
+        self.cuentaError = 0
+        self.stringError = ""
+
+        listaError = []
+
+        for insc in capaAreasInscritas.getFeatures():
+
+            geomInsc = insc.geometry()
+            bandera = True
+            
+            for predio in capaPredios.getFeatures():
+                geomPredio = predio.geometry()
+
+                if geomInsc.buffer(-0.0000001,1).intersects(geomPredio):
+                    if self.estaEscuadradito(geomPredio):
+                        bandera = False
+                        break
+
+            if not bandera:
+                listaError.append(geomInsc.asWkt())
+            
+        self.cuentaError = len(listaError)
+
+        if self.cuentaError == 0:
+            return
+
+        self.stringError = str(self.cuentaError) + " areas inscritas en predios regulares"
+        capa = QgsVectorLayer('Polygon?crs=epsg:32614&field=cve_cat:string(15)&index=yes',  "Areas inscritas en predios regulares", 'memory')
+
+        self.pintarErrores(capa, listaError)
+
+###################################################################################################################
+
+    def validarAreasInscritasCuadraditas(self):
+        capaAreasInscritas = QgsProject.instance().mapLayer(QSettings().value('xAreasInscritas'))
+        capaPredios = QgsProject.instance().mapLayer(QSettings().value('xPredGeom'))
+
+        if capaAreasInscritas == None or capaPredios == None:
+            return
+
+        self.cuentaError = 0
+        self.stringError = ""
+
+        listaError = []
+
+        for insc in capaAreasInscritas.getFeatures():
+
+            geomInsc = insc.geometry()
+            if not self.estaEscuadradito(geomInsc):
+                listaError.append(geomInsc.asWkt())
+
+            
+        self.cuentaError = len(listaError)
+
+        if self.cuentaError == 0:
+            return
+
+        self.stringError = str(self.cuentaError) + " Areas inscritas no cuadradas o rectangulares y con angulos rectos"
+        capa = QgsVectorLayer('Polygon?crs=epsg:32614&field=cve_cat:string(15)&index=yes',  "Areas inscritas no cuadradas o rectangulares y con angulos rectos", 'memory')
+
+        self.pintarErrores(capa, listaError)
+
+######################################################################################################################
+
+    def validarCantidadAreasInscritas(self):
+        capaAreasInscritas = QgsProject.instance().mapLayer(QSettings().value('xAreasInscritas'))
+        capaPredios = QgsProject.instance().mapLayer(QSettings().value('xPredGeom'))
+
+        if capaAreasInscritas == None or capaPredios == None:
+            return
+
+        self.cuentaError = 0
+        self.stringError = ""
+
+        listaError = []
+
+        for predio in capaPredios.getFeatures():
+            geomPredio = predio.geometry()
+            #if self.estaEscuadradito(geomPredio):
+            #    continue
+            bandera = True
+            cuentaInter = 0
+            for area in capaAreasInscritas.getFeatures():
+                if geomPredio.buffer(-0.0000001,1).intersects(area.geometry()):
+                    cuentaInter += 1
+    
+            if cuentaInter > 2:
+                bandera = False
+
+            if not bandera:          
+                listaError.append(geomPredio.asWkt())
+                self.checarMalos(capaPredios, predio)
+
+            
+        self.cuentaError = len(listaError)
+
+        if self.cuentaError == 0:
+            return
+
+        self.stringError = str(self.cuentaError) + " predios irregulares con mas de dos areas inscritas"
+        capa = QgsVectorLayer('Polygon?crs=epsg:32614&field=cve_cat:string(15)&index=yes',  "predios irregulares con mas de dos areas inscritas", 'memory')
+
+        self.pintarErrores(capa, listaError)
+
 
 ###################################################################################################################
 
@@ -762,6 +895,7 @@ class Reglas:
                     cuentaPunto += 1
             if cuentaPunto < 1:
                 geoms.append(poli.geometry().asWkt())
+                self.checarMalos(capaPoligono, poli)
 
         self.cuentaError = len(geoms)
 
@@ -871,6 +1005,10 @@ class Reglas:
         self.pintarErrores(temp, geoms)
     
 ################################################################################################
+
+    
+#################################################################################################
+
 
     def validarCamposRef(self, nombreCapa):
 
@@ -1016,6 +1154,155 @@ class Reglas:
 
 #############################################################################################
 
+    def validarLongitudCampo(self, capa, campo, longitud):
+        
+        if capa == None:
+            return
+
+        self.cuentaError = 0
+        self.stringError = "None"
+
+        listaError = []
+
+        capa.startEditing()
+        for feat in capa.getFeatures():
+            campoV = str(feat[campo])
+            if len(campoV) != longitud:
+                listaError.append(feat.geometry().asWkt())
+                self.checarMalos(capa, feat)
+        capa.commitChanges()
+
+        self.cuentaError = len(listaError)
+
+        if (self.cuentaError == 0):
+            return
+
+        self.stringError = "Capa: " + capa.name() + " " + str(self.cuentaError) + " longitud de " + str(campo) + " invalida"
+
+        if capa.wkbType() == 3 or capa.wkbType() == 6:
+            temp = QgsVectorLayer('Polygon?crs=epsg:32614','('+ capa.name() +')'  +  ' Longitud invalida de ' + campo, 'memory')
+        else:
+            temp = QgsVectorLayer('Point?crs=epsg:32614','('+ capa.name() +')'  +  ' Longitud invalida de ' + campo, 'memory')
+        self.pintarErrores(temp, listaError)
+
+######################################################################################################################################
+
+    def validarCampoNoNulo(self, capa, campo):
+        
+        if capa == None:
+            return
+
+        self.cuentaError = 0
+        self.stringError = "None"
+
+        listaError = []
+
+        capa.startEditing()
+        for feat in capa.getFeatures():
+            campoV = str(feat[campo])
+            if campoV == '' or campoV == None or campoV == 'NULL':
+                listaError.append(feat.geometry().asWkt())
+                self.checarMalos(capa, feat)
+        capa.commitChanges()
+
+        self.cuentaError = len(listaError)
+
+        if (self.cuentaError == 0):
+            return
+
+        self.stringError = "Capa: " + capa.name() + " " + str(self.cuentaError) + str(campo) + " vacio"
+
+        if capa.wkbType() == 3 or capa.wkbType() == 6:
+            temp = QgsVectorLayer('Polygon?crs=epsg:32614','('+ capa.name() +')'  +  ' Campo vacio: ' + campo, 'memory')
+        else:
+            temp = QgsVectorLayer('Point?crs=epsg:32614','('+ capa.name() +')'  +  ' Campo vacio: ' + campo, 'memory')
+        self.pintarErrores(temp, listaError)
+
+##################################################################################################
+
+    def validarCampoNoNuloDoble(self, capa, campo1, campo2):
+        
+        if capa == None:
+            return
+
+        self.cuentaError = 0
+        self.stringError = "None"
+
+        listaError = []
+
+        capa.startEditing()
+        for feat in capa.getFeatures():
+            campoV1 = str(feat[campo1])
+            campoV2 = str(feat[campo2])
+            if (campoV1 == '' or campoV1 == None or campoV1 == 'NULL') and (campoV2 == '' or campoV2 == None or campoV2 == 'NULL'):
+                listaError.append(feat.geometry().asWkt())
+                self.checarMalos(capa, feat)
+        capa.commitChanges()
+
+        self.cuentaError = len(listaError)
+
+        if (self.cuentaError == 0):
+            return
+
+        self.stringError = "Capa: " + capa.name() + " " + str(self.cuentaError) + str(campo1) + ' y ' + str(campo2) + " vacios"
+
+        if capa.wkbType() == 3 or capa.wkbType() == 6:
+            temp = QgsVectorLayer('Polygon?crs=epsg:32614','('+ capa.name() +')'  +  str(campo1) + ' y ' + str(campo2) + " vacios", 'memory')
+        else:
+            temp = QgsVectorLayer('Point?crs=epsg:32614','('+ capa.name() +')'  +  str(campo1) + ' y ' + str(campo2) + " vacios", 'memory')
+        self.pintarErrores(temp, listaError)
+
+################################################################################################
+
+    def validarCamposDuplicados(self, capaContenedor, capaObjeto, campo):
+
+        if capaContenedor == None or capaObjeto == None:
+            return
+
+        self.cuentaError = 0
+        self.stringError = "None"
+
+        listaError = []
+
+        capaObjeto.startEditing()
+        #listaDatos = [feat[campo] for feat in capaObjeto.getFeatures()]
+        for cont in capaContenedor.getFeatures():
+            geomCont = cont.geometry()
+            listaDentro = []
+            for obj in capaObjeto.getFeatures():
+                geomObj = obj.geometry()
+                if geomCont.intersects(geomObj.buffer(-0.0000001,1)) or geomCont.intersection(geomObj.buffer(0.0000001,1)).area() >0.0000000001 and self.contarIntegraciones(geomObj.buffer(-0.0000001,1), 'predios.geom') == 0:
+                    listaDentro.append(obj)
+            
+            listaDatos = [feat[campo] for feat in listaDentro]
+            
+            for dentro in listaDentro:
+                campoV = dentro[campo]
+                if campoV == '' or campoV == 'NULL' or campoV == None:
+                    continue
+                if listaDatos.count(campoV) > 1:
+                    listaError.append(dentro.geometry().asWkt())
+                    self.checarMalos(capaObjeto, dentro)
+        capaObjeto.commitChanges()
+
+        self.cuentaError = len(listaError)
+
+        if (self.cuentaError == 0):
+            return
+
+        self.stringError = "Capa: " + capaObjeto.name() + " " + str(self.cuentaError) + str(campo) + " repetido"
+
+        if capaObjeto.wkbType() == 3 or capaObjeto.wkbType() == 6:
+            temp = QgsVectorLayer('Polygon?crs=epsg:32614','('+ capaObjeto.name() +')'  +  ' Campo repetido: ' + campo, 'memory')
+        else:
+            temp = QgsVectorLayer('Point?crs=epsg:32614','('+ capaObjeto.name() +')'  +  ' Campo repetido: ' + campo, 'memory')
+        self.pintarErrores(temp, listaError)
+
+
+
+
+
+#########################################################################################
     def deb(self, feat, id, mensaje):
         if feat.id() == id:
             print(mensaje)
@@ -1068,3 +1355,71 @@ class Reglas:
             return QSettings().value('xEstado')
         
         return 'None'
+
+##################################################################################################################
+
+    def estaEscuadradito(self, geometria):
+        vertices = self.obtenerVertices(geometria)
+            
+        rango = len(vertices)
+        total = 0
+        listaGrados = []
+        for x in range(0, rango-1):
+            p1 = vertices[x]
+            p2 = vertices[x+1]
+
+            dx = p2.x() - p1.x()
+            dy = p2.y() - p1.y()
+            #rads = math.atan2 (dy, dx) #wrong for finding angle/declination?
+            grados = math.degrees(math.atan2(dy, dx))
+            if grados < 0:
+                grados += 180
+
+            grados = int(grados)
+            listaGrados.append(grados)
+
+        for x in range(0, len(listaGrados)):
+            
+            if listaGrados.count(listaGrados[x]) != 2:
+                return False
+                
+        return True
+
+##########################################################################################################
+
+    def obtenerVertices(self, geom):
+        n  = 0
+        ver = geom.vertexAt(0)
+        vertices=[]
+
+        while(ver != QgsPoint(0,0)):
+            n +=1
+            vertices.append(ver)
+            ver=geom.vertexAt(n)
+
+        return vertices
+
+#############################################################################################################################
+
+    def contarIntegraciones(self, geometria, nombreCapa):
+        capa = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa(nombreCapa))
+        cuenta = 0
+        for feat in capa.getFeatures():
+            if geometria.intersects(feat.geometry()):
+                cuenta += 1
+
+        return cuenta
+
+##########################################################################################################################
+
+    def checarMalos(self, capa, feat):
+
+        if capa.id() == self.idManzanas:
+            if not feat.id() in self.manzanasMalas:
+                self.manzanasMalas.append(feat.id())
+        elif capa.id() == self.idPredios:
+            if not feat.id() in self.prediosMalos:
+                self.prediosMalos.append(feat.id())
+        elif capa.id() == self.idConst:
+            if not feat.id() in self.constMalas:
+                self.constMalas.append(feat.id())

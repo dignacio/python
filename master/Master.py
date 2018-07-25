@@ -25,7 +25,7 @@ from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction
 from qgis.utils import iface
-
+from qgis.core import *
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
@@ -33,11 +33,17 @@ from .Master_dialog import MasterDialog
 import os.path
 
 from .funciones.configuracion import Configuracion
-from .funciones.consulta import actualizacioncatastralv2
-from .funciones.dibujo import HerramientasPoligono
-from .funciones.eliminacion import EliminarPoligonos
-from .funciones.topologia import TopologiaQG3
+from .funciones.consulta import ActualizacionCatastralV3
+from .funciones.dibujo import DibujoV3
+from .funciones.eliminacion import EliminacionV3
+from .funciones.topologia import TopologiaV3
 from .funciones.utilidades import utilidades
+from .funciones.fusiondivision import DivisionFusion
+from .funciones.cargamasiva import Integracion
+
+from .funciones.revisioncampo import AsignacionCampo
+from .funciones.revisioncampo import AsignacionRevision
+from .funciones.revisioncampo import CedulaPadron
 
 class Master:
     """QGIS Plugin Implementation."""
@@ -70,28 +76,95 @@ class Master:
 
         # Create the dialog (after translation) and keep reference
         self.dlg = MasterDialog()
-
+        self.banderaInicial = True
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&Master')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'Master')
         self.toolbar.setObjectName(u'Master')
-
+        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         #self.CFG = Configuracion
         self.CFG = Configuracion.Configuracion()
-        self.UTI = utilidades.Utilidad(self.CFG)
-        self.ACA = actualizacioncatastralv2.actualizacioncatastralv2(iface, self.CFG, self.UTI)
-        self.DBJ = HerramientasPoligono.HerramientasPoligono(iface, self.CFG, self.UTI, self.ACA)
-        self.ELM = EliminarPoligonos.EliminarPoligonos(iface, self.CFG, self.UTI, self.ACA)           
-        self.TPG = TopologiaQG3.TopologiaQG3(iface, self.CFG, self.UTI, self.ACA)
-        
+        self.UTI = utilidades.Utilidad()
+
+        self.ACA = ActualizacionCatastralV3.ActualizacionCatastralV3(iface)
+        self.DFS = DivisionFusion.DivisionFusion(iface, self.ACA)
+        self.DBJ = DibujoV3.DibujoV3(iface)
+        self.ELM = EliminacionV3.EliminacionV3(iface)           
+        self.TPG = TopologiaV3.TopologiaV3(iface, self.ACA)
+        self.CMS = Integracion.Integracion(iface)
+
+        self.CRV = CedulaPadron.CedulaPadron(iface)
+        self.ASCM = AsignacionCampo.AsignacionCampo(iface, self.UTI)
+        self.ASRV = AsignacionRevision.AsignacionRevision(iface, self.UTI)
+
+        self.ASCM.CFG = self.CFG
+        self.ASCM.ACA = self.ACA
+        self.ASRV.CFG = self.CFG
+
+        self.UTI.CFG = self.CFG
+        self.UTI.ACA = self.ACA
+
+        self.ACA.CFG = self.CFG
+        self.ACA.UTI = self.UTI
+        self.ACA.DFS = self.DFS
+        self.ACA.DBJ = self.ACA
+        self.ACA.ELM = self.ELM
+        self.ACA.DFS = self.DFS
+        self.ACA.TPG = self.TPG
+        self.ACA.CMS = self.CMS
+
+        self.DFS.CFG = self.CFG
+        self.DFS.UTI = self.UTI
+        self.DFS.DFS = self.DFS
+        self.DFS.DBJ = self.DBJ
+        self.DFS.ELM = self.ELM
+        self.DFS.ACA = self.ACA
+        self.DFS.TPG = self.TPG
+
+        self.DBJ.CFG = self.CFG
+        self.DBJ.UTI = self.UTI
+        self.DBJ.DFS = self.DFS
+        self.DBJ.ACA = self.ACA
+        self.DBJ.ELM = self.ELM
+        self.DBJ.DFS = self.DFS
+        self.DBJ.TPG = self.TPG
+
+        self.ELM.CFG = self.CFG
+        self.ELM.UTI = self.UTI
+        self.ELM.DFS = self.DFS
+        self.ELM.DBJ = self.DBJ
+        self.ELM.ACA = self.ACA
+        self.ELM.DFS = self.DFS
+        self.ELM.TPG = self.TPG
+
+        self.TPG.CFG = self.CFG
+        self.TPG.UTI = self.UTI
+        self.TPG.DFS = self.DFS
+        self.TPG.DBJ = self.DBJ
+        self.TPG.ELM = self.ELM
+        self.TPG.DFS = self.DFS
+        self.TPG.CMS = self.CMS
+
+        self.CMS.UTI = self.UTI
+        self.CMS.ACA = self.ACA
+
 
 
         self.dlg.btnConsulta.clicked.connect(self.irAConsulta)
         self.dlg.btnDibujo.clicked.connect(self.irADibujo)
         self.dlg.btnEliminar.clicked.connect(self.irAEliminar)
         self.dlg.btnTopologia.clicked.connect(self.irATopologia)
+        self.dlg.btnFusDiv.clicked.connect(self.irAFusionDivision)
+        self.dlg.btnCargaMasiva.clicked.connect(self.irACargaMasiva)
+        self.dlg.btnAsigCampo.clicked.connect(self.irAAsignacionCampo)
+        self.dlg.btnAsigRev.clicked.connect(self.irAAsignacionRevision)
+        self.dlg.btnCedRev.clicked.connect(self.irAIntermediarioCedulaRevision)
+
+        self.dlg.btnAsigCampo.setEnabled(False)
+        self.dlg.btnAsigRev.setEnabled(False)
+        self.dlg.btnCedRev.setEnabled(False)
 
 #-----------------------------------------------------
 
@@ -213,14 +286,45 @@ class Master:
 
     def run(self):
         """Run method that performs all the real work"""
+        #self.irAConsulta()
+        #self.ACA.pintarCapas()
+        #self.irAFusionDivision()
+
+        if self.banderaInicial:
+            print('agregamos eventos eliminar')
+            capaManzana = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('manzana'))
+            capaPredsG = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('predios.geom'))
+            capaPredN = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('predios.num'))
+            capaConst = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('construcciones'))
+            capaHoriG = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('horizontales.geom'))
+            capaHoriN = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('horizontales.num'))
+            capaVert = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('verticales'))
+            capaCvert = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('cves_verticales'))
+            
+            self.banderaInicial = False
+            
+            capaManzana.selectionChanged.connect(self.ELM.cargarEliminar)
+            capaPredsG.selectionChanged.connect(self.ELM.cargarEliminar)
+            capaPredN.selectionChanged.connect(self.ELM.cargarEliminar)
+            capaConst.selectionChanged.connect(self.ELM.cargarEliminar)
+            capaHoriG.selectionChanged.connect(self.ELM.cargarEliminar)
+            capaHoriN.selectionChanged.connect(self.ELM.cargarEliminar)
+            capaVert.selectionChanged.connect(self.ELM.cargarEliminar)
+            capaCvert.selectionChanged.connect(self.ELM.cargarEliminar)
+            
         # show the dialog
+        #self.irAConsulta()
+        #self.ACA.pintarCapas()
         self.dlg.show()
         # Run the dialog event loop
         result = self.dlg.exec_()
         # See if OK was pressed
+        #self.irAConsulta()
+
         if result:
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
+            
             pass
 
 
@@ -243,3 +347,28 @@ class Master:
 
     def irATopologia(self):
         self.TPG.run()
+
+#--------------------------------------------------------------------------
+
+    def irAFusionDivision(self):
+        self.DFS.run()
+
+##############################################################################
+
+    def irACargaMasiva(self):
+        self.CMS.run()
+
+###############################################################################
+
+    def irAAsignacionCampo(self):
+        self.ASCM.run()
+
+####################################################################################
+
+    def irAAsignacionRevision(self):
+        self.ASRV.run()
+
+####################################################################################
+
+    def irAIntermediarioCedulaRevision(self):
+        self.CRV.intermediario.run()

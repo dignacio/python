@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/DivisionFusion" >
+		<file>icons/interrogante.png</file>
+    </qresource>
+</RCC>

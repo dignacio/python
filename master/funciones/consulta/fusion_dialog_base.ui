@@ -25,41 +25,58 @@
   <property name="windowTitle">
    <string>Fusion de Fracciones</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog{
+background : rgb(250,238,224);
+}</string>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0" colspan="2">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QPushButton" name="btnAceptar">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>35</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>35</height>
-      </size>
-     </property>
+   <item row="6" column="1" alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="lbSupConst_2">
      <property name="font">
       <font>
-       <pointsize>14</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
+       <family>Century Gothic</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="text">
-      <string>Aceptar</string>
+      <string>lbSupConst_2</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
+   <item row="5" column="1" alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="lbFraccNvl_2">
+     <property name="font">
+      <font>
+       <family>Century Gothic</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>lbFraccNvl_2</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="lbSupConst_1">
+     <property name="font">
+      <font>
+       <family>Century Gothic</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>lbSupConst_1</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
     <widget class="QPushButton" name="btnCerrar">
      <property name="minimumSize">
       <size>
@@ -75,20 +92,37 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>14</pointsize>
+       <family>Century Gothic</family>
+       <pointsize>12</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton{
+background : rgb(174, 116, 0);
+color : rgb(255, 255, 255);
+border-radius : 4px;
+}
+QPushButton::hover{
+background : rgb(104, 69, 13);
+color : rgb(255, 255, 255);
+border-radius : 4px;
+}
+QPushButton:disabled {
+background: rgb(217, 217, 217)
+}</string>
      </property>
      <property name="text">
       <string>Cancelar</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" alignment="Qt::AlignHCenter">
+   <item row="5" column="0" alignment="Qt::AlignHCenter">
     <widget class="QLabel" name="lbFraccNvl_1">
      <property name="font">
       <font>
+       <family>Century Gothic</family>
        <pointsize>12</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -99,66 +133,60 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1" alignment="Qt::AlignHCenter">
-    <widget class="QLabel" name="lbFraccNvl_2">
+   <item row="7" column="0">
+    <widget class="QPushButton" name="btnAceptar">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>35</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>35</height>
+      </size>
+     </property>
      <property name="font">
       <font>
+       <family>Century Gothic</family>
        <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton{
+background : rgb(174, 116, 0);
+color : rgb(255, 255, 255);
+border-radius : 4px;
+}
+QPushButton::hover{
+background : rgb(104, 69, 13);
+color : rgb(255, 255, 255);
+border-radius : 4px;
+}
+QPushButton:disabled {
+background: rgb(217, 217, 217)
+}</string>
+     </property>
      <property name="text">
-      <string>lbFraccNvl_2</string>
+      <string>Aceptar</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="0" alignment="Qt::AlignHCenter">
-    <widget class="QLabel" name="lbSupConst_1">
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
+   <item row="2" column="0" colspan="2">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>lbSupConst_1</string>
+      <string/>
      </property>
     </widget>
    </item>
-   <item row="5" column="1" alignment="Qt::AlignHCenter">
-    <widget class="QLabel" name="lbSupConst_2">
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>lbSupConst_2</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" alignment="Qt::AlignHCenter">
-    <widget class="QRadioButton" name="rb2aOpcion">
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>rb2aOpcion</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" alignment="Qt::AlignHCenter">
+   <item row="4" column="0" alignment="Qt::AlignHCenter">
     <widget class="QRadioButton" name="rb1raOpcion">
      <property name="font">
       <font>
+       <family>Century Gothic</family>
        <pointsize>12</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -169,11 +197,46 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QLabel" name="label_2">
+   <item row="4" column="1" alignment="Qt::AlignHCenter">
+    <widget class="QRadioButton" name="rb2aOpcion">
      <property name="font">
       <font>
-       <pointsize>14</pointsize>
+       <family>Century Gothic</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>rb2aOpcion</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="2" colspan="2">
+    <widget class="QLabel" name="label_2">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>120</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>240</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>Century Gothic</family>
+       <pointsize>12</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>
@@ -189,13 +252,6 @@
      </property>
      <property name="margin">
       <number>8</number>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string/>
      </property>
     </widget>
    </item>

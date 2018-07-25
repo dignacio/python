@@ -120,6 +120,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         self.setupUi(self)
 
+        #NUEVO DISENO
+        self.leDispPerim.setPlaceholderText('Introduzca Dist. Perimetral')
+        self.leDescripcion.setPlaceholderText('Descripcion')
+
+
     def closeEvent(self,event):
 
         if self.errorCerrar:
@@ -131,6 +136,13 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 event.accept()
             else:
                 event.ignore()
+
+    def strechtTabla(self, tabla):
+        header = tabla.horizontalHeader()
+
+        for x in range(0, tabla.columnCount()):
+            header.setSectionResizeMode(x, QtWidgets.QHeaderView.Stretch)
+            header.setStretchLastSection(True)
 
     def showEvent(self, event):
 
@@ -145,7 +157,30 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.twCaracteristicasC.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
         self.twPropFiscal.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
         self.twPropPred.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+
+        self.tablaSupTerreno.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+        self.tablaSupConst.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+        self.tablaValTerreno.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+        self.tablaValConst.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+        self.tablaTotales.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
         
+        self.strechtTabla(self.tablaSupTerreno)
+        self.strechtTabla(self.tablaSupConst)
+        self.strechtTabla(self.tablaValTerreno)
+        self.strechtTabla(self.tablaValConst)
+        self.strechtTabla(self.tablaTotales)
+
+        self.strechtTabla(self.twVialidades)
+        self.strechtTabla(self.twColindancias)
+        self.strechtTabla(self.twServiciosCalle)
+        self.strechtTabla(self.twServiciosPredio)
+        self.strechtTabla(self.twServiciosCondo)
+        self.strechtTabla(self.twCaracteristicasC)
+        self.strechtTabla(self.twIndivisos)
+        self.strechtTabla(self.twPropFiscal)
+        self.strechtTabla(self.twPropPred)
+
+
         self.leSupConstPrivCond.setValidator(QDoubleValidator(0.999,99.999,3))
         self.leSupConstComunCond.setValidator(QDoubleValidator(0.999,99.999,3))
         #self.leSupConstExcCond.setValidator(QDoubleValidator(0.999,99.999,3))
@@ -244,9 +279,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
         self.twPropPred.setColumnHidden(0, True)
         self.twPropPred.itemClicked.connect(self.event_itemClickedProp)
+
         
-
-
         self.leNivPropP.setAlignment(Qt.AlignCenter)
         self.leNivPropP.setValidator(QIntValidator(0,99,None))
         self.leAnioConsP.setValidator(QIntValidator(0,9999,None))
@@ -287,7 +321,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         self.btnGuardaVolP.clicked.connect(self.event_guardarVolP)
         self.btnGuardaVolC.clicked.connect(self.event_guardarVolC)
-        self.pushButton.clicked.connect(self.event_hasAlgo)
+
         self.btnColinAdd.clicked.connect(self.event_agregaColin)
         self.btnColinRemoveOne.clicked.connect(self.event_remueveColin)
         self.btnColinRemoveAll.clicked.connect(self.event_remTodasColin)
@@ -323,9 +357,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         # Eventos - imagenes
         self.btnZoomOut.clicked.connect(self.event_zoomOutIma)
         self.btnZoomIn.clicked.connect(self.event_zoomInIma)
-        self.rbManzana.toggled.connect(self.event_radioButtonImagenesPress)
-        self.rbFachada.toggled.connect(self.event_radioButtonImagenesPress)
-        self.rbDocumento.toggled.connect(self.event_radioButtonImagenesPress)
+        self.cmbMFD.currentIndexChanged.connect(self.cambioComboMFD) #YEAH
         self.btnAtrasImage.clicked.connect(self.event_atrasImagen)
         self.btnAdelanteImagen.clicked.connect(self.event_adelanteImagen)
 
@@ -399,34 +431,73 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             # quitar las superficies privadas y comunes del comparativo
             # ya que se muestra informacion del predio
             # Superficie
-            self.lbPrivadaTerrS.hide()
-            self.lbSupTerrPrivC.hide()
-            self.lbSupTerrPrivF.hide()
-            self.lbComunTerrS.hide()
-            self.lbSupTerrComC.hide()
-            self.lbSupTerrComF.hide()
+            #OCULTAR SUPERFICIES DE TERRENO
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaSupTerreno.setItem(0, 1 , item)#self.capaActual.getFeatures().attributes()[x])
 
-            self.lbPrivadaConsS.hide()
-            self.lbSupConsPrivC.hide()
-            self.lbSupConsPrivF.hide()
-            self.lbComunConsS.hide()
-            self.lbSupConsComC.hide()
-            self.lbSupConsComF.hide()
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaSupTerreno.setItem(0, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
-            # valores catastrales
-            self.lbPrivadaTerrV.hide()
-            self.lbValTerrPrivC.hide()
-            self.lbValTerrPrivF.hide()
-            self.lbComunTerrV.hide()
-            self.lbValTerrComC.hide()
-            self.lbValTerrComF.hide()
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaSupTerreno.setItem(1, 1 , item)#self.capaActual.getFeatures().attributes()[x])
 
-            self.lbPrivadaConsV.hide()
-            self.lbValConsPrivC.hide()
-            self.lbValConsPrivF.hide()
-            self.lbComunConsV.hide()
-            self.lbValConsComC.hide()
-            self.lbValConsComF.hide()
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaSupTerreno.setItem(1, 2 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            #OCULTAR SUPERFICIES DE CONSTRUCCION
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaSupConst.setItem(0, 1 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaSupConst.setItem(0, 2 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaSupConst.setItem(1, 1 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaSupConst.setItem(1, 2 , item)#self.capaActual.getFeatures().attributes()[x])
+            
+            #OCULTAR VALOR CATSTRAL TERRRENO
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaValTerreno.setItem(0, 1 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaValTerreno.setItem(0, 2 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaValTerreno.setItem(1, 1 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaValTerreno.setItem(1, 2 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            #OCULTAR VALOR CATASTRAL DE CONSTRUCCION
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaValConst.setItem(0, 1 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaValConst.setItem(0, 2 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaValConst.setItem(1, 1 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            texto = '-'
+            item = QtWidgets.QTableWidgetItem(texto)
+            self.tablaValConst.setItem(1, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
 
         # define lista de porcentaje de zoom
@@ -436,7 +507,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.idsFacIma = self.descargaIdsImag('F', self.cveCatastral)
         self.idsDocIma = self.descargaIdsImag('D', self.cveCatastral)
 
-        self.rbManzana.setChecked(True)
 
         # muestra siempre la primer tab
         self.tabwCedula.setCurrentIndex(0)
@@ -453,53 +523,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.tabwCedula.blockSignals(False)
 
 
-        '''
-        #self.progressBar.hide()
-        #self.pushButton_2.hide()
-        self.pushButton_2.clicked.connect(self.progressbar)
-        #self.pushButton.hide()
-
-
-
-
-
-        self.movie = QMovie("C:\\Users\\cianet45\\Downloads\\qnvjMmA.gif", QByteArray(), self)
-
-         # Create the layout
-        main_layout = QVBoxLayout()
-        main_layout.addWidget(self.label_9)
-
-        self.setLayout(main_layout)
-
-        # Add the QMovie object to the label
-        self.movie.setCacheMode(QMovie.CacheAll)
-        self.movie.setSpeed(100)
-        self.label_9.setMovie(self.movie)
-        #self.movie.start()
-
-
-        '''
-
     # --- M E T O D O S ---
 
-    def progressbar(self):
-
-        
-        self.completed = 0
-
-        self.movie.start()
-        while self.completed < 100:
-            self.completed += 0.0001
-            self.progressBar.setValue(self.completed)
-        #self.movie.stop()
-
-        '''
-        print('Before: %s' % time.ctime())
-
-        time.sleep(20)
-
-        print('After: %s\n' % time.ctime())
-        '''
 
     def disenioCombosCondos(self):
         self.cmbUsoConstrC.setView(self.generaQListView())
@@ -781,9 +806,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 # solo se deja agregar nuevas
                 self.deshabilitaConstr()
                 return
+            print('enrta')
 
             # ordena las construcciones segun el volumen
             construcciones = self.ordenaConstr(dataConstP)
+            print('enrta')
 
             for dcp in construcciones:
 
@@ -821,6 +848,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         except Exception as e:
             self.errorCerrar = True
+            
             self.createAlert('Error durante la carga de informacion "cargaConstrPred()": ' + str(e))
 
     # - carga la informacion de las construcciones condominios
@@ -1121,94 +1149,128 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.errorCerrar = True
             self.createAlert('Error durante la carga de informacion "cargaCedula()": ' + str(e))
 
-    # - carga informacion de padron junto con propietarios
     def cargaPadron(self, dataPadron):
 
-        try:
+        #try:
 
-            if len(dataPadron) == 0:
-                self.muestraComparativoFiscal()
-                return
+        if len(dataPadron) == 0:
+            self.muestraComparativoFiscal
+            return
 
-            self.padron = dataPadron[0]
+        self.padron = dataPadron[0]
 
-            # -- CARGA PADRON --
-            # - carga ubicacion
-            self.lbCallePF.setText(self.padron['eUbCalle'])
-            self.lbNumExtPF.setText(self.padron['eUbNumexterior'])
-            self.lbNumInteriorPF.setText(self.padron['eUbNuminterior'])
-            self.lbCodPostalPF.setText(self.padron['eUbCodigoPostal'])
-            self.lbColoniaPF.setText(self.padron['eUbColonia'])
+        # -- CARGA PADRON --
+        # - carga ubicacion
+        self.lbCallePF.setText(str(self.padron['eUbCalle']))
+        self.lbNumExtPF.setText(str(self.padron['eUbNumexterior']))
+        self.lbNumInteriorPF.setText(str(self.padron['eUbNuminterior']))
+        self.lbCodPostalPF.setText(str(self.padron['eUbCodigoPostal']))
+        self.lbColoniaPF.setText(str(self.padron['eUbColonia']))
 
-            # - carga comparativo
-            # superficies terreno
-            self.lbSupTerrPrivF.setText(str(self.padron['eSupTerPriv']))
-            self.lbSupTerrComF.setText(str(self.padron['eSupTerComun']))
+        # - carga comparativo
+        # superficies terreno
+        texto = str(self.padron['eSupTerPriv'])
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaSupTerreno.setItem(0, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
-            supTerrTotal = (self.padron['eSupTerPriv'] or 0) + (self.padron['eSupTerComun'] or 0)
-            self.lbSupTerrTotalF.setText(str(supTerrTotal))
+        texto = str(self.padron['eSupTerComun'])
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaSupTerreno.setItem(1, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
-            # superficies construccion
-            self.lbSupConsPrivF.setText(str(self.padron['eSupConstPriv']))
-            self.lbSupConsComF.setText(str(self.padron['eSupConstComun']))
+        supTerrTotal = str((self.padron['eSupTerPriv'] or 0) + (self.padron['eSupTerComun'] or 0))
+        item = QtWidgets.QTableWidgetItem(supTerrTotal)
+        self.tablaSupTerreno.setItem(2, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
-            supConsTot = (self.padron['eSupConstPriv'] or 0) + (self.padron['eSupConstComun'] or 0)
-            self.lbSupConsTotalF.setText(str(supConsTot))
+        # superficies construccion
+        texto = str(self.padron['eSupConstPriv'])
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaSupConst.setItem(0, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
-            self.lbValTerrPrivF.setText('-')
-            self.lbValTerrComF.setText('-')
-            self.lbValTerrTotalF.setText('${:,.2f}'.format(self.padron['eValorTer']))
-            self.lbValConsPrivF.setText('-')
-            self.lbValConsComF.setText('-')
-            self.lbValConsTotalF.setText('${:,.2f}'.format(self.padron['eValorConst']))
-            self.lbValorCTotalF.setText('${:,.2f}'.format(self.padron['eValorCat']))
+        texto = str(self.padron['eSupConstComun'])
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaSupConst.setItem(1, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
-            valC = (self.padron['eValorCat'] or 0)
+        supConsTot = (self.padron['eSupConstPriv'] or 0) + (self.padron['eSupConstComun'] or 0)
+        item = QtWidgets.QTableWidgetItem(str(supConsTot))
+        self.tablaSupConst.setItem(2, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
-            self.lbImpPredF.setText('${:,.2f}'.format(round(((valC * 12) / 1000), 2)))
+        #VALORES DE TERRENO
+        texto = '-'
+        item = QtWidgets.QTableWidgetItem(str(texto))
+        self.tablaValTerreno.setItem(0, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
-            # - carga propietarios
-            self.propPadron = self.padron['propietarios']
+        texto = '-'
+        item = QtWidgets.QTableWidgetItem(str(texto))
+        self.tablaValTerreno.setItem(1, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
-            if len(self.propPadron) > 0:
+        texto = '${:,.2f}'.format(self.padron['eValorTer'])
+        item = QtWidgets.QTableWidgetItem(str(texto))
+        self.tablaValTerreno.setItem(2, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
-                for prop in self.propPadron:
-                    # agrega un renglon a las coindancias
-                    claveProp = prop['claveProp']
-                    nombre = prop['razonSocial'] if not prop['nombre'] else prop['nombre'] + ' ' + prop['apellidop'] + ' ' + prop['apellidom']
-                    persona = prop['personafisicamoral']
-                    tipo = prop['propocop']
-                    porcentaje = prop['porcProp']
+        #VALOR DE CONSTRUCCION
+        texto = '-'
+        item = QtWidgets.QTableWidgetItem(str(texto))
+        self.tablaValConst.setItem(0, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
-                    rowPosition = self.twPropFiscal.rowCount()
-                    self.twPropFiscal.insertRow(rowPosition)
+        texto = '-'
+        item = QtWidgets.QTableWidgetItem(str(texto))
+        self.tablaValConst.setItem(1, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
-                    item1 = QtWidgets.QTableWidgetItem(str(claveProp))
-                    item1.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        texto = '${:,.2f}'.format(self.padron['eValorConst'])
+        item = QtWidgets.QTableWidgetItem(str(texto))
+        self.tablaValConst.setItem(2, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
-                    item2 = QtWidgets.QTableWidgetItem(nombre.strip())
+        texto = '${:,.2f}'.format(self.padron['eValorCat'])
+        item = QtWidgets.QTableWidgetItem(str(texto))
+        self.tablaTotales.setItem(0, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
-                    item3 = QtWidgets.QTableWidgetItem(persona)
-                    item3.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        valC = (self.padron['eValorCat'] or 0)
+        texto = '${:,.2f}'.format(round(((valC * 12) / 1000), 2))
+        item = QtWidgets.QTableWidgetItem(str(texto))
+        self.tablaTotales.setItem(1, 2 , item)
 
-                    item4 = QtWidgets.QTableWidgetItem(tipo)
-                    item4.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-                    
-                    item5 = QtWidgets.QTableWidgetItem(str(porcentaje))
-                    item5.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        # - carga propietarios
+        self.propPadron = self.padron['propietarios']
 
-                    self.twPropFiscal.setItem(rowPosition , 0, item1)
-                    self.twPropFiscal.setItem(rowPosition , 1, item2)
-                    self.twPropFiscal.setItem(rowPosition , 2, item3)
-                    self.twPropFiscal.setItem(rowPosition , 3, item4)
-                    self.twPropFiscal.setItem(rowPosition , 4, item5)
+        if len(self.propPadron) > 0:
 
-                self.twPropFiscal.setCurrentCell(0, 1)
-                self.event_itemClicked(None)
+            for prop in self.propPadron:
+                # agrega un renglon a las coindancias
+                claveProp = prop['claveProp']
+                nombre = prop['razonSocial'] if not prop['nombre'] else prop['nombre'] + ' ' + prop['apellidop'] + ' ' + prop['apellidom']
+                persona = prop['personafisicamoral']
+                tipo = prop['propocop']
+                porcentaje = prop['porcProp']
 
-        except Exception as e:
-            self.errorCerrar = True
-            self.createAlert('Error durante la carga de informacion "cargaPadron()": ' + str(e))
+                rowPosition = self.twPropFiscal.rowCount()
+                self.twPropFiscal.insertRow(rowPosition)
+
+                item1 = QtWidgets.QTableWidgetItem(str(claveProp))
+                item1.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+
+                item2 = QtWidgets.QTableWidgetItem(nombre.strip())
+
+                item3 = QtWidgets.QTableWidgetItem(persona)
+                item3.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+
+                item4 = QtWidgets.QTableWidgetItem(tipo)
+                item4.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+                
+                item5 = QtWidgets.QTableWidgetItem(str(porcentaje))
+                item5.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+
+                self.twPropFiscal.setItem(rowPosition , 0, item1)
+                self.twPropFiscal.setItem(rowPosition , 1, item2)
+                self.twPropFiscal.setItem(rowPosition , 2, item3)
+                self.twPropFiscal.setItem(rowPosition , 3, item4)
+                self.twPropFiscal.setItem(rowPosition , 4, item5)
+
+            self.twPropFiscal.setCurrentCell(0, 1)
+            self.event_itemClicked(None)
+
+        #except Exception as e:
+        #    self.errorCerrar = True
+        #    self.createAlert('Error durante la carga de informacion "cargaPadron()": ' + str(e))
 
     # - carga informacion sobre los propietarios de un predio
     def cargaPropPredio(self, dataPropPredio):
@@ -1216,7 +1278,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         try:
 
             if len(dataPropPredio) == 0:
-                self.muestraPropPredio()
+                
                 return
 
             # - carga propietarios
@@ -1256,6 +1318,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         except Exception as e:
             self.errorCerrar = True
             self.createAlert('Error durante la carga de informacion "cargaPadron()": ' + str(e))
+
 
     # - limpia los constroles de construcciones
     def limpiaConstrucciones(self):
@@ -1649,87 +1712,60 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         # SUPERFICIES
         # terreno
-        self.lbSupTerrPrivF.setText('0')
-        self.lbSupTerrComF.setText('0')
-
-        self.lbSupTerrTotalF.setText('0')
+        texto = str('0')
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaSupTerreno.setItem(0, 2 , item)
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaSupTerreno.setItem(1, 2 , item)
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaSupTerreno.setItem(2, 2 , item)
 
         # construcciones
-        self.lbSupConsPrivF.setText('0')
-        self.lbSupConsComF.setText('0')
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaSupConst.setItem(0, 2 , item)
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaSupConst.setItem(1, 2 , item)
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaSupConst.setItem(2, 2 , item)
 
-        self.lbSupConsTotalF.setText('0')
 
 
         # VALORES
         # terreno
-        self.lbValTerrPrivF.setText('${:,.2f}'.format(0))
-        self.lbValTerrComF.setText('${:,.2f}'.format(0))
+        texto = str('${:,.2f}'.format(0))
+        item = QtWidgets.QTableWidgetItem(texto)
 
-        self.lbValTerrTotalF.setText('${:,.2f}'.format(0))
+        self.tablaValTerreno.setItem(0, 2 , item)
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaValTerreno.setItem(1, 2 , item)
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaValTerreno.setItem(2, 2 , item)
 
         # construcciones
-        self.lbValConsPrivF.setText('${:,.2f}'.format(0))
-        self.lbValConsComF.setText('${:,.2f}'.format(0))
-
-        self.lbValConsTotalF.setText('${:,.2f}'.format(0))
-
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaValConst.setItem(0, 2 , item)
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaValConst.setItem(1, 2 , item)
+        item = QtWidgets.QTableWidgetItem(texto)
+        self.tablaValConst.setItem(2, 2 , item)
 
         # totales
-        self.lbValorCTotalF.setText('${:,.2f}'.format(0))
-
+        texto = '${:,.2f}'.format(0)
+        item = QtWidgets.QTableWidgetItem(str(texto))
+        self.tablaTotales.setItem(0, 2 , item)
         # impuesto
-        self.lbImpPredF.setText('${:,.2f}'.format(0))
+
+        texto = '${:,.2f}'.format(0)
+        item = QtWidgets.QTableWidgetItem(str(texto))
+        self.tablaTotales.setItem(1, 2 , item)
 
         # diferencia
-        self.lbImpPredC.setText('')
-        impCatastro = 0 if self.lbImpPredC.text() == '' else float(self.lbImpPredC.text().replace('$', '').replace(',', ''))
-        self.lbDiferencia.setText('${:,.2f}'.format(impCatastro - 0))
+        #self.lbImpPredC.setText('')
+        txtImpC = self.tablaTotales.item(1,1).text()
+        impCatastro = 0 if txtImpC == '' else float(txtImpC.replace('$', '').replace(',', ''))
+        diff = '${:,.2f}'.format(impCatastro - 0)
 
-        # ---- limpia ubicacion fiscal ----
-        self.lbCallePF.setText('')
-        self.lbNumExtPF.setText('')
-        self.lbNumInteriorPF.setText('')
-        self.lbCodPostalPF.setText('')
-        self.lbColoniaPF.setText('')
-        self.lbNumeroPPad.setText('')
-
-        # ---- limpia ubicacion fiscal ----
-        self.lbNombrePPad.setText('')
-        self.lbRazonSocPPad.setText('')
-        self.lbCallePPad.setText('')
-        self.lbColoniaPPad.setText('')
-        self.lbCodPosPPad.setText('')
-
-        self.lbRFCPPad.setText('')
-        self.lbTelefonoPPad.setText('')
-        self.lbCorreoElecPPad.setText('')
-        self.lbCiudadPPad.setText('')
-        self.lbMunicipioPPad.setText('')
-        self.lbEstadoPPad.setText('')
-
-        self.lbCalleNPPad.setText('')
-        self.lbNumOfiNPPad.setText('')
-        self.lbNumInteriorNPPad.setText('')
-        self.lbColoniaNPPad.setText('')
-        self.lbCodPostNPPad.setText('')
-        self.lbEstadoNPPad.setText('')
-        self.lbCiudadNPPad.setText('')
-
-    def muestraPropPredio(self):
-
-        self.lbNombrePPred.setText('')
-        self.lbApPaternoPPred.setText('')
-        self.lbApMaternoPPred.setText('')
-        self.lbCallePPred.setText('')
-        self.lbNumExtPPred.setText('')
-        self.lbNumInteriorPPred.setText('')
-
-        self.lbColoniaPPred.setText('')
-        self.lbCodPosPPred.setText('')
-        self.lbMunicipioPPred.setText('')
-        self.lbEstadoPPred.setText('')
-        self.lbPaisPPred.setText('')
+        self.lbDiferencia.setText(str(diff))
 
     # --- M E T O D O S   CIERRA ---
 
@@ -1884,6 +1920,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         data = ""
         
         jsonGuardaVolumen = json.dumps(volumen)
+        print(jsonGuardaVolumen)
         try:
             self.headers['Authorization'] = self.UTI.obtenerToken()
             response = requests.post(url + accion, headers = self.headers, data = jsonGuardaVolumen)
@@ -3728,9 +3765,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         data['idTipoRelieve'] = None if int(idTipoRelieve) == -1 else idTipoRelieve
 
         # valores catastrales
-        data['valorCatastral'] = self.lbValorCTotalC.text().replace('$', '').replace(',', '')
-        data['valorConstruccion'] = self.lbValConsTotalC.text().replace('$', '').replace(',', '')
-        data['valorTerreno'] = self.lbValTerrTotalC.text().replace('$', '').replace(',', '')
+        data['valorCatastral'] = self.tablaTotales.item(0,1).replace('$', '').replace(',', '')
+        data['valorConstruccion'] = self.tablaValConst.item(2,1).text().replace('$', '').replace(',', '')
+
+        data['valorTerreno'] = self.tablaValTerreno.item(2,1).text().replace('$', '').replace(',', '')
+
 
         # nombre
         data['nombre'] = None if self.leNombre.text() == '' else self.leNombre.text()
@@ -3966,6 +4005,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         # index = 5: se trata de la posicion de la pestania del COMPARATIVO cuando se abra un CONDOMINIO
         # index = 3: se trata de la posicion de la pestania del COMPARATIVO cuando se abra un PREDIO
+        
         if index == 5 or index == 3:
 
             # -- TRUE  -> es condominio
@@ -3995,40 +4035,59 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
                 # --- SUPERFICIES
                 # - TERRENO
-                self.lbSupTerrPrivC.setText(str(condSave['supTerPrivada'] or 0))
-                self.lbSupTerrComC.setText(str(condSave['supTerComun'] or 0))
+
+                texto = str(condSave['supTerPrivada'])
+                item = QtWidgets.QTableWidgetItem(texto)
+                self.tablaSupTerreno.setItem(0, 1 , item)#self.capaActual.getFeatures().attributes()[x])
+
+                texto = str(condSave['supTerComun'] or 0)
+                item = QtWidgets.QTableWidgetItem(texto)
+                self.tablaSupTerreno.setItem(1, 1 , item)#self.capaActual.getFeatures().attributes()[x])
 
                 supT = (condSave['supTerPrivada'] or 0) + (condSave['supTerComun'] or 0)
+                item = QtWidgets.QTableWidgetItem(str(round(supT, 2)))
+                self.tablaSupTerreno.setItem(2, 1, item)#self.capaActual.getFeatures().attributes()[x])
 
-                self.lbSupTerrTotalC.setText(str(round(supT, 2)))
                 # self.leSupConstTotalCond.setText(str(round(supT + (condSave['supTerrComunEx'] or 0), 2)))
-                self.leSupConstTotalCond.setText(str(round(supT)))
+                #self.leSupConstTotalCond.setText(str(round(supT)))
 
                 # - CONSTRUCCION
-                self.lbSupConsPrivC.setText(str(condSave['supConstruccionPrivada'] or 0))
-                self.lbSupConsComC.setText(str(condSave['supConstruccionComun'] or 0))
+                texto = str(condSave['supConstruccionPrivada'] or 0)
+                item = QtWidgets.QTableWidgetItem(texto)
+                self.tablaSupConst.setItem(0, 1, item)#self.capaActual.getFeatures().attributes()[x])
+
+                texto =str(condSave['supConstruccionComun'] or 0)
+                item = QtWidgets.QTableWidgetItem(texto)
+                self.tablaSupConst.setItem(1, 1, item)#self.capaActual.getFeatures().attributes()[x])
 
                 supC = (condSave['supConstruccionPrivada'] or 0) + (condSave['supConstruccionComun'] or 0)
+                item = QtWidgets.QTableWidgetItem(str(round(supC, 2)))
+                self.tablaSupConst.setItem(2, 1, item)#self.capaActual.getFeatures().attributes()[x])
 
-                self.lbSupConsTotalC.setText(str(round(supC, 2)))
                 #self.leSupConstTotalCond.setText(str(round(supC + (condSave['supConstComunEx'] or 0), 2)))
-                self.leSupConstTotalCond.setText(str(round(supC)))
+                #self.leSupConstTotalCond.setText(str(round(supC)))
 
                 # --- VALORES CATASTRALES
                 # - TERRENO
-                self.lbValTerrPrivC.setText('${:,.2f}'.format(condSave['valorTerrenoPriv']))
-                self.lbValTerrComC.setText('${:,.2f}'.format(condSave['valorTerrenoComun']))
+
+                texto = '${:,.2f}'.format(condSave['valorTerrenoPriv'])
+                item = QtWidgets.QTableWidgetItem(str(texto))
+                self.tablaValTerreno.setItem(0, 1, item)#self.capaActual.getFeatures().attributes()[x])
+                
+
+                texto = '${:,.2f}'.format(condSave['valorTerrenoComun'])
+                item = QtWidgets.QTableWidgetItem(str(texto))
+                self.tablaValTerreno.setItem(1, 1, item)#self.capaActual.getFeatures().attributes()[x])
+                
 
                 valT = (condSave['valorTerrenoPriv'] or 0) + (condSave['valorTerrenoComun'] or 0)
-
-                self.lbValTerrTotalC.setText('${:,.2f}'.format(round(valT, 2)))
+                item = QtWidgets.QTableWidgetItem(str('${:,.2f}'.format(round(valT, 2))))
+                self.tablaValTerreno.setItem(2, 1, item)#self.capaActual.getFeatures().attributes()[x])
+                
                 # self.leValTerrTotalCond.setText('${:,.2f}'.format(round(valT + (condSave['valorTerrExc'] or 0), 2)))
-                self.leValTerrTotalCond.setText('${:,.2f}'.format(round(valT)))
+                #self.leValTerrTotalCond.setText('${:,.2f}'.format(round(valT)))
 
                 # - CONSTRUCCION
-
-
-
 
                 fracciones = []
                 valorConst = 0
@@ -4050,39 +4109,48 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 valorPRIVADO = '${:,.2f}'.format(round(valorConst, 2))
 
 
-                self.lbValConsTotalC.setText(valorPRIVADO)
-
-
-
-
-
+                #self.lbValConsTotalC.setText(valorPRIVADO)
 
                 # self.lbValConsPrivC.setText(str(condSave['valorConstruccionPriv']))
-                self.lbValConsPrivC.setText(valorPRIVADO)
-                self.leValConstPrivCond.setText(valorPRIVADO)
+                item = QtWidgets.QTableWidgetItem(str(valorPRIVADO))
+                self.tablaValConst.setItem(0, 1 , item)#self.capaActual.getFeatures().attributes()[x])
+                
+                #self.lbValConsPrivC.setText(valorPRIVADO)
+                #self.leValConstPrivCond.setText(valorPRIVADO)
 
-                self.lbValConsComC.setText('${:,.2f}'.format(condSave['valorConstruccionComun']))
+                texto = '${:,.2f}'.format(condSave['valorConstruccionComun'])
+                item = QtWidgets.QTableWidgetItem(str(texto))
+                self.tablaValConst.setItem(1, 1 , item)#self.capaActual.getFeatures().attributes()[x])
 
                 # valC = (condSave['valorConstruccionPriv'] or 0) + (condSave['valorConstruccionComun'] or 0)
                 valC = valorConst + (condSave['valorConstruccionComun'] or 0)
+                item = QtWidgets.QTableWidgetItem(str('${:,.2f}'.format(valC)))
+                self.tablaValConst.setItem(2, 1 , item)#self.capaActual.getFeatures().attributes()[x])
 
-                self.lbValConsTotalC.setText('${:,.2f}'.format(round(valC, 2)))
                 # self.leValConstTotalCond.setText('${:,.2f}'.format(round(valC + (condSave['valorConstExc'] or 0), 2)))
-                self.leValConstTotalCond.setText('${:,.2f}'.format(round(valC)))
+                #self.leValConstTotalCond.setText('${:,.2f}'.format(round(valC)))
 
                 # - TOTAL 
                 valorTotal = valT + valC
-                self.lbValorCTotalC.setText('${:,.2f}'.format(round(valorTotal, 2)))
 
-                self.lbImpPredC.setText('${:,.2f}'.format(round(((valorTotal * 12) / 1000), 2)))
-
+                texto = '${:,.2f}'.format(round(valorTotal, 2))
+                item = QtWidgets.QTableWidgetItem(str(texto))
+                self.tablaTotales.setItem(0, 1 , item)
+                #self.lbImpPredC.setText('${:,.2f}'.format(round(((valorTotal * 12) / 1000), 2)))
+                texto = '${:,.2f}'.format(round(((valorTotal * 12) / 1000), 2))
+                item = QtWidgets.QTableWidgetItem(str(texto))
+                self.tablaTotales.setItem(1, 1 , item)
 
                 #self.createAlert('es un condominio', QMessageBox.Information ) #changed!
             else:
 
                 # --- S U P E R F I C I E S
                 # - TERRENO
-                self.lbSupTerrTotalC.setText(str(self.cedula['supTerr']))
+                
+                texto = str(self.cedula['supTerr'])
+                item = QtWidgets.QTableWidgetItem(str(texto))
+                self.tablaSupTerreno.setItem(2, 1 , item)#self.capaActual.getFeatures().attributes()[x])
+                
                 # - CONSTRUCCION
                 count = self.cmbVolumenP.count()
                 superficie = 0
@@ -4090,7 +4158,10 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 for index in range(0, count):
                     superficie += self.cmbVolumenP.itemData(index)['supConst'] or 0
 
-                self.lbSupConsTotalC.setText(str(0 if superficie is None else round(superficie, 2)))
+                texto = str(0 if superficie is None else round(superficie, 2))
+                item = QtWidgets.QTableWidgetItem(str(texto))
+                self.tablaSupConst.setItem(2, 1 , item)#self.capaActual.getFeatures().attributes()[x])
+                
 
                 # --- VALORES CATASTRALES
                 # - TERRENO
@@ -4099,7 +4170,10 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
                 valorTerrS = '${:,.2f}'.format(round(valorTerr, 2))
 
-                self.lbValTerrTotalC.setText(valorTerrS)
+
+                item = QtWidgets.QTableWidgetItem(str(valorTerrS))
+                self.tablaValTerreno.setItem(2, 1 , item)#self.capaActual.getFeatures().attributes()[x])
+                
 
                 # - CONSTRUCCIONES
                 fracciones = []
@@ -4125,22 +4199,30 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                         valorConst += float(fr['valorConst'] or 0)
 
                 valorS = '${:,.2f}'.format(round(valorConst, 2))
-                self.lbValConsTotalC.setText(valorS)
+                #self.lbValConsTotalC.setText(valorS)
+                item = QtWidgets.QTableWidgetItem(str(valorS))
+                self.tablaValConst.setItem(2, 1 , item)#self.capaActual.getFeatures().attributes()[x])
+                
 
                 # totales 
                 valorTotal = valorTerr + valorConst
-                self.lbValorCTotalC.setText('${:,.2f}'.format(round(valorTerr + valorConst, 2)))
-                # impuesto predial
-                self.lbImpPredC.setText('${:,.2f}'.format(round(((valorTotal * 12) / 1000), 2)))
 
+                texto = '${:,.2f}'.format(round(valorTerr + valorConst, 2))
+                item = QtWidgets.QTableWidgetItem(str(texto))
+                self.tablaTotales.setItem(0, 1 , item)
+                # impuesto predialimpuesto predial
+                #self.lbImpPredC.setText('${:,.2f}'.format(round(((valorTotal * 12) / 1000), 2)))
+                texto = '${:,.2f}'.format(round(((valorTotal * 12) / 1000), 2))
+                item = QtWidgets.QTableWidgetItem(str(texto))
+                self.tablaTotales.setItem(1, 1 , item)
                 # self.createAlert('NOOOOO es un condominio', QMessageBox.Information ) #changed!
 
             # --- calcula y muestra informacion del fiscal ----> Deshabilitado por mientras, no se cuenta con la info de padron <----
             #self.muestraComparativoFiscal()
-
-            impCatastro = 0 if self.lbImpPredC.text() == '' else float(self.lbImpPredC.text().replace('$', '').replace(',', ''))
-            impFiscal = 0 if self.lbImpPredF.text() == '' else float(self.lbImpPredF.text().replace('$', '').replace(',', ''))
+            impCatastro = 0 if self.tablaTotales.item(1,1).text() == '' else float(self.tablaTotales.item(1,1).text().replace('$', '').replace(',', ''))
+            impFiscal = 0 if self.tablaTotales.item(1,2).text() == '' else float(self.tablaTotales.item(1,2).text().replace('$', '').replace(',', ''))
             self.lbDiferencia.setText('${:,.2f}'.format(impCatastro - impFiscal))
+
 
     # --- INDIVISOS ---
     # - bloquear o desbloquear la tabla de indivisos
@@ -4174,7 +4256,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             self.bloqueado = True
 
-    # - evento que se lanza cuando se edita un elemento
+    # 
     def event_updateIndivisos(self):
 
         col = self.twIndivisos.currentColumn()
@@ -4264,10 +4346,13 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.lbEstadoPPred.setText(propietario['estado'])
             self.lbPaisPPred.setText(propietario['pais'])
 
+
     def event_spinBox(self, cadena):
 
         col = self.twIndivisos.currentColumn()
         row = self.twIndivisos.currentRow()
+
+        # print(row, col, cadena)
 
     def event_textoCambioPrivC(self, texto):
         self.totalesSuperf(self.lePrivadaC.text(), self.leComunC.text(), 'C')
@@ -4319,18 +4404,17 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.aplicaZoom()
 
     # evento para cambio de imagenes, manzanas, fachados y docomuentos
-    def event_radioButtonImagenesPress(self, checked):
+    def cambioComboMFD(self): #YEAH
         
-        if not checked:
-            return
-
         self.scaleFactor = 1
         self.countID = 0
         self.countIM = 0
         self.countIF = 0
 
+        index = self.cmbMFD.currentIndex()
+
         # carga imagenes de manzanas
-        if self.rbManzana.isChecked():
+        if index == 0:
 
             if len(self.idsMzaIma) > 0:
                 data = self.idsMzaIma[self.countIM]
@@ -4346,7 +4430,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
 
         # carga imagenes de fachadas
-        elif self.rbFachada.isChecked():
+        elif index == 1:
 
             if len(self.idsFacIma) > 0:
                 data = self.idsFacIma[self.countIF]
@@ -4360,7 +4444,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.lbNumImages.setText(str(self.countIF + 1) + ' de ' + str(len(self.idsFacIma)))
 
         # carga imagenes de documentos
-        elif self.rbDocumento.isChecked():
+        elif index == 2:
 
             if len(self.idsDocIma) > 0:
                 data = self.idsDocIma[self.countID]
@@ -4380,9 +4464,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
     def event_atrasImagen(self):
 
         self.scaleFactor = 1
-
+        index = self.cmbMFD.currentIndex()
         # manzana
-        if self.rbManzana.isChecked():
+        if index == 0:
 
             if self.countIM == 0:
                 self.countIM = (len(self.idsMzaIma) - 1)
@@ -4399,7 +4483,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.lbNumImages.setText(str(self.countIM + 1) + ' de ' + str(len(self.idsMzaIma)))
 
         # fachadas
-        elif self.rbFachada.isChecked():
+        elif index == 1:
             if self.countIF == 0:
                 self.countIF = len(self.idsFacIma) - 1
             else:
@@ -4415,7 +4499,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.lbNumImages.setText(str(self.countIF + 1) + ' de ' + str(len(self.idsFacIma)))
 
         # documentos
-        elif self.rbDocumento.isChecked():
+        elif index == 2:
             if self.countID == 0:
                 self.countID = len(self.idsDocIma) - 1
             else:
@@ -4437,9 +4521,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
     def event_adelanteImagen(self):
 
         self.scaleFactor = 1
-
+        index = self.cmbMFD.currentIndex()
         # manzanas
-        if self.rbManzana.isChecked():
+        if index == 0:
             if self.countIM == (len(self.idsMzaIma) - 1):
                 self.countIM = 0
             else:
@@ -4455,7 +4539,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.lbNumImages.setText(str(self.countIM + 1) + ' de ' + str(len(self.idsMzaIma)))
 
         # fachadas
-        elif self.rbFachada.isChecked():
+        elif index == 1:
 
             if self.countIF == (len(self.idsFacIma) - 1):
                 self.countIF = 0
@@ -4472,7 +4556,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.lbNumImages.setText(str(self.countIF + 1) + ' de ' + str(len(self.idsFacIma)))
 
         # documentos
-        elif self.rbDocumento.isChecked():      
+        elif index == 2:      
 
             if self.countID == (len(self.idsDocIma) - 1):
                 self.countID = 0
@@ -4504,6 +4588,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         imagen = {}
         if v[0] is None:
 
+            print('consume', tipo)
             # consume ws para obtener la imagen
             imagen = self.obtieneImagen(k[0], tipo)
             if tipo == 'M':
@@ -4767,30 +4852,3 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
          # Run the dialog event loop
         result = self.msg.exec_()
 
-
-'''
-class progressThread(QThread):
-
-    progress_update = QtCore.Signal(int) # or pyqtSignal(int)
-
-    def __init__(self):
-        QThread.__init__(self)
-
-    def __del__(self):
-        self.wait()
-
-
-    def run(self):
-        # your logic here
-        while 1:      
-            maxVal = 1 # NOTE THIS CHANGED to 1 since updateProgressBar was updating the value by 1 every time
-            self.progress_update.emit(maxVal) # self.emit(SIGNAL('PROGRESS'), maxVal)
-            # Tell the thread to sleep for 1 second and let other things run
-            time.sleep(1)
-
-
-    def updateProgressBar(self, maxVal):
-        self.progressBar.setValue(self.ui.progressBar.value() + maxVal)
-        if maxVal == 0:
-            self.ui.progressBar.setValue(100)
-'''
