@@ -38,7 +38,7 @@ from PyQt5 import QtWidgets
 # Initialize Qt resources from file resources.py
 from qgis.core import *
 from qgis.utils import iface
-from qgis.gui import QgsLayerTreeView
+from qgis.gui import QgsLayerTreeView, QgsVertexMarker
 from PyQt5 import QtGui
 # Import the code for the DockWidget
 import os, json, requests
@@ -130,10 +130,13 @@ class ActualizacionCatastralV3:
         # -- lista -- 
         self.dockwidget.lista = {}
         self.actions = []
-        self.menu = self.tr(u'&Integracion')
-        # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar(u'Integracion')
-        self.toolbar.setObjectName(u'Integracion')
+        
+        #Marcadores
+        self.verticesManzana = []
+        self.verticesPredio = []
+        self.verticesConst = []
+
+        self.dockwidget.btnActMarc.clicked.connect(self.actualizarMarcadores)
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -162,44 +165,7 @@ class ActualizacionCatastralV3:
         status_tip=None,
         whats_this=None,
         parent=None):
-        """Add a toolbar icon to the toolbar.
-
-        :param icon_path: Path to the icon for this action. Can be a resource
-            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
-        :type icon_path: str
-
-        :param text: Text that should be shown in menu items for this action.
-        :type text: str
-
-        :param callback: Function to be called when the action is triggered.
-        :type callback: function
-
-        :param enabled_flag: A flag indicating if the action should be enabled
-            by default. Defaults to True.
-        :type enabled_flag: bool
-
-        :param add_to_menu: Flag indicating whether the action should also
-            be added to the menu. Defaults to True.
-        :type add_to_menu: bool
-
-        :param add_to_toolbar: Flag indicating whether the action should also
-            be added to the toolbar. Defaults to True.
-        :type add_to_toolbar: bool
-
-        :param status_tip: Optional text to show in a popup when mouse pointer
-            hovers over the action.
-        :type status_tip: str
-
-        :param parent: Parent widget for the new action. Defaults None.
-        :type parent: QWidget
-
-        :param whats_this: Optional text to show in the status bar when the
-            mouse pointer hovers over the action.
-
-        :returns: The action that was created. Note that the action is also
-            added to self.actions list.
-        :rtype: QAction
-        """
+        
 
         icon = QIcon(icon_path)
         action = QAction(icon, text, parent)
@@ -306,7 +272,7 @@ class ActualizacionCatastralV3:
 
                     #Modo desarrollor
                     self.modoDesarrollo = True
-                    self.cargaRapida = True
+                    self.cargaRapida = False
                     #01001001020004054011
                     #01001001020004027003
                     #01001001020004063010
@@ -344,11 +310,10 @@ class ActualizacionCatastralV3:
                             self.obtenerLocalidades()
 
                         except:
-                            self.UTI.mostrarAlerta("Error al cargar localidades\nError de servidor", QMessageBox().Information, "Cargar Localidades")
+                            self.UTI.mostrarAlerta("Error al cargar localidades\nError de servidor loc1", QMessageBox().Information, "Cargar Localidades")
 
                     #Asignar eventos de cambio de seleccion
                     
-
                     self.xManzana.selectionChanged.connect(self.cargarTablita)
                     self.xPredGeom.selectionChanged.connect(self.cargarTablita)
                     self.xPredNum.selectionChanged.connect(self.cargarTablita)
@@ -357,7 +322,6 @@ class ActualizacionCatastralV3:
                     self.xHoriNum.selectionChanged.connect(self.cargarTablita)
                     self.xVert.selectionChanged.connect(self.cargarTablita)
                     self.xCvesVert.selectionChanged.connect(self.cargarTablita)
-
 
                     self.llenarComboReferencias()
                     self.dockwidget.show()
@@ -391,9 +355,9 @@ class ActualizacionCatastralV3:
             #self.idManzana = '01001001020004016031' #Esta es la chida
             #self.idManzana = '01001001020004026039' #Cortita y chiquita
             #self.idManzana = '01001001020004026040' #Cortita y chiquita
-            self.idManzana = '01001001020004060004' 
+            #self.idManzana = '01001001020004060004' 
                              #01001001020  4026040
-            #self.idManzana = '01001001020004060004'  #La larga que le gusta a mi jefe
+            self.idManzana = '01001001020004060004'  #La larga que le gusta a mi jefe
             
             #01001001020004026039
             #01001001020  4026039
@@ -420,7 +384,7 @@ class ActualizacionCatastralV3:
             headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
             respuesta = requests.get(self.CFG.urlLocalidades, headers = headers)
         except requests.exceptions.RequestException:
-            self.UTI.mostrarAlerta("Error de servidor", QMessageBox().Critical, "Cargar Localidades")
+            self.UTI.mostrarAlerta("Error de servidor loc2", QMessageBox().Critical, "Cargar Localidades")
             print('ERROR: LOC000')
 
         lenJson = len(list(respuesta.json()))
@@ -447,7 +411,7 @@ class ActualizacionCatastralV3:
                 headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
                 respuesta = requests.get(self.CFG.urlSectores + idSector + '/sector/', headers = headers)
             except requests.exceptions.RequestException:
-                self.UTI.mostrarAlerta("Error de servidor", QMessageBox().Critical, "Cargar Sectores")
+                self.UTI.mostrarAlerta("Error de servidor sec1", QMessageBox().Critical, "Cargar Sectores")
                 print('ERROR: SEC000')
 
             lenJson = len(list(respuesta.json()))
@@ -496,7 +460,7 @@ class ActualizacionCatastralV3:
                 headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
                 respuesta = requests.get(self.CFG.urlManzanas + idSector + '/manzana/', headers = headers)
             except requests.exceptions.RequestException:
-                self.UTI.mostrarAlerta("Error de servidor", QMessageBox().Critical, "Cargar Manzanas")
+                self.UTI.mostrarAlerta("Error de servidor man1sec", QMessageBox().Critical, "Cargar Manzanas")
                 print('ERROR: MAN000')
 
             lenJson = len(list(respuesta.json()))
@@ -688,7 +652,7 @@ class ActualizacionCatastralV3:
         outSpatialRef.ImportFromEPSG(int(srid))
         coordTrans = osr.CoordinateTransformation(inSpatialRef, outSpatialRef)
         if not bool(data):
-            self.UTI.mostrarAlerta("Error de servidor", QMessageBox().Critical, "Cargar capa de consulta")
+            self.UTI.mostrarAlerta("Error de servidor pintcap", QMessageBox().Critical, "Cargar capa de consulta")
             print('ERROR: CAP000')
 
         #Obtenemos todos los atributos del JSON
@@ -767,8 +731,7 @@ class ActualizacionCatastralV3:
         coordTrans = osr.CoordinateTransformation(inSpatialRef, outSpatialRef)
         if not bool(data):
             return True
-            #self.UTI.mostrarAlerta("Error de servidor", QMessageBox().Critical, "Cargar capa de consulta")
-            #print('ERROR: NUM000')
+            
 
         
         
@@ -939,7 +902,7 @@ class ActualizacionCatastralV3:
 
 
         except requests.exceptions.RequestException:
-            self.UTI.mostrarAlerta("Error de servidor", QMessageBox().Critical, "Error de servidor")
+            self.UTI.mostrarAlerta("Error de servidor obtenerPintar", QMessageBox().Critical, "Error de servidor")
             print('ERROR OAP000')
             return
         data = ""
@@ -1012,7 +975,7 @@ class ActualizacionCatastralV3:
                             self.comboConstEsp.addItem(str(clave['cveConstEsp']) + " - " + clave['descripcion'], str(clave['cveConstEsp']) )
                             diccionarioConst[clave['cveConstEsp']] = str(clave['cveConstEsp']) + " - " + clave['descripcion']
                     else:
-                        self.UTI.mostrarAlerta("No se han podido cargar los tipos de construccion especial\nError de servidor", QMessageBox().Critical, "Cargar tipos de construccion especial")
+                        self.UTI.mostrarAlerta("No se han podido cargar los tipos de construccion especial\nError de servidor const esp", QMessageBox().Critical, "Cargar tipos de construccion especial")
 
                     if  self.tipConst != None:
                         self.listaAtributos = ['nom_volumen', 'cve_const_esp']
@@ -1234,7 +1197,7 @@ class ActualizacionCatastralV3:
                                 self.diccCveVus[str(resp['cveVus'])] = str(resp['descripcion'])
                         
                         else:
-                            self.UTI.mostrarAlerta("No se han podido cargar los tipos de cvevus\nError de servidor", QMessageBox().Critical, "Cargar tipos de asentamiento")
+                            self.UTI.mostrarAlerta("No se han podido cargar los tipos de cvevus\nError de servidor cvevus", QMessageBox().Critical, "Cargar tipos de asentamiento")
 
 
                     elif self.capaActiva.id() == self.obtenerIdCapa('Zona Uno') or self.capaActiva.id() == self.obtenerIdCapa('Zona Dos'): #Zonas
@@ -1263,7 +1226,7 @@ class ActualizacionCatastralV3:
                                 
                         
                         else:
-                            self.UTI.mostrarAlerta("No se han podido cargar los tipos de asentamiento\nError de servidor", QMessageBox().Critical, "Cargar tipos de asentamiento")
+                            self.UTI.mostrarAlerta("No se han podido cargar los tipos de asentamiento\nError de servidor asentm", QMessageBox().Critical, "Cargar tipos de asentamiento")
 
 
                     elif self.capaActiva.id() == self.obtenerIdCapa('Codigo Postal'): #Colonia
@@ -1287,7 +1250,7 @@ class ActualizacionCatastralV3:
                                 self.diccionarioTipoVia[str(resp['id'])] = str(resp['cTipoVialidad'])
 
                         else:
-                            self.UTI.mostrarAlerta("No se han podido cargar los tipos de asentamiento\nError de servidor", QMessageBox().Critical, "Cargar tipos de vialidad")
+                            self.UTI.mostrarAlerta("No se han podido cargar los tipos de asentamiento\nError de servidor tipoasent2", QMessageBox().Critical, "Cargar tipos de vialidad")
 
 
                     elif self.capaActiva.id() == self.obtenerIdCapa('Sectores'): #Sector
@@ -2182,6 +2145,8 @@ class ActualizacionCatastralV3:
 
         data = self.obtenerCapasDeReferencia(self.tablasReferencias[nameCapa], bound)
 
+        
+
         vaciada = False
 
         if capaAPintar != None:
@@ -2201,7 +2166,7 @@ class ActualizacionCatastralV3:
             outSpatialRef.ImportFromEPSG(int(srid))
             coordTrans = osr.CoordinateTransformation(inSpatialRef, outSpatialRef)
             if not bool(data):
-                self.UTI.mostrarAlerta('Error de servidor', QMessageBox().Critical, "Cargar capa de referencia")
+                self.UTI.mostrarAlerta('Error de servidor capRefr', QMessageBox().Critical, "Cargar capa de referencia")
                 print('ERROR: REF000')
             
             if data['features'] != []:
@@ -2370,14 +2335,15 @@ class ActualizacionCatastralV3:
         headers = {'Content-Type': 'application/json', 'Authorization' : token}
 
         response = requests.post(self.CFG.urlConsultaReferencia, headers = headers, data = payload)
+
         if response.status_code == 200:
             data = response.content
             data = json.loads(data.decode('utf-8'))
-
+            
             return data
 
         else:
-            self.UTI.mostrarAlerta('Error de servidor', QMessageBox.Critical, 'Cargar capas de referencia')
+            self.UTI.mostrarAlerta('Error de servidor obtenerRef', QMessageBox.Critical, 'Cargar capas de referencia')
 
 ##########################################################################################################
     
@@ -2866,7 +2832,7 @@ class ActualizacionCatastralV3:
             
             self.diccServiciosCalle[calleId] = listaServicios
 
-            self.UTI.mostrarAlerta("Servicios actualizados", QMessageBox.Information, 'Edicion de servicios de calles')
+            self.UTI.mostrarAlerta("Servicios actualizados serv calles", QMessageBox.Information, 'Edicion de servicios de calles')
 
         else:
             self.UTI.mostrarAlerta("Se requiere seleccionar exactamente un elemento a editar", QMessageBox.Warning, 'Edicion de servicios de calles')
@@ -3212,3 +3178,78 @@ class ActualizacionCatastralV3:
         for elemento in lista:
             self.DFS.dlg.comboPredios.addItem(elemento)
 
+#------------------------------------------------------------------
+
+    def obtenerVertices(self, geom):
+        n  = 0
+        ver = geom.vertexAt(0)
+        vertices=[]
+
+        while(ver != QgsPoint(0,0)):
+            n +=1
+            vertices.append(ver)
+            ver=geom.vertexAt(n)
+
+        return vertices
+
+#----------------------------------------------------------------------
+
+    def crearNuevoMarcaVert(self, color):
+        marcador = QgsVertexMarker(iface.mapCanvas())
+        #marcador.setColor(QColor(0,255,0))
+        marcador.setColor(color)
+        marcador.setIconSize(5)
+        marcador.setIconType(QgsVertexMarker.ICON_BOX)
+        marcador.setPenWidth(3)
+
+        return marcador
+
+#-------------------------------------------------------------------------
+
+    def vaciarMarcador(self, listaMarcadores):
+        for marcador in listaMarcadores:
+            marcador.setColor(QColor(255,255,255,0))
+        listaMarcadores = []
+
+#------------------------------------------------------------------------
+
+    def pintarMarcador(self, listaVertices, listaMarcadores, color):
+        for vertice in listaVertices:
+            marcador = self.crearNuevoMarcaVert(color)
+            listaMarcadores.append(marcador)
+            verticeXY = QgsPointXY(vertice.x(), vertice.y())
+            marcador.setCenter(verticeXY)
+
+#-------------------------------------------------------------------
+
+    def actualizarMarcadores(self):
+        capaManzana = QgsProject.instance().mapLayer(self.obtenerIdCapa('manzana'))
+        capaPredios = QgsProject.instance().mapLayer(self.obtenerIdCapa('predios.geom'))
+        capaConst = QgsProject.instance().mapLayer(self.obtenerIdCapa('construcciones'))
+
+        if self.dockwidget.checkVertManzana.isChecked():
+            for feat in capaManzana.getFeatures():
+                geom = feat.geometry()
+                vertices = self.obtenerVertices(geom)
+                self.pintarMarcador(vertices,self.verticesManzana, QColor(255,0,0))
+        else:
+            self.vaciarMarcador(self.verticesManzana)
+
+
+        if self.dockwidget.checkVertPredio.isChecked():
+            for feat in capaPredios.getFeatures():
+                geom = feat.geometry()
+                vertices = self.obtenerVertices(geom)
+                self.pintarMarcador(vertices, self.verticesPredio, QColor(0,255,0))
+        else:
+            self.vaciarMarcador(self.verticesPredio)
+
+        
+        if self.dockwidget.checkVertConst.isChecked():
+            for feat in capaConst.getFeatures():
+                geom = feat.geometry()
+                vertices = self.obtenerVertices(geom)
+                self.pintarMarcador(vertices, self.verticesConst, QColor(0,0,0))
+        else:
+            self.vaciarMarcador(self.verticesConst)
+            

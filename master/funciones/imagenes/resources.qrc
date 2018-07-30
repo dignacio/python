@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/plugins/master/funciones/imagenes" >
+		<file>icons/zoom_out.png</file>
+		<file>icons/zoom_in.png</file>
+    </qresource>
+</RCC>

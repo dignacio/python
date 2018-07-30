@@ -124,6 +124,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.leDispPerim.setPlaceholderText('Introduzca Dist. Perimetral')
         self.leDescripcion.setPlaceholderText('Descripcion')
 
+        self.cargandoRevision = True
 
     def closeEvent(self,event):
 
@@ -380,7 +381,24 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.cargaCedula(dataCed)
 
         # -- carga informacion de PADRON
-        dataPadron = self.obtienePadron(self.cedula['id'])
+        if self.cargandoRevision:
+            try:
+                self.headers['Authorization'] = self.UTI.obtenerToken()
+                response = requests.get(self.CFG.urlObtenerIdPredio + self.cveCatastral, headers = self.headers)
+            except requests.exceptions.RequestException as e:
+                self.createAlert("Error de servidor, 'IdPredio()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
+                return
+
+            if response.status_code == 200:
+                data = response.content
+            else:
+                self.createAlert('Error en peticion "consumeWSGeneral()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
+                return
+
+            dataPadron = self.obtienePadron(response.json())
+        else:
+            dataPadron = self.obtienePadron(self.cedula['id'])
+
         self.cargaPadron(dataPadron)
 
         # -- carga propietarios de PREDIOS
@@ -398,7 +416,10 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.eventosConstruccionesCondo()
 
             # se carga el combo de condominios
-            dataCond = self.consumeWSGeneral(self.CFG.urlCedCondominios + self.cveCatastral)
+            if self.cargandoRevision:
+                dataCond = self.consumeWSGeneral(self.CFG.urlReviCondominios + self.cveCatastral)
+            else:
+                dataCond = self.consumeWSGeneral(self.CFG.urlCedCondominios + self.cveCatastral)
             self.defineComboCond(dataCond)
 
             # carga indivisos
@@ -806,11 +827,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 # solo se deja agregar nuevas
                 self.deshabilitaConstr()
                 return
-            print('enrta')
 
             # ordena las construcciones segun el volumen
             construcciones = self.ordenaConstr(dataConstP)
-            print('enrta')
 
             for dcp in construcciones:
 
@@ -1278,7 +1297,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         try:
 
             if len(dataPropPredio) == 0:
-                
+                #self.muestraPropPredio()
                 return
 
             # - carga propietarios
@@ -1603,6 +1622,12 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         self.fraccTempCondo()
         dataTemp = self.cmbVolumenC.itemData(self.indexVolActualCondo)
+        print(dataTemp)
+        if dataTemp == None:
+            return
+
+        if dataTemp['fracciones'] == None:
+            return
 
         fracciones = []
 
@@ -1774,7 +1799,13 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
     # - consume ws para informacion de construcciones
     def consumeWSConstr(self, cveCatastral, tipoCta = 'P'):
 
-        url = self.CFG.urlCedConstr + cveCatastral + '/' + tipoCta
+        if self.cargandoRevision:
+            url = self.CFG.urlReviConst + cveCatastral + '/' + tipoCta
+        else:
+            url = self.CFG.urlCedConstr + cveCatastral + '/' + tipoCta
+
+
+
         data = ""
 
         try:
@@ -1795,7 +1826,12 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
     # - consume ws para informacion de predios
     def consumeWSCedula(self, cveCatastral):
 
-        url = self.CFG.urlCedPredio + cveCatastral
+        if self.cargandoRevision:
+            url = self.CFG.urlReviPredio + cveCatastral
+        else:
+            url = self.CFG.urlCedPredio + cveCatastral
+        
+
         data = ""
 
         try:
@@ -2006,7 +2042,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             if consume:
                 # consumir ws de consulta de informacion de condominio
-                dataCond = self.consumeWSGeneral(self.CFG.urlCedCondByCveCatTipoPred + self.cveCatastral + clave + '/' + tipoCond)
+
+                if self.cargandoRevision:
+                    dataCond = self.consumeWSGeneral(self.CFG.urlReviCondConsulta + self.cveCatastral + clave + '/' + tipoCond)
+                else:
+                    dataCond = self.consumeWSGeneral(self.CFG.urlCedCondByCveCatTipoPred + self.cveCatastral + clave + '/' + tipoCond)
 
                 if len(dataCond) == 0:
                     return
@@ -4219,9 +4259,15 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             # --- calcula y muestra informacion del fiscal ----> Deshabilitado por mientras, no se cuenta con la info de padron <----
             #self.muestraComparativoFiscal()
-            impCatastro = 0 if self.tablaTotales.item(1,1).text() == '' else float(self.tablaTotales.item(1,1).text().replace('$', '').replace(',', ''))
-            impFiscal = 0 if self.tablaTotales.item(1,2).text() == '' else float(self.tablaTotales.item(1,2).text().replace('$', '').replace(',', ''))
-            self.lbDiferencia.setText('${:,.2f}'.format(impCatastro - impFiscal))
+            if self.tablaTotales.item(1,1) != None:
+                impCatastro = 0 if self.tablaTotales.item(1,1).text() == '' else float(self.tablaTotales.item(1,1).text().replace('$', '').replace(',', ''))
+            if self.tablaTotales.item(1,2) != None:
+                impFiscal = 0 if self.tablaTotales.item(1,2).text() == '' else float(self.tablaTotales.item(1,2).text().replace('$', '').replace(',', ''))
+            
+            try:
+                self.lbDiferencia.setText('${:,.2f}'.format(impCatastro - impFiscal))
+            except:
+                pass
 
 
     # --- INDIVISOS ---

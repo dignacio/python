@@ -5,8 +5,9 @@ class Configuracion():
     def __init__(self):
         
         #Direccion IP del servidor
-        self.servidorIP = 'http://192.168.0.40:8080/'
-        
+        #self.servidorIP = 'http://192.168.0.40:8080/'
+        self.servidorIP = 'http://127.0.0.1:8080/'
+
         #Combos de localidades, sectores y manzanas
         self.urlLocalidades = self.servidorIP + 'busquedasimplewkn/api/combo/001/localidades/'
         self.urlSectores = self.servidorIP +  'busquedasimplewkn/api/combo/localidades/'
@@ -76,3 +77,34 @@ class Configuracion():
         self.urlImagenByIdAndCveCata = self.servidorIP + 'archivoswkn/api/archivo/getArchivo/'
         self.urlGetPadron = self.servidorIP + 'busquedasimplewkn/api/cedula/padron/'
         self.urlGetPropPredio = self.servidorIP + 'busquedasimplewkn/api/cedula/propietario/'
+
+        #Urls para asignacion de campo
+        self.urlAsigCampoAgregar = self.servidorIP + 'busquedasimplewkn/api/asignacion/campo/asignar/'
+        self.urlAsigCampoEliminar = self.servidorIP + 'busquedasimplewkn/api/asignacion/campo/eliminar/'
+        self.urlAsigCampoConsultar = self.servidorIP + 'busquedasimplewkn/api/asignacion/campo/obtener/'
+        self.urlAsigCampoTodos = self.servidorIP + 'busquedasimplewkn/api/asignacion/campo/todos'
+
+        #Urls para asignacion de revision
+        self.urlAsigRevAgregar = self.servidorIP + 'busquedasimplewkn/api/asignacion/revision/asignar/'
+        self.urlAsigRevEliminar = self.servidorIP + 'busquedasimplewkn/api/asignacion/revision/eliminar/'
+        self.urlAsigRevConsultar = self.servidorIP + 'busquedasimplewkn/api/asignacion/revision/obtener/'
+        self.urlAsigRevTodos = self.servidorIP + 'busquedasimplewkn/api/asignacion/revision/todos'
+
+        #Urls para asignacion de padron
+        self.urlAsigPadAgregar = self.servidorIP + 'busquedasimplewkn/api/asignacion/padron/asignar/'
+        self.urlAsigPadEliminar = self.servidorIP + 'busquedasimplewkn/api/asignacion/padron/eliminar/'
+        self.urlAsigPadConsultar = self.servidorIP + 'busquedasimplewkn/api/asignacion/padron/obtener/'
+        self.urlAsigPadTodos = self.servidorIP + 'busquedasimplewkn/api/asignacion/padron/todos'
+
+        #urls para usuarios
+        self.urlObtenerUsuarios = self.servidorIP + 'autentificacion/api/users'
+
+        #Urls para asignacionrevision
+        self.urlReviPredio = self.servidorIP + 'busquedasimplewkn/api/asignacion/revision/obtenerPredio/'
+        self.urlReviConst = self.servidorIP + 'featureswkn/api/asignacion/revision/obtenerConstrucciones/'
+        self.urlReviCondominios = self.servidorIP + 'busquedasimplewkn/api/revision/combo/condo/'
+        self.urlReviCondConsulta = self.servidorIP + 'featureswkn/api/asignacion/revision/obtenerCondominios/'
+        self.urlObtenerIdPredio = self.servidorIP + 'busquedasimplewkn/api/asignacion/revision/obtenerIdPredio/'
+
+        self.urlObtenerPadron = self.servidorIP + 'busquedasimplewkn/api/asignacion/campo/descargar/padron'
+

@@ -43,7 +43,7 @@
 </string>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -187,7 +187,7 @@ background : rgb(250,238,224);
        <x>200</x>
        <y>100</y>
        <width>111</width>
-       <height>41</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
@@ -220,7 +220,7 @@ Manzana</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>380</y>
+       <y>360</y>
        <width>151</width>
        <height>16</height>
       </rect>
@@ -241,7 +241,7 @@ Manzana</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>160</y>
+       <y>140</y>
        <width>241</width>
        <height>201</height>
       </rect>
@@ -400,7 +400,7 @@ height:24px
      <property name="geometry">
       <rect>
        <x>280</x>
-       <y>160</y>
+       <y>150</y>
        <width>221</width>
        <height>181</height>
       </rect>
@@ -507,9 +507,9 @@ de Referencia</string>
      <property name="geometry">
       <rect>
        <x>130</x>
-       <y>440</y>
+       <y>410</y>
        <width>101</width>
-       <height>41</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
@@ -541,9 +541,9 @@ background: rgb(217, 217, 217)
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>440</y>
+       <y>410</y>
        <width>101</width>
-       <height>41</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
@@ -575,7 +575,7 @@ background: rgb(217, 217, 217)
      <property name="geometry">
       <rect>
        <x>130</x>
-       <y>410</y>
+       <y>380</y>
        <width>101</width>
        <height>20</height>
       </rect>
@@ -588,6 +588,136 @@ background: rgb(217, 217, 217)
      </property>
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;---&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="widget_3" native="true">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>480</y>
+       <width>241</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QWidget{
+background : rgb(250,238,224);
+}
+QTableWidget{
+background : rgb(255,255,255);
+}</string>
+     </property>
+     <widget class="QCheckBox" name="checkVertManzana">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>76</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Century Gothic</family>
+       </font>
+      </property>
+      <property name="text">
+       <string>Manzana</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkVertPredio">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>76</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Century Gothic</family>
+       </font>
+      </property>
+      <property name="text">
+       <string>Predios</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkVertConst">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>111</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Century Gothic</family>
+       </font>
+      </property>
+      <property name="text">
+       <string>Construcciones</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btnActMarc">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>10</y>
+        <width>85</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Century Gothic</family>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{
+background : rgb(174, 116, 0);
+color : rgb(255, 255, 255);
+border-radius : 4px;
+}
+QPushButton::hover{
+background : rgb(104, 69, 13);
+color : rgb(255, 255, 255);
+border-radius : 4px;
+}
+QPushButton:disabled {
+background: rgb(217, 217, 217)
+}</string>
+      </property>
+      <property name="text">
+       <string>Recargar
+marcadores</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>450</y>
+       <width>201</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Century Gothic</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Marcador de Vertices</string>
      </property>
     </widget>
    </widget>

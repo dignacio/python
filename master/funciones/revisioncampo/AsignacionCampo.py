@@ -46,30 +46,8 @@ class AsignacionCampo:
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface, UTI):
-        """Constructor.
 
-        :param iface: An interface instance that will be passed to this class
-            which provides the hook by which you can manipulate the QGIS
-            application at run time.
-        :type iface: QgsInterface
-        """
-        # Save reference to the QGIS interface
         self.iface = iface
-        # initialize plugin directory
-        self.plugin_dir = os.path.dirname(__file__)
-        # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
-        locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'AsignacionCampo_{}.qm'.format(locale))
-
-        if os.path.exists(locale_path):
-            self.translator = QTranslator()
-            self.translator.load(locale_path)
-
-            if qVersion() > '4.3.3':
-                QCoreApplication.installTranslator(self.translator)
 
         # Create the dialog (after translation) and keep reference
         self.dlg = AsignacionCampoDialog()
@@ -90,8 +68,7 @@ class AsignacionCampo:
         self.dlg.cmbSector.currentIndexChanged.connect(self.obtenerManzanasPorSector)
         self.dlg.cmbManzana.currentIndexChanged.connect(self.contactarPintarCampos)
         
-        self.VentanaLiberacion = VentanaAsignacionCampo(iface)
-        self.dlg.btnLiberarAsig.clicked.connect(self.llamaLiberarAsignaciones)
+        self.VentanaLiberacion = VentanaAsignacionCampo(iface, self)
 
         self.dlg.btnMas.clicked.connect(self.pasarDerecha)
         self.dlg.btnMenos.clicked.connect(self.pasarIzquierda)
@@ -99,133 +76,21 @@ class AsignacionCampo:
         self.dlg.chkTodoClaves.stateChanged.connect(self.marcarTodoClaves)
         self.dlg.chkTodoMazPred.stateChanged.connect(self.marcarTodoMazPred)
         self.dlg.tablaMazPred.hideColumn(0)
-        #print(self.dlg.cmbLocalidad.x())
-        #self.dlg.cmbLocalidad.show()
-        # Declare instance attributes
-        self.actions = []
-        self.menu = self.tr(u'&AsignacionCampo')
-        # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar(u'AsignacionCampo')
-        self.toolbar.setObjectName(u'AsignacionCampo')
-        
 
-    # noinspection PyMethodMayBeStatic
-    def tr(self, message):
-        """Get the translation for a string using Qt translation API.
+        self.dlg.btnAsignar.clicked.connect(self.asignarCampo)
+        self.dlg.btnLiberarAsig.clicked.connect(self.llamarLiberar)
 
-        We implement this ourselves since we do not inherit QObject.
-
-        :param message: String for translation.
-        :type message: str, QString
-
-        :returns: Translated version of message.
-        :rtype: QString
-        """
-        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('AsignacionCampo', message)
-
-
-    def add_action(
-        self,
-        icon_path,
-        text,
-        callback,
-        enabled_flag=True,
-        add_to_menu=True,
-        add_to_toolbar=True,
-        status_tip=None,
-        whats_this=None,
-        parent=None):
-        """Add a toolbar icon to the toolbar.
-
-        :param icon_path: Path to the icon for this action. Can be a resource
-            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
-        :type icon_path: str
-
-        :param text: Text that should be shown in menu items for this action.
-        :type text: str
-
-        :param callback: Function to be called when the action is triggered.
-        :type callback: function
-
-        :param enabled_flag: A flag indicating if the action should be enabled
-            by default. Defaults to True.
-        :type enabled_flag: bool
-
-        :param add_to_menu: Flag indicating whether the action should also
-            be added to the menu. Defaults to True.
-        :type add_to_menu: bool
-
-        :param add_to_toolbar: Flag indicating whether the action should also
-            be added to the toolbar. Defaults to True.
-        :type add_to_toolbar: bool
-
-        :param status_tip: Optional text to show in a popup when mouse pointer
-            hovers over the action.
-        :type status_tip: str
-
-        :param parent: Parent widget for the new action. Defaults None.
-        :type parent: QWidget
-
-        :param whats_this: Optional text to show in the status bar when the
-            mouse pointer hovers over the action.
-
-        :returns: The action that was created. Note that the action is also
-            added to self.actions list.
-        :rtype: QAction
-        """
-
-        icon = QIcon(icon_path)
-        action = QAction(icon, text, parent)
-        action.triggered.connect(callback)
-        action.setEnabled(enabled_flag)
-
-        if status_tip is not None:
-            action.setStatusTip(status_tip)
-
-        if whats_this is not None:
-            action.setWhatsThis(whats_this)
-
-        if add_to_toolbar:
-            self.toolbar.addAction(action)
-
-        if add_to_menu:
-            self.iface.addPluginToMenu(
-                self.menu,
-                action)
-
-        self.actions.append(action)
-
-        return action
-
-    def initGui(self):
-        """Create the menu entries and toolbar icons inside the QGIS GUI."""
-
-        icon_path = ':/plugins/AsignacionCampo/icon.png'
-        self.add_action(
-            icon_path,
-            text=self.tr(u'AsignacionCampo'),
-            callback=self.run,
-            parent=self.iface.mainWindow())
-
-
-    def unload(self):
-        """Removes the plugin menu item and icon from QGIS GUI."""
-        for action in self.actions:
-            self.iface.removePluginMenu(
-                self.tr(u'&AsignacionCampo'),
-                action)
-            self.iface.removeToolBarIcon(action)
-        # remove the toolbar
-        del self.toolbar
-
+        self.diccionarioAsignaciones = {}
+        self.llaveManzana = None
 
     def run(self):
         """Run method that performs all the real work"""
         # show the dialog
         self.dlg.show()
         #self.obtenerLocalidades()
-        
+        self.UTI.strechtTabla(self.dlg.tablaClaves)
+        self.UTI.strechtTabla(self.dlg.tablaMazPred)
+        self.llenarUsuarios()
         self.capaPredios = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('predios.geom'))
         #self.contactarPintarCampos()
         self.obtenerLocalidades()
@@ -245,7 +110,7 @@ class AsignacionCampo:
             headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
             respuesta = requests.get(self.CFG.urlLocalidades, headers = headers)
         except requests.exceptions.RequestException:
-            self.UTI.mostrarAlerta("Error de servidor", QMessageBox().Critical, "Cargar Localidades")
+            self.UTI.mostrarAlerta("Error de servidor LOC01", QMessageBox().Critical, "Cargar Localidades")
             print('ERROR: LOC000')
 
         lenJson = len(list(respuesta.json()))
@@ -296,7 +161,7 @@ class AsignacionCampo:
                 headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
                 respuesta = requests.get(self.CFG.urlSectores + idSector + '/sector/', headers = headers)
             except requests.exceptions.RequestException:
-                self.UTI.mostrarAlerta("Error de servidor", QMessageBox().Critical, "Cargar Sectores")
+                self.UTI.mostrarAlerta("Error de servidor SEC01", QMessageBox().Critical, "Cargar Sectores")
                 print('ERROR: SEC000')
 
             lenJson = len(list(respuesta.json()))
@@ -344,7 +209,7 @@ class AsignacionCampo:
                 headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
                 respuesta = requests.get(self.CFG.urlManzanas + idSector + '/manzana/', headers = headers)
             except requests.exceptions.RequestException:
-                self.UTI.mostrarAlerta("Error de servidor", QMessageBox().Critical, "Cargar Manzanas")
+                self.UTI.mostrarAlerta("Error de servidor MAN01", QMessageBox().Critical, "Cargar Manzanas")
                 print('ERROR: MAN000')
 
             lenJson = len(list(respuesta.json()))
@@ -387,23 +252,51 @@ class AsignacionCampo:
             self.llaveManzana = self.enviosManzana[index]
             self.ACA.pintarCapasCampo()
 
-            keysDer = list(self.clavesDer.keys())
-            self.clavesIzq = []
-            if self.llaveManzana in keysDer:
-                for predio in self.capaPredios.getFeatures():
-                    cveCat = predio['clave']
-                    if not cveCat in self.clavesDer[self.llaveManzana]:
-                        self.clavesIzq.append(cveCat)
-
-            else:
-                self.clavesDer[self.llaveManzana] = []
-                for predio in self.capaPredios.getFeatures():
-                    cveCat = predio['clave']
-                    self.clavesIzq.append(cveCat)
-
-            self.clavesIzq.sort()
-            self.actualizarTablas()
+            self.llenadoDeTablas()
+            
 #----------------------------------------------------------------------------------------------------------------
+
+    def llenadoDeTablas(self):
+        self.obtenerDiccionarioAsignaciones()
+
+        keysDer = list(self.clavesDer.keys())
+        keysAsig = list(self.diccionarioAsignaciones.keys())
+        self.clavesIzq = []
+
+        clavesPerronas = []
+        filtro = []
+
+        if self.llaveManzana == None:
+            return
+
+        if self.llaveManzana in keysDer: #Si la llave manzana ya existe en la tabla derecha...
+            for predio in self.capaPredios.getFeatures():
+                cveCat = predio['clave']
+                if not cveCat in self.clavesDer[self.llaveManzana]: #Si la clave del predio no esta en el lado derecho...
+                    #if not cveCat in clavesPerronas:
+                    filtro.append(cveCat)
+                    
+        else: #Si la llave de manzanaaun no la tenemos...
+            self.clavesDer[self.llaveManzana] = [] #La agregamos al lado derecho pero vacia...
+            for predio in self.capaPredios.getFeatures():
+                cveCat = predio['clave']
+                filtro.append(cveCat)
+
+        if self.llaveManzana in keysAsig:
+            for clave in filtro:
+                if not clave in self.diccionarioAsignaciones[self.llaveManzana]: #Si la clave del predio no esta en el lado derecho...
+                    clavesPerronas.append(clave)
+        else:
+            for clave in filtro:
+                clavesPerronas.append(clave)
+                
+        for clave in clavesPerronas:
+            self.clavesIzq.append(clave)
+
+        self.clavesIzq.sort() 
+        self.actualizarTablas()
+
+#-----------------------------------------------------------------------------------------------------------------
 
     def validarCombox(self):
         return (self.dlg.cmbLocalidad.count() > 0 and self.dlg.cmbSector.count() > 0 and self.dlg.cmbManzana.count() >0)
@@ -438,7 +331,6 @@ class AsignacionCampo:
         for key in keysDer:
 
             listaKey = self.clavesDer[key]
-            print('agregamos ', key, listaKey)
             for x in range(0, len(listaKey)):
                 
                 rowCount = self.dlg.tablaMazPred.rowCount()
@@ -529,22 +421,6 @@ class AsignacionCampo:
             for c in range(0, self.dlg.tablaMazPred.rowCount()):
                 self.dlg.tablaMazPred.item(c, 1 ).setCheckState(QtCore.Qt.Unchecked)                
 
-#------------------------------------------------------------------------------------------------
-
-    def desmarcarCheckTodoClaves(self):
-        for c in range(0, self.dlg.tablaClaves.rowCount()):
-            if self.dlg.tablaClaves.item(c, 0 ).checkState() == QtCore.Qt.Unchecked:
-                self.dlg.chkTodoClaves.setCheckState(QtCore.Qt.Unchecked)
-                break
-
-#-----------------------------------------------------------------------------------------------------------
-
-    def desmarcarCheckTodoMazPred(self):
-        for c in range(0, self.dlg.tablaMazPred.rowCount()):
-            if self.dlg.tablaMazPred.item(c, 0 ).checkState() == QtCore.Qt.Unchecked:
-                self.dlg.chkTodoMazPred.setCheckState(QtCore.Qt.Unchecked)
-                break
-
 #------------------------------------------------------------------------------------------------------------
     def vaciarTabla(self, tabla):
         tabla.clearContents()
@@ -553,10 +429,7 @@ class AsignacionCampo:
         for row in range(0, tabla.rowCount()):        
             tabla.removeRow(row) 
 
-#-------------------------------------------------------------------------------------------------------------------
 
-    def llamaLiberarAsignaciones(self):
-        self.VentanaLiberacion.run()
 
 #--------------------------------------------------------------------------------------------------------------
 
@@ -591,3 +464,138 @@ class AsignacionCampo:
             self.dlg.cmbUsuario.setCurrentIndex(index)
 
 #----------------------------------------------------------------------------------------------------------
+
+    def obtenerDiccionarioAsignaciones(self):
+        
+        self.diccionarioAsignaciones = {}
+        try:
+            headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
+            respuesta = requests.get(self.CFG.urlAsigCampoTodos, headers = headers)
+
+            if respuesta.status_code == 200:
+                
+                for cadaUno in respuesta.json():
+                    cveManzana = cadaUno['cveManzana']
+                    cve = cadaUno['cveCatastral']
+                    cve = cve[-5:]
+
+                    llavesDic = self.diccionarioAsignaciones.keys()
+                    if not cveManzana in llavesDic:
+                        self.diccionarioAsignaciones[cveManzana] = []
+
+                    self.diccionarioAsignaciones[cveManzana].append(cve)
+
+            else:
+                print(respuesta)
+                self.UTI.mostrarAlerta("Error de servidor DICACC1", QMessageBox().Critical, "Cargar Sectores")
+
+        except requests.exceptions.RequestException:
+            self.UTI.mostrarAlerta("Error de servidor DICACC2", QMessageBox().Critical, "Cargar Sectores")
+        
+#-------------------------------------------------------------------------------------------------------------
+
+    def asignarCampo(self):
+
+        indiceUsuario = self.dlg.cmbUsuario.currentIndex()
+        usuario = self.enviosUsuario[indiceUsuario]
+
+        if indiceUsuario > 0:
+
+            indexSel = []
+            for c in range(0, self.dlg.tablaMazPred.rowCount()):
+                indexSel.append(c)
+
+            if len(indexSel) >0:
+
+                llavesEnvio = {}
+                for index in indexSel:
+                    cveManzana = str(self.dlg.tablaMazPred.item(index, 0).text())
+                    cvePredioMedia = str(self.dlg.tablaMazPred.item(index, 2).text())
+                    cveCatCompleta = cveManzana + cvePredioMedia
+                    
+                    llaves = llavesEnvio.keys()
+                    if not cveManzana in llaves:
+                        llavesEnvio[cveManzana] = []
+
+                    llavesEnvio[cveManzana].append(cveCatCompleta)
+                    
+                listaAEnviar = []
+
+                for llave in llaves:
+                    objeto = {}
+                    objeto['cveUsuario'] = usuario
+                    objeto['cveManzana'] = llave
+                    objeto['cvesCatastrales'] = []
+
+                    for clave in llavesEnvio[llave]:
+                        objeto['cvesCatastrales'].append(clave)
+
+                    listaAEnviar.append(objeto)
+
+                listaAEnviar = json.dumps(listaAEnviar)
+
+                try:
+                    headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
+                    respuesta = requests.post(self.CFG.urlAsigCampoAgregar, headers = headers, data=listaAEnviar)
+
+                    if respuesta.status_code == 200:
+                        
+                        self.UTI.mostrarAlerta("Asignacion completa", QMessageBox().Information, "Asignacion de campo")
+                        self.vaciarTabla(self.dlg.tablaMazPred)
+                        keysDer = list(self.clavesDer.keys())
+                        for k in keysDer:
+                            self.clavesDer[k] = []
+                        self.actualizarTablas()
+
+                    else:
+                        self.UTI.mostrarAlerta("Error de servidor ACAMP1", QMessageBox().Critical, "Asignacion de campo")
+
+                except requests.exceptions.RequestException:
+                    self.UTI.mostrarAlerta("Error de servidor ACAMP", QMessageBox().Critical, "Asignacion de campo")
+
+            else:
+                self.UTI.mostrarAlerta("No se han agregado asignaciones", QMessageBox().Critical, "Asignacion de campo")
+
+        else:
+            self.UTI.mostrarAlerta("Debes seleccionar un usuario", QMessageBox().Critical, "Asignacion de campo")
+
+#---------------------------------------------------------------------------------------------------
+
+    def llamarLiberar(self):
+        indiceUsuario = self.dlg.cmbUsuario.currentIndex()
+        
+        if indiceUsuario > 0:
+            self.VentanaLiberacion.run()
+        else:
+            self.UTI.mostrarAlerta("Debes seleccionar un usuario", QMessageBox().Critical, "Asignacion de campo")
+
+#-----------------------------------------------------------------------------------------------------
+
+    def llenarUsuarios(self):
+
+        self.dlg.cmbUsuario.clear()
+
+        try:
+            headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
+            respuesta = requests.get(self.CFG.urlObtenerUsuarios, headers = headers)
+        except requests.exceptions.RequestException:
+            self.UTI.mostrarAlerta("Error de servidor ACAUSU1", QMessageBox().Critical, "Cargar Manzanas")
+            print('ERROR: USU000')
+
+        lenJson = len(list(respuesta.json()))
+
+        if lenJson > 0:
+            listaTemp = ['--Selecciona--']
+            self.enviosUsuario = ['-']
+            for dato in respuesta.json():
+                listaTemp.append(dato['firstName'] + ' ' + dato['lastName'])
+                self.enviosUsuario.append(dato['login'])
+            modeloTemp = QStandardItemModel()
+            for i,word in enumerate( listaTemp ):   
+                
+                item = QStandardItem(word)
+                modeloTemp.setItem(i, 0, item)
+
+            self.UTI.extenderCombo(self.dlg.cmbUsuario, self.completarUsuario, modeloTemp)
+            self.dlg.cmbUsuario.model().item(0).setEnabled(False)
+            

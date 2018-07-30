@@ -511,11 +511,9 @@ class Evento(QgsMapTool):
 
         if self.dibujando:
             self.actualizarCapaActiva()
-            #self.alternarModoDibujo()
 
         self.activate()
         self.pluginM.pluginIsActive = False
-        #self.pluginM.dockwidget.close()
 
 ##########################################################################################################################
 
@@ -1008,9 +1006,6 @@ class Evento(QgsMapTool):
 
         layer = QgsProject.instance().mapLayer(self.pluginM.ACA.obtenerIdCapa(nombreCapa))
         
-        #if layer == None:
-        #    return
-
         self.snapper.setCurrentLayer(layer)
         snapMatch = self.snapper.snapToCurrentLayer(startingPoint, QgsPointLocator.Vertex)
 
@@ -1022,9 +1017,6 @@ class Evento(QgsMapTool):
     def snapArista(self, startingPoint, nombreCapa):
 
         layer = QgsProject.instance().mapLayer(self.pluginM.ACA.obtenerIdCapa(nombreCapa))
-        
-        #if layer == None:
-        #    return
         
         self.snapper.setCurrentLayer(layer)
         snapMatch = self.snapper.snapToCurrentLayer(startingPoint, QgsPointLocator.Edge)

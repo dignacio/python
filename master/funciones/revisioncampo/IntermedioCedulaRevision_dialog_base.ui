@@ -6,68 +6,167 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>280</width>
-    <height>350</height>
+    <width>330</width>
+    <height>390</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>329</width>
+    <height>389</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>330</width>
+    <height>390</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>IntermedioCedulaRevision</string>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>23</x>
-     <y>10</y>
-     <width>161</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Manzana&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="cmbManzana">
+  <property name="styleSheet">
+   <string notr="true">QDialog{
+background : rgb(250,238,224);
+}</string>
+  </property>
+  <widget class="QWidget" name="widget" native="true">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>30</y>
-     <width>171</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btnRecargar">
-   <property name="geometry">
-    <rect>
-     <x>230</x>
      <y>20</y>
-     <width>31</width>
-     <height>31</height>
+     <width>291</width>
+     <height>351</height>
     </rect>
    </property>
-   <property name="text">
-    <string>R</string>
+   <property name="styleSheet">
+    <string notr="true">QWidget{
+	background : rgb(255,255,255)
+}</string>
    </property>
-  </widget>
-  <widget class="QTableWidget" name="tablaClaves">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>70</y>
-     <width>256</width>
-     <height>251</height>
-    </rect>
-   </property>
-   <row>
-    <property name="text">
-     <string>Hazme Click</string>
+   <widget class="QComboBox" name="cmbManzana">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>40</y>
+      <width>171</width>
+      <height>22</height>
+     </rect>
     </property>
-   </row>
-   <column>
-    <property name="text">
-     <string>Claves</string>
+    <property name="styleSheet">
+     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold; font-family: &quot;Century Gothic&quot;;}
+QListView::item:selected { color: white; background-color:  rgb(250,238,224); font-family: &quot;Century Gothic&quot;;}
+QComboBox{
+background : rgb(250,238,224);
+}</string>
     </property>
-   </column>
+   </widget>
+   <widget class="QTableWidget" name="tablaClaves">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>80</y>
+      <width>256</width>
+      <height>251</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Century Gothic</family>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QHeaderView::section
+{
+background-color: rgb(238,225,200);
+color : rgb(52, 42, 24 );
+text-align: right;
+font-size:12px;
+height:24px
+}</string>
+    </property>
+    <row>
+     <property name="text">
+      <string/>
+     </property>
+    </row>
+    <column>
+     <property name="text">
+      <string>OCULTA</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Claves</string>
+     </property>
+    </column>
+    <item row="0" column="0">
+     <property name="text">
+      <string>0100100102000406000400069</string>
+     </property>
+    </item>
+    <item row="0" column="1">
+     <property name="text">
+      <string>00069</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QPushButton" name="btnRecargar">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>30</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Century Gothic</family>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+background : rgb(174, 116, 0);
+color : rgb(255, 255, 255);
+border-radius : 4px;
+}
+QPushButton::hover{
+background : rgb(104, 69, 13);
+color : rgb(255, 255, 255);
+border-radius : 4px;
+}
+QPushButton:disabled {
+background: rgb(217, 217, 217)
+}</string>
+    </property>
+    <property name="text">
+     <string>R</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>20</y>
+      <width>171</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Century Gothic</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Manzana&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

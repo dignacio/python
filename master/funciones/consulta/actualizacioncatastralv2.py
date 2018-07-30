@@ -147,7 +147,7 @@ class actualizacioncatastralv2:
 
                 #Modo desarrollor
                 self.modoDesarrollo = False
-                self.cargaRapida = False
+                self.cargaRapida = True
                 #01001001020004054011
                 #01001001020004027003
                 #01001001020004063010
@@ -223,8 +223,7 @@ class actualizacioncatastralv2:
            
             #self.idManzana = '01001001020004016031' #Esta es la chida
             #self.idManzana = '01001001020004026039' #Cortita y chiquita
-            #self.idManzana = '01001001020004026040' #Cortita y chiquita
-            self.idManzana = '01001001020004060004' 
+            self.idManzana = '01001001020004026040' #Cortita y chiquita
                              #01001001020  4026040
             #self.idManzana = '01001001020004060004'  #La larga que le gusta a mi jefe
             
@@ -388,6 +387,7 @@ class actualizacioncatastralv2:
     #Pintar todas las capas
     def pintarCapas(self):
 
+
         QSettings().setValue('listaEliminada', [])
         root = QgsProject.instance().layerTreeRoot()
 
@@ -422,12 +422,6 @@ class actualizacioncatastralv2:
                 if not self.pintarNum(self.xPredNum):
                     return
 
-                if not self.pintarUnaCapa(self.xHoriGeom):
-                    return
-
-                if not self.pintarNum(self.xHoriNum):
-                    return
-                
 
             else:
                 if not self.pintarUnaCapa(self.xManzana):
@@ -440,6 +434,7 @@ class actualizacioncatastralv2:
                 if not self.pintarNum(self.xPredNum):
                     return
                 
+
                 if not self.pintarUnaCapa(self.xConst):
                     return
                 
@@ -460,42 +455,6 @@ class actualizacioncatastralv2:
         else:
             self.UTI.mostrarAlerta('No se han seleccionado manzanas para cargar', QMessageBox.Critical, 'Capas de consulta')
 
-##############################################################################################################
-
-    def pintarCapasCampo(self):
-        self.vaciarCapa(self.xManzana)
-        self.vaciarCapa(self.xPredGeom)
-        self.vaciarCapa(self.xPredNum)
-        self.vaciarCapa(self.xConst)
-        self.vaciarCapa(self.xHoriGeom)
-        self.vaciarCapa(self.xHoriNum)
-        self.vaciarCapa(self.xVert)
-        self.vaciarCapa(self.xCvesVert)
-
-        
-        if not self.pintarUnaCapa(self.xManzana):
-            return
-        self.zoomManzana()
-        
-        if not self.pintarUnaCapa(self.xPredGeom):
-            return
-
-        if not self.pintarNum(self.xPredNum):
-            return
-        
-        if not self.pintarUnaCapa(self.xHoriGeom):
-            return
-
-        if not self.pintarNum(self.xHoriNum):
-            return
-
-        if not self.pintarUnaCapa(self.xVert):
-            return
-        
-        if not self.pintarUnaCapa(self.xCvesVert):
-            return
-        
-        print ("Capas cargadas con exito")
 
 ########################################################################################################
 
@@ -787,7 +746,7 @@ class actualizacioncatastralv2:
         #if self.traducirIdCapa(idCapa) == 'horizontales.geom':
         #    print(json.loads(data.decode('utf-8')))
 
-        #print(json.loads(data.decode('utf-8')))
+        print(json.loads(data.decode('utf-8')))
         return json.loads(data.decode('utf-8'))
 
 
@@ -967,7 +926,6 @@ class actualizacioncatastralv2:
                     self.UTI.mostrarAlerta('La clave catastral tiene un formato incorrecto, guarde la manzana e intente de nuevo', QMessageBox().Warning, 'Cedula Catastral')
                     return
 
-                
 
                 #validar si la clave ya existe
                 for key, value in self.dockwidget.lista.items():
@@ -995,7 +953,7 @@ class actualizacioncatastralv2:
 
             if self.validarEdicion():
                 
-                self.UTI.mostrarAlerta('Se actualizo correctamente', QMessageBox().Information, 'Edicion de atributos')
+                self.UTI.mostrarAlerta('Se guardo correctamente', QMessageBox().Information, 'Edicion de atributos')
                 self.cargarTablita()
             
         else:
@@ -1269,7 +1227,7 @@ class actualizacioncatastralv2:
 
             if self.validarEdicionRef():
                 
-                self.UTI.mostrarAlerta('Se actualizo correctamente', QMessageBox().Information, 'Edicion de atributos')
+                self.UTI.mostrarAlerta('Se guardo correctamente', QMessageBox().Information, 'Edicion de atributos')
                 self.cargarTablitaRef()
             
         else:

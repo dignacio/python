@@ -44,6 +44,8 @@ from .funciones.cargamasiva import Integracion
 from .funciones.revisioncampo import AsignacionCampo
 from .funciones.revisioncampo import AsignacionRevision
 from .funciones.revisioncampo import CedulaPadron
+from .funciones.revisioncampo import AsignacionPadron
+from .funciones.revisioncampo import IntermedioCedulaRevision
 
 class Master:
     """QGIS Plugin Implementation."""
@@ -95,13 +97,23 @@ class Master:
         self.TPG = TopologiaV3.TopologiaV3(iface, self.ACA)
         self.CMS = Integracion.Integracion(iface)
 
-        self.CRV = CedulaPadron.CedulaPadron(iface)
         self.ASCM = AsignacionCampo.AsignacionCampo(iface, self.UTI)
         self.ASRV = AsignacionRevision.AsignacionRevision(iface, self.UTI)
+        self.ASPA = AsignacionPadron.AsignacionPadron(iface, self.UTI)
+
+        self.INTE = IntermedioCedulaRevision.IntermedioCedulaRevision(iface, self, 'PAD')
+
+        self.INTE.CFG = self.CFG
+        self.INTE.ACA = self.ACA
 
         self.ASCM.CFG = self.CFG
         self.ASCM.ACA = self.ACA
+
         self.ASRV.CFG = self.CFG
+        self.ASRV.ACA = self.ACA
+
+        self.ASPA.CFG = self.CFG
+        self.ASPA.ACA = self.ACA
 
         self.UTI.CFG = self.CFG
         self.UTI.ACA = self.ACA
@@ -160,11 +172,13 @@ class Master:
         self.dlg.btnCargaMasiva.clicked.connect(self.irACargaMasiva)
         self.dlg.btnAsigCampo.clicked.connect(self.irAAsignacionCampo)
         self.dlg.btnAsigRev.clicked.connect(self.irAAsignacionRevision)
-        self.dlg.btnCedRev.clicked.connect(self.irAIntermediarioCedulaRevision)
+        self.dlg.btnAsigPad.clicked.connect(self.irAAsignacionPadron)
 
-        self.dlg.btnAsigCampo.setEnabled(False)
-        self.dlg.btnAsigRev.setEnabled(False)
-        self.dlg.btnCedRev.setEnabled(False)
+        self.dlg.btnInter.clicked.connect(self.irAIntermediario)
+
+        #self.dlg.btnAsigCampo.setEnabled(False)
+        #self.dlg.btnAsigRev.setEnabled(False)
+        
 
 #-----------------------------------------------------
 
@@ -291,7 +305,6 @@ class Master:
         #self.irAFusionDivision()
 
         if self.banderaInicial:
-            print('agregamos eventos eliminar')
             capaManzana = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('manzana'))
             capaPredsG = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('predios.geom'))
             capaPredN = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('predios.num'))
@@ -370,5 +383,11 @@ class Master:
 
 ####################################################################################
 
-    def irAIntermediarioCedulaRevision(self):
-        self.CRV.intermediario.run()
+    def irAAsignacionPadron(self):
+        self.ASPA.run()
+
+####################################################################################
+
+    def irAIntermediario(self):
+        self.INTE.run()
+    

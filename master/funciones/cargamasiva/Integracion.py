@@ -518,7 +518,7 @@ class Integracion:
 ###########################################################################################
 
     def obtenerToken(self):
-        url= 'http://192.168.0.24:8080/auth/login'
+        url= 'http://127.0.0.1:8080/auth/login'
         payload = {"username" : "user", "password" : "user"}
         payload = json.dumps(payload)
         headers = {'Content-Type': 'application/json'}

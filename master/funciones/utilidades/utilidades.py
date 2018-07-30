@@ -292,3 +292,5 @@ class Utilidad:
 		for x in range(0, tabla.columnCount()):
 			header.setSectionResizeMode(x, QtWidgets.QHeaderView.Stretch)
 			header.setStretchLastSection(True)
+
+#------------------------------------------------------------------------------------------------------------------------
