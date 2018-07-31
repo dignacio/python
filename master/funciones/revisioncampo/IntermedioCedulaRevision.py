@@ -8,13 +8,13 @@
                               -------------------
         begin                : 2018-06-22
         git sha              : $Format:%H$
-        copyright            : (C) 2018 by IntermedioCedulaRevision
-        email                : IntermedioCedulaRevision
+        copyright            : (C) 2018 by Charro
+        email                : mramirez.worknest@gmail.com
  ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
+ *   This program is not free software; you cannot redistribute nor modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
@@ -23,7 +23,7 @@
 """
 from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QAction, QMessageBox
 from PyQt5 import QtWidgets
 
 # Initialize Qt resources from file resources.py
@@ -31,8 +31,12 @@ from PyQt5 import QtWidgets
 # Import the code for the dialog
 from .IntermedioCedulaRevision_dialog import IntermedioCedulaRevisionDialog
 from .CedulaPadron import CedulaPadron
+from ..consulta.Cedula_MainWindow import CedulaMainWindow
 import os.path
-
+import os.path
+from qgis.utils import *
+import os, json, requests
+from osgeo import ogr, osr
 
 class IntermedioCedulaRevision:
     """QGIS Plugin Implementation."""
@@ -51,13 +55,23 @@ class IntermedioCedulaRevision:
         self.cedulaPadron = CedulaPadron(iface, self)
 
         self.cveCatastral = ''
+        self.idPredio = ''
+
+        self.listaCedula = {}
+        self.dlg.tablaClaves.hideColumn(0)
+        self.dlg.cmbManzana.currentIndexChanged.connect(self.llenarTabla)
 
     def run(self):
         """Run method that performs all the real work"""
         # show the dialog
         self.pluginM.UTI.strechtTabla(self.dlg.tablaClaves)
+        self.usuarioLogeado = 'jaz'
+        #self.llenarTabla()
+        self.llenarCombito()
+        
         self.dlg.show()
         
+
 
     def abrirCedula(self):
         
@@ -66,3 +80,79 @@ class IntermedioCedulaRevision:
 
         if self.tipo == 'PAD':
             self.cedulaPadron.run(self.cveCatastral)
+        elif self.tipo == 'REV':
+            self.listaCedula[self.cveCatastral] = CedulaMainWindow(cveCatas = self.cveCatastral, cond = False, CFG = self.pluginM.CFG, UTI = self.pluginM.UTI, cargandoRevision = True)
+            self.listaCedula[self.cveCatastral].show()
+
+#--------------------------------------------------------------------------
+
+    def llenarTabla(self):
+
+        self.vaciarTablita()
+
+        if self.tipo == 'PAD':
+            tabla = 'asignacion_padron'
+        elif self.tipo == 'REV':
+            tabla = 'asignacion_revision'
+
+        self.usuarioLogeado = 'jaz'
+        index = self.dlg.cmbManzana.currentIndex()
+        if index > -1:
+            cveManzana = self.dlg.cmbManzana.itemData(index)
+
+            headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
+
+            respuesta = requests.get(self.CFG.urlCvesUsuarioMan + tabla + '/' + self.usuarioLogeado + '/' + cveManzana, headers = headers)
+
+            if respuesta.status_code == 200:
+                    
+                    datos = respuesta.json()
+
+                    for x in range(0, len(datos)):
+                        dato = datos[x]
+                        claveMedia = dato[-11:]
+                        self.dlg.tablaClaves.insertRow(x) 
+
+                        item = QtWidgets.QTableWidgetItem(str(dato))
+                        self.dlg.tablaClaves.setItem(x, 0 , item)#self.capaActual.getFeatures().attributes()[x])
+                        item = QtWidgets.QTableWidgetItem(str(claveMedia))
+                        self.dlg.tablaClaves.setItem(x, 1 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            else:
+                self.UTI.mostrarAlerta('ERROR AL CARGAR INTERMEDIARIO', QMessageBox().Critical, "Consulta de asignaciones")
+                print(respuesta.json())
+
+#-----------------------------------------------------------------------------------
+
+
+    def vaciarTablita(self):
+        
+        self.dlg.tablaClaves.clearContents()
+        self.dlg.tablaClaves.setRowCount(0)
+            
+        for row in range(0, self.dlg.tablaClaves.rowCount()):        
+            self.dlg.tablaClaves.removeRow(row) 
+
+#--------------------------------------------------------------------------------
+
+    def llenarCombito(self):
+
+        headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
+        respuesta = requests.get(self.CFG.urlAsigPadConsultar + self.usuarioLogeado , headers = headers)
+        self.dlg.cmbManzana.clear()
+
+        if respuesta.status_code == 200:
+                
+                datos = respuesta.json()
+                listaManzanas = []
+                for dato in datos:
+                    envioManzana = dato['cveCatastral'][0:20]
+                    cveManzana = envioManzana[-6:]
+                    
+                    if not cveManzana in listaManzanas:
+                        listaManzanas.append(cveManzana)
+                        self.dlg.cmbManzana.addItem(cveManzana, envioManzana)
+
+        else:
+            self.UTI.mostrarAlerta('ERROR AL CARGAR MANZANAS ASIGNADAS', QMessageBox().Critical, "Consulta de asignaciones")
+            print(respuesta.json())

@@ -78,7 +78,7 @@ class AsignacionPadron:
 
         self.dlg.btnAsignar.clicked.connect(self.asignarRevision)
         self.dlg.btnLiberarAsig.clicked.connect(self.llamarLiberar)
-        
+
 
 
         self.diccionarioAsignaciones = {}
@@ -94,6 +94,9 @@ class AsignacionPadron:
         self.UTI.strechtTabla(self.dlg.tablaMazPred)
         self.llenarUsuarios()
         self.capaPredios = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('predios.geom'))
+        self.capaConH = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('horizontales.geom'))
+        self.capaConV = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('verticales'))
+        self.capaConVC = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('cves_verticales'))
         #self.contactarPintarCampos()
         self.obtenerLocalidades()
         # Run the dialog event loop
@@ -273,16 +276,45 @@ class AsignacionPadron:
 
         if self.llaveManzana in keysDer: #Si la llave manzana ya existe en la tabla derecha...
             for predio in self.capaPredios.getFeatures():
-                cveCat = predio['clave']
-                if not cveCat in self.clavesDer[self.llaveManzana]: #Si la clave del predio no esta en el lado derecho...
-                    #if not cveCat in clavesPerronas:
-                    filtro.append(cveCat)
+                listaH = self.listaCondominiosH(predio)
+                listaVC = self.listaCondominiosVC(predio)
+                if listaH != []:
+                    listaH.append('000000')
+                    for cond in listaH:
+                        cveCat = predio['clave'] + cond
+                        if not cveCat in self.clavesDer[self.llaveManzana]: #Si la clave del predio no esta en el lado derecho...
+                            filtro.append(cveCat)
+                else:
+                    if listaVC != []:
+                        listaVC.append('000000')
+                        for cond in listaVC:
+                            cveCat = predio['clave'] + cond
+                            if not cveCat in self.clavesDer[self.llaveManzana]: #Si la clave del predio no esta en el lado derecho...
+                                filtro.append(cveCat)
+                    else:
+                        cveCat = predio['clave'] + '000000'
+                        if not cveCat in self.clavesDer[self.llaveManzana]: #Si la clave del predio no esta en el lado derecho...
+                            filtro.append(cveCat)
                     
         else: #Si la llave de manzanaaun no la tenemos...
             self.clavesDer[self.llaveManzana] = [] #La agregamos al lado derecho pero vacia...
             for predio in self.capaPredios.getFeatures():
-                cveCat = predio['clave']
-                filtro.append(cveCat)
+                listaH = self.listaCondominiosH(predio)
+                listaVC = self.listaCondominiosVC(predio)
+                if listaH != []:
+                    listaH.append('000000')
+                    for cond in listaH:
+                        cveCat = predio['clave'] + cond
+                        filtro.append(cveCat)
+                else:
+                    if listaVC != []:
+                        listaVC.append('000000')
+                        for cond in listaVC:
+                            cveCat = predio['clave'] + cond
+                            filtro.append(cveCat)
+                    else:
+                        cveCat = predio['clave'] + '000000'
+                        filtro.append(cveCat)
 
         if self.llaveManzana in keysAsig:
             for clave in filtro:
@@ -299,6 +331,30 @@ class AsignacionPadron:
         self.actualizarTablas()
 
 #-----------------------------------------------------------------------------------------------------------------
+
+    def listaCondominiosH(self, predio):
+        
+        listaSalida = []
+        for cond in self.capaConH.getFeatures():
+            geomCond = cond.geometry()
+            if geomCond.buffer(-0.0000001, 1).intersects(predio.geometry()):
+                listaSalida.append(cond['clave'])
+
+        return listaSalida
+
+#---------------------------------------------------------------------------
+
+    def listaCondominiosVC(self, predio):
+        
+        listaSalida = []
+        for cond in self.capaConVC.getFeatures():
+            geomCond = cond.geometry()
+            if geomCond.intersects(predio.geometry()):
+                listaSalida.append(cond['clave'])
+
+        return listaSalida
+
+#------------------------------------------------------------------------------------------------------------
 
     def validarCombox(self):
         return (self.dlg.cmbLocalidad.count() > 0 and self.dlg.cmbSector.count() > 0 and self.dlg.cmbManzana.count() >0)
@@ -479,7 +535,7 @@ class AsignacionPadron:
                 for cadaUno in respuesta.json():
 
                     cveCat = cadaUno['cveCatastral']
-                    cvePredio = cveCat[-5:]
+                    cvePredio = cveCat[-11:]
                     cveManzana = cveCat[0:20]
                     
                     llavesDic = self.diccionarioAsignaciones.keys()

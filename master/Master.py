@@ -101,10 +101,16 @@ class Master:
         self.ASRV = AsignacionRevision.AsignacionRevision(iface, self.UTI)
         self.ASPA = AsignacionPadron.AsignacionPadron(iface, self.UTI)
 
-        self.INTE = IntermedioCedulaRevision.IntermedioCedulaRevision(iface, self, 'PAD')
+        self.INTEPAD = IntermedioCedulaRevision.IntermedioCedulaRevision(iface, self, 'PAD')
+        self.INTEREV = IntermedioCedulaRevision.IntermedioCedulaRevision(iface, self, 'REV')
 
-        self.INTE.CFG = self.CFG
-        self.INTE.ACA = self.ACA
+        self.INTEPAD.CFG = self.CFG
+        self.INTEPAD.ACA = self.ACA
+        self.INTEPAD.UTI = self.UTI
+
+        self.INTEREV.CFG = self.CFG
+        self.INTEREV.ACA = self.ACA
+        self.INTEREV.UTI = self.UTI
 
         self.ASCM.CFG = self.CFG
         self.ASCM.ACA = self.ACA
@@ -174,7 +180,8 @@ class Master:
         self.dlg.btnAsigRev.clicked.connect(self.irAAsignacionRevision)
         self.dlg.btnAsigPad.clicked.connect(self.irAAsignacionPadron)
 
-        self.dlg.btnInter.clicked.connect(self.irAIntermediario)
+        self.dlg.btnInterPad.clicked.connect(self.irAIntermediarioPad)
+        self.dlg.btnInterRev.clicked.connect(self.irAIntermediarioRev)
 
         #self.dlg.btnAsigCampo.setEnabled(False)
         #self.dlg.btnAsigRev.setEnabled(False)
@@ -388,6 +395,9 @@ class Master:
 
 ####################################################################################
 
-    def irAIntermediario(self):
-        self.INTE.run()
+    def irAIntermediarioPad(self):
+        self.INTEPAD.run()
+
+    def irAIntermediarioRev(self):
+        self.INTEREV.run()
     

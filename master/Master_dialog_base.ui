@@ -377,7 +377,7 @@ background: rgb(217, 217, 217)
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selecciona una opcion:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnInter">
+   <widget class="QPushButton" name="btnInterRev">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -402,7 +402,37 @@ background: rgb(217, 217, 217)
 }</string>
     </property>
     <property name="text">
-     <string>Intermediario</string>
+     <string>Intermediario
+Revision</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnInterPad">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>230</y>
+      <width>111</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+background : rgb(174, 116, 0);
+color : rgb(255, 255, 255);
+border-radius : 4px;
+}
+QPushButton::hover{
+background : rgb(104, 69, 13);
+color : rgb(255, 255, 255);
+border-radius : 4px;
+}
+QPushButton:disabled {
+background: rgb(217, 217, 217)
+}</string>
+    </property>
+    <property name="text">
+     <string>Intermediario
+Padron</string>
     </property>
    </widget>
    <zorder>btnAsigPad</zorder>
@@ -415,7 +445,8 @@ background: rgb(217, 217, 217)
    <zorder>btnDibujo</zorder>
    <zorder>btnEliminar</zorder>
    <zorder>btnCargaMasiva</zorder>
-   <zorder>btnInter</zorder>
+   <zorder>btnInterRev</zorder>
+   <zorder>btnInterPad</zorder>
   </widget>
  </widget>
  <resources/>

@@ -20,7 +20,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'mainWindow.ui'))
 
 class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
-    def __init__(self, cveCatas = "0", cond = False, parent=None, CFG=None, UTI = None):
+    def __init__(self, cveCatas = "0", cond = False, parent=None, CFG=None, UTI = None, cargandoRevision = False):
         """Constructor."""
         super(CedulaMainWindow, self).__init__(parent, \
             flags=Qt.WindowMinimizeButtonHint|Qt.WindowMaximizeButtonHint|Qt.WindowCloseButtonHint)
@@ -124,7 +124,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.leDispPerim.setPlaceholderText('Introduzca Dist. Perimetral')
         self.leDescripcion.setPlaceholderText('Descripcion')
 
-        self.cargandoRevision = True
+        self.cargandoRevision = cargandoRevision
 
     def closeEvent(self,event):
 

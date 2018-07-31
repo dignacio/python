@@ -8,13 +8,13 @@
                               -------------------
         begin                : 2018-06-20
         git sha              : $Format:%H$
-        copyright            : (C) 2018 by CedulaPadron
-        email                : CedulaPadron
+        copyright            : (C) 2018 by Charro
+        email                : mramirez.worknest@gmail.com
  ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
+ *   This program is not free software; you cannot redistribute nor modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
@@ -49,13 +49,114 @@ class CedulaPadron:
         self.cveCatastral = ''
         self.pluginM = pluginM
     
+        self.dlg.btnCveCatCed.clicked.connect(self.pasarCveCat)
+        self.dlg.btnCveCatAntCed.clicked.connect(self.pasarCveCatAnt)
+        self.dlg.btnCPCed.clicked.connect(self.pasarCp)
+        self.dlg.btnAstCed.clicked.connect(self.pasarAsent)
+        self.dlg.btnColCed.clicked.connect(self.pasarColonia)
+        self.dlg.btnLocCed.clicked.connect(self.pasarLocalidad)
+        self.dlg.btnPredCed.clicked.connect(self.pasarTipoPredio)
+        self.dlg.btnMunCed.clicked.connect(self.pasarCveMunicipio)
+        self.dlg.btnRegCed.clicked.connect(self.pasarRegProp)
+        #self.dlg.btnRevCed.clicked.connect(self.pasarRev)
+        #self.dlg.btnFecCed.clicked.connect(self.pasarFecha)
+        self.dlg.btnNomCed.clicked.connect(self.pasarNombre)
+        self.dlg.btnCallCed.clicked.connect(self.pasarCalle)
+
+        self.dlg.btnSueCed.clicked.connect(self.pasarSuelo)
+        self.dlg.btnFondoCed.clicked.connect(self.pasarFondo)
+        self.dlg.btnFrenteCed.clicked.connect(self.pasarFrente)
+        self.dlg.btnOriCed.clicked.connect(self.pasarUbic)
+
+        self.dlg.btnSupTerPrivCed.clicked.connect(self.pasarSupTerPriv)
+        self.dlg.btnSupTerComCed.clicked.connect(self.pasarSupTerCom)
+        self.dlg.btnSupTerTotCed.clicked.connect(self.pasarSupTerTot)
+        self.dlg.btnSupConstPrivCed.clicked.connect(self.pasarConstPriv)
+        self.dlg.btnSupConstComCed.clicked.connect(self.pasarConstCom)
+        self.dlg.btnSupConstTotCed.clicked.connect(self.pasarConstTot)
+        self.dlg.btnValTerrCed.clicked.connect(self.pasarValTer)
+        self.dlg.btnValConstCed.clicked.connect(self.pasarValConst)
+        self.dlg.btnValCatCed.clicked.connect(self.pasarValCat)
+        self.dlg.btnValIndCed.clicked.connect(self.pasarInd)
+
+        #---------------------Eliminar-------------------#
+        self.dlg.btnCveCatPad.clicked.connect(self.eliminarCveCat)
+        self.dlg.btnCveCatAntPad.clicked.connect(self.eliminarCveCatAnt)
+        self.dlg.btnCPPad.clicked.connect(self.eliminarCp)
+        self.dlg.btnAstPad.clicked.connect(self.eliminarAsent)
+        self.dlg.btnColPad.clicked.connect(self.eliminarColonia)
+        self.dlg.btnLocPad.clicked.connect(self.eliminarLocalidad)
+        self.dlg.btnPredPad.clicked.connect(self.eliminarTipoPredio)
+        self.dlg.btnMunPad.clicked.connect(self.eliminarCveMunicipio)
+        self.dlg.btnRegPad.clicked.connect(self.eliminarRegProp)
+        #self.dlg.btnRevPad.clicked.connect(self.eliminarRev)
+        #self.dlg.btnFecPad.clicked.connect(self.eliminarFecha)
+        self.dlg.btnNomPad.clicked.connect(self.eliminarNombre)
+        self.dlg.btnCallPad.clicked.connect(self.eliminarCalle)
+
+        self.dlg.btnSuePad.clicked.connect(self.eliminarSuelo)
+        self.dlg.btnFondoPad.clicked.connect(self.eliminarFondo)
+        self.dlg.btnFrentePad.clicked.connect(self.eliminarFrente)
+        self.dlg.btnOriPad.clicked.connect(self.eliminarUbic)
+
+        self.dlg.btnSupTerPrivPad.clicked.connect(self.eliminarSupTerPriv)
+        self.dlg.btnSupTerComPad.clicked.connect(self.eliminarSupTerCom)
+        self.dlg.btnSupTerTotPad.clicked.connect(self.eliminarSupTerTot)
+        self.dlg.btnSupConstPrivPad.clicked.connect(self.eliminarConstPriv)
+        self.dlg.btnSupConstComPad.clicked.connect(self.eliminarConstCom)
+        self.dlg.btnSupConstTotPad.clicked.connect(self.eliminarConstTot)
+        self.dlg.btnValTerrPad.clicked.connect(self.eliminarValTer)
+        self.dlg.btnValConstPad.clicked.connect(self.eliminarValConst)
+        self.dlg.btnValCatPad.clicked.connect(self.eliminarValCat)
+        self.dlg.btnValIndPad.clicked.connect(self.eliminarInd)
+
+        #------------------------------Bloquear campos cedula------------------------#
+        self.dlg.fldCveCatCed.setReadOnly(True)
+        self.dlg.fldCveCatAntCed.setReadOnly(True)
+        self.dlg.fldCPCed.setReadOnly(True)
+        self.dlg.fldAsentCed.setReadOnly(True)
+        self.dlg.fldColCed.setReadOnly(True)
+        self.dlg.fldLocCed.setReadOnly(True)
+        self.dlg.fldPredCed.setReadOnly(True)
+        self.dlg.fldMunCed.setReadOnly(True)
+        self.dlg.fldRegCed.setReadOnly(True)
+        self.dlg.fldRevCed.setReadOnly(True)
+        self.dlg.fldFecCed.setReadOnly(True)
+        self.dlg.fldRevPad.setReadOnly(True)
+        self.dlg.fldFecPad.setReadOnly(True)
+        self.dlg.lblNomCed.setReadOnly(True)
+        self.dlg.fldCallCed.setReadOnly(True)
+
+        self.dlg.fldSueloCed.setReadOnly(True)
+        self.dlg.fldFondoCed.setReadOnly(True)
+        self.dlg.fldFrenteCed.setReadOnly(True)
+        self.dlg.fldOriCed.setReadOnly(True)
+
+        self.dlg.fldSupTerPrivCed.setReadOnly(True)
+        self.dlg.fldSupTerComCed.setReadOnly(True)
+        self.dlg.fldSupTerTotCed.setReadOnly(True)
+        self.dlg.fldSupConstPrivCed.setReadOnly(True)
+        self.dlg.fldSupConstComCed.setReadOnly(True)
+        self.dlg.fldSupConstTotCed.setReadOnly(True)
+        self.dlg.fldValTerrCed.setReadOnly(True)
+        self.dlg.fldValConstCed.setReadOnly(True)
+        self.dlg.fldValCatCed.setReadOnly(True)
+        self.dlg.fldIndCed.setReadOnly(True)
+
+        self.dlg.btnGuardar.clicked.connect(self.acutalizarPadron)
+
+        self.usuarioLogeado = 'Jas Selz'
+
     def run(self, cveCatastral):
         """Run method that performs all the real work"""
         # show the dialog
-        self.dlg.show()
-        self.cveCatastral = cveCatastral
         
-        self.consultarPadron()
+        self.cveCatastral = cveCatastral
+        self.cvePredio = self.cveCatastral[0:25]
+        self.vaciarTodo()
+        if self.consultarPadron():
+            self.consultarCedula()
+            self.dlg.show()
 
     def consultarPadron(self):
         try:
@@ -63,26 +164,31 @@ class CedulaPadron:
 
             try:
                 headers = {'Content-Type': 'application/json', 'Authorization' : self.pluginM.pluginM.UTI.obtenerToken()}
-                response = requests.get(self.pluginM.pluginM.CFG.urlObtenerIdPredio + self.cveCatastral, headers = headers)
+                respuesta = requests.get(self.pluginM.pluginM.CFG.urlObtenerIdPredio + self.cvePredio, headers = headers)
             except requests.exceptions.RequestException as e:
+                print('error aqui arriba en el padron')
                 self.pluginM.pluginM.UTI.mostrarAlerta(str(respuesta), QMessageBox().Critical, "Consulta de padron")
-                return
+                return False
 
-            if response.status_code == 200:
-                data = response.content
-                idPadron = str(response.json())
+            if respuesta.status_code == 200:
+                data = respuesta.content
+                idPadron = str(respuesta.json())
             else:
+                print('error aquisito en el padron')
                 self.pluginM.pluginM.UTI.mostrarAlerta(str(respuesta), QMessageBox().Critical, "Consulta de padron")
-                return
+                return False
             
-            print(idPadron)
-
+            
             respuesta = requests.get(self.pluginM.pluginM.CFG.urlGetPadron + idPadron, headers = headers)
 
             if respuesta.status_code == 200:
                 
+                if len(respuesta.json() )<= 0:
+                    self.pluginM.pluginM.UTI.mostrarAlerta('La clave no se encuentra en el padron catastral', QMessageBox().Critical, "Consulta de padron")
+                    return False
                 datos = respuesta.json()[0]
 
+                #------------------------------------------Padron------------------------------------#
                 #UBICACION
                 self.dlg.fldCveCatPad.setText(str(datos["cveCatastral"]))
                 self.dlg.fldCveCatAntPad.setText(str(datos["cveCatastralInicial"]))
@@ -116,9 +222,592 @@ class CedulaPadron:
                 self.dlg.fldValCatPad.setText(str(datos["eValorCat"]))
                 self.dlg.fldIndPad.setText(str(datos["eIndiviso"]))
 
+                return True
             else:
+                print('error 99')
                 self.pluginM.pluginM.UTI.mostrarAlerta(str(respuesta), QMessageBox().Critical, "Consulta de padron")
+                return False
 
         except requests.exceptions.RequestException:
+            print('error 1056')
             self.pluginM.pluginM.UTI.mostrarAlerta(str(respuesta), QMessageBox().Critical, "Consulta de padron")
+            return False
+
+
+#---------------------------------------------------------------------------------------------------------------
+
+    def consultarCedula(self):
+        try:
+            headers = {'Content-Type': 'application/json', 'Authorization' : self.pluginM.pluginM.UTI.obtenerToken()}
+
+            try:
+                headers = {'Content-Type': 'application/json', 'Authorization' : self.pluginM.pluginM.UTI.obtenerToken()}
+                respuesta = requests.get(self.pluginM.pluginM.CFG.urlCedPredio + self.cvePredio, headers = headers)
+            except requests.exceptions.RequestException as e:
+                print('excepcionsita aqui 883j')
+                self.pluginM.pluginM.UTI.mostrarAlerta(str(respuesta), QMessageBox().Critical, "Consulta de padron")
+                return
+
+            if respuesta.status_code == 200:
+                
+                if len(respuesta.json())  <= 0:
+                    self.pluginM.pluginM.UTI.mostrarAlerta('No se encontro informacion de en cedula', QMessageBox().Critical, "Consulta de padron (condominio)")
+                    return
+                datos = respuesta.json()[0]
+
+                #------------------------------------------cedula------------------------------------#
+                #UBICACION
+                
+                self.dlg.fldCveCatCed.setText(str(datos["cveCat"]))
+                self.dlg.fldCveCatAntCed.setText(str(datos["cveCatAnt"]))
+                self.dlg.fldCPCed.setText(str(datos["cp"]))
+                self.dlg.fldAsentCed.setText(str(datos["tipoAsentamiento"])) #-
+                self.dlg.fldColCed.setText(str(datos["colonia"]))
+                self.dlg.fldLocCed.setText(str(datos["localidad"]["nombre"]))
+                self.dlg.fldPredCed.setText(str(datos["cveTipoPred"]))
+                self.dlg.fldMunCed.setText(str(datos["cveMunicipio"]))
+                self.dlg.fldRegCed.setText(str(datos["regimenPropiedad"]))
+                self.dlg.fldRevCed.setText(str(datos["usuarioAnterior"]))
+                self.dlg.fldFecCed.setText(str(datos["fechaAct"]))
+                self.dlg.lblNomCed.setText(str(datos["nombre"]))
+                self.dlg.fldCallCed.setText(str(datos["calles"][0]["calle"]))
+
+                #TERRENO
+                self.dlg.fldSueloCed.setText(str(datos["cveUsoSuelo"]))
+                self.dlg.fldFondoCed.setText(str(datos["fondo"]))
+                self.dlg.fldFrenteCed.setText(str(datos["frente"]))
+                self.dlg.fldOriCed.setText(str(datos["predioUbicacionManzana"]))
+
+                #COMPARATIVO
+                if self.esCondominio():
+                    #print('SI ES CONDOMINIO WEEEEEE')
+                    verificar = []
+                    
+                    headers = {'Content-Type': 'application/json', 'Authorization' : self.pluginM.pluginM.UTI.obtenerToken()}
+                    respuesta = requests.get(self.pluginM.pluginM.CFG.urlCedCondByCveCatTipoPred + self.cveCatastral +'/h', headers = headers)
+                
+                    if respuesta.status_code == 200:
+                        
+                        verificar = respuesta.json()
+                        if verificar == []:
+                            
+                            headers = {'Content-Type': 'application/json', 'Authorization' : self.pluginM.pluginM.UTI.obtenerToken()}
+                            respuesta = requests.get(self.pluginM.pluginM.CFG.urlCedCondByCveCatTipoPred + self.cveCatastral +'/v', headers = headers)
+
+                            if respuesta.status_code == 200:
+                                
+                                verificar = respuesta.json()
+                                #if verificar == []:
+                                #    self.pluginM.pluginM.UTI.mostrarAlerta(str(respuesta), QMessageBox().Critical, "Consulta de condominio padron")
+                            else:
+                                print('ERROR CONDOMINIOS: ', respuesta)
+
+
+                    else:
+                        print('ERROR CONDOMINIOS: ', respuesta)
+
+                    
+                    if verificar != []:
+                        condom = verificar[0]
+
+
+                        self.dlg.fldSupTerPrivCed.setText(str(condom["supTerPrivada"]))
+                        self.dlg.fldSupTerComCed.setText(str(condom["supTerComun"]))
+
+                        supTerCarto = condom["supTerPrivada"] + condom["supTerComun"]
+                        self.dlg.fldSupTerTotCed.setText(str(supTerCarto))
+
+                        self.dlg.fldSupConstPrivCed.setText(str(condom["supConstruccionPrivada"]))
+                        self.dlg.fldSupConstComCed.setText(str(condom["supConstruccionComun"]))
+                        
+                        supComCarto = condom["supConstruccionPrivada"] + condom["supConstruccionComun"]
+                        self.dlg.fldSupConstTotCed.setText(str(supComCarto))
+
+                        valorTer = condom["valorTerrenoComun"] + condom["valorTerrenoPriv"]
+                        self.dlg.fldValTerrCed.setText(str(valorTer))
+
+                        valorConst = condom["valorConstruccionComun"] + condom["valorConstruccionPriv"]
+                        self.dlg.fldValConstCed.setText(str(valorConst))
+                        
+                        valorTotal = valorConst + valorTer
+                        self.dlg.fldValCatCed.setText(str(valorTotal))
+                        
+                        self.dlg.fldIndCed.setText(str(condom["indiviso"]))
+
+                    else:
+                        #pass
+                        self.dlg.fldSupTerTotCed.setText(str(datos['supTerr']))
+                        self.dlg.fldSupConstTotCed.setText(str(datos['supContruccion']))
+                        self.dlg.fldValTerrCed.setText(str(datos['valorTerreno']))
+                        self.dlg.fldValConstCed.setText(str(datos['valorConstruccion']))
+                        self.dlg.fldValCatCed.setText(str(datos['valorCatastral']))
+
+                else:
+                    #print('NO ES CONDOMINIO WEEEEEE')
+                    self.dlg.fldSupTerTotCed.setText(str(datos['supTerr']))
+                    self.dlg.fldSupConstTotCed.setText(str(datos['supContruccion']))
+                    self.dlg.fldValTerrCed.setText(str(datos['valorTerreno']))
+                    self.dlg.fldValConstCed.setText(str(datos['valorConstruccion']))
+                    self.dlg.fldValCatCed.setText(str(datos['valorCatastral']))
+            else:
+                print("ERROR CONDOMINIOS AQCA EN EL ELSE oak2 ")
+                self.pluginM.pluginM.UTI.mostrarAlerta(str(respuesta), QMessageBox().Critical, "Consulta de condominio padron")
+
+        except requests.exceptions.RequestException:
+            print("UNA EXCEPCIONSOTA VATO")
+            self.pluginM.pluginM.UTI.mostrarAlerta(str(respuesta), QMessageBox().Critical, "Consulta de condominio padron")
+
+#--------------------------------------------------------------------
+
+    def esCondominio(self):
+        print('disquee', self.cveCatastral[-6:])
+        return not self.cveCatastral[-6:] == '000000'
+
+
+    def acutalizarPadron(self):
+
+        texto = self.validarPadron()
+        if texto == 'Todo en orden':
+            objeto = {}
+
+            objeto['cveCatastral'] = self.dlg.fldCveCatPad.text()
+            objeto['claveAnterior'] = self.dlg.fldCveCatAntPad.text()
+            objeto['eCp'] = self.dlg.fldCPPad.text()
+            objeto['tipoAsentamientoHumano'] = self.dlg.fldAsentPad.text()
+            objeto['eUbColonia'] = self.dlg.fldColPad.text()
+            objeto['localidad'] = self.dlg.fldLocPad.text()
+            objeto['tipoPredio'] = self.dlg.fldPredPad.text()
+            objeto['cveMunicipio'] = self.dlg.fldMunPad.text()
+            objeto['regimenProp'] = self.dlg.fldRegPad.text()
+            objeto['eActualizaPor'] = self.usuarioLogeado
+            #objeto['eFechaActualizacion'] = self.dlg.fldFecPad.text()
+            objeto['nombreEdificio'] = self.dlg.lblNomPad.text()
+            objeto['eUbCalle'] = self.dlg.fldCallPad.text()
+
+            objeto['giroUsoSuelo'] = self.dlg.fldSueloPad.text()
+            objeto['eFondo'] = self.dlg.fldFondoPad.text()
+            objeto['eFrente'] = self.dlg.fldFrentePad.text()
+            objeto['ubicacionPredioManzana'] = self.dlg.fldOriPad.text()
+
+            objeto['eSupTerPriv'] = self.dlg.fldSupTerPrivPad.text()
+            objeto['eSupTerComun'] = self.dlg.fldSupTerComPad.text()
+            objeto['eSupTerCarto'] = self.dlg.fldSupTerTotPad.text()
+            objeto['eSupConstPriv'] = self.dlg.fldSupConstPrivPad.text()
+            objeto['eSupConstComun'] = self.dlg.fldSupConstComPad.text()
+            objeto['eSupConstCarto'] = self.dlg.fldSupConstTotPad.text()
+            objeto['eValorTer'] = self.dlg.fldValTerrPad.text()
+            objeto['eValorConst'] = self.dlg.fldValConstPad.text()
+            objeto['eValorCat'] = self.dlg.fldValCatPad.text()
+            objeto['eIndiviso'] = self.dlg.fldIndPad.text()
+
+            
+            try:
+                headers = {'Content-Type': 'application/json', 'Authorization' : self.pluginM.UTI.obtenerToken()}
+                respuesta = requests.get(self.pluginM.CFG.urlObtenerCuentaPredial + self.cvePredio, headers = headers)
+
+                
+                if respuesta.status_code == 200:
+                    
+                    cuentaPredial = respuesta.json()
+
+                    try:
+                        objeto['cuentaPredial'] = cuentaPredial
+                        objeto = json.dumps(objeto)
+                        headers = {'Content-Type': 'application/json', 'Authorization' : self.pluginM.UTI.obtenerToken()}
+                        respuesta = requests.post(self.pluginM.CFG.urlActualizarPadron, headers = headers, data = objeto)
+
+                        if respuesta.status_code == 200:
+                            self.pluginM.UTI.mostrarAlerta("Actualizacion exitosa", QMessageBox().Information, "Actualizar Padron")
+                        else:
+                            print(respuesta)
+                            self.pluginM.UTI.mostrarAlerta("Error de servidor v1", QMessageBox().Critical, "Actualizar Padron")
+
+                    except requests.exceptions.RequestException:
+                        self.pluginM.UTI.mostrarAlerta("Error de servidor v2", QMessageBox().Critical, "Actualizar Padron")
+
+                else:
+                    self.pluginM.UTI.mostrarAlerta("Error de servidor v1 cuenta padron", QMessageBox().Critical, "Obtener cuenta Padron")
+
+            except requests.exceptions.RequestException:
+                self.pluginM.UTI.mostrarAlerta("Error de servidor v2cuenta padron", QMessageBox().Critical, "Obtener cuenta Padron")
+
+        else:
+            self.pluginM.UTI.mostrarAlerta(texto, QMessageBox().Critical, "Actualizar padron Padron")
+
+    def validarPadron(self):
+
+        error = ''
+        #Clave catastral
+        texto = self.dlg.fldCveCatPad.text()
+        if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
+            return 'La clave catastral debe ser numerica de 31 digitos'
+        #Clave catastral anetrior
+        #texto = self.dlg.fldCveCatAntPad.text()
+        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
+        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        #Codigo postal
+        #texto = self.dlg.fldCPPad.text()
+        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 5): #Cuando es entero
+        #    return 'El codigo postal debe ser numerico de 5 digitos'
+        #Tipo de asentamiento humano
+        #texto = self.dlg.fldAsentPad.text()
+        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
+        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        #Colonia
+        #texto = self.dlg.fldColPad.text()
+        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
+        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        #Localidad
+        #texto = self.dlg.fldLocPad.text()
+        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
+        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        #Tipo de predio
+        texto = self.dlg.fldPredPad.text()
+        if not (len(texto) == 1): #Cuando es entero
+            return 'El tipo de predio debe ser un caracter'
+        #Clave catastral
+        #texto = self.dlg.fldMunPad.text()
+        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 3): #Cuando es entero
+        #    return 'La clave de municipio debe ser numerica de 3 digitos'
+        #Regimen de propiedad
+        #texto = self.dlg.fldRegPad.text()
+        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
+        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        #Actualizado por
+        #texto = self.dlg.fldRevPad.text()
+        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
+        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        #Fecha de actualizacion
+        #texto = self.dlg.fldFecPad.text()
+        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
+        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        #nombre del edificio
+        #texto = self.dlg.lblNomPad.text()
+        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
+        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        #Vialidad principal
+        #texto = self.dlg.fldCallPad.text()
+        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
+        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        #Giro uso suelo
+        #texto = self.dlg.fldSueloPad.text()
+        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
+        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        #Fondo
+        #texto = self.dlg.fldFondoPad.text()
+        #if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
+        #    return 'El fondo debe ser numerico'
+        #Frente
+        #texto = self.dlg.fldFrentePad.text()
+        #if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
+        #   return 'El frente debe ser numerico'
+        #Ubicacion predio
+        #texto = self.dlg.fldOriPad.text()
+        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
+        #    return 'La clave catastral debe ser numerica de 31 digitos'
+
+        #Sup ter priv
+        #texto = self.dlg.fldSupTerPrivPad.text()
+        #if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
+        #    return 'La superficie de terreno privada debe ser numerica'
+        #Sup terr com
+        #texto = self.dlg.fldSupTerComPad.text()
+        #if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
+        #    return 'La superficie de terreno comun debe ser numerica'
+        #Sup terr carto
+        #texto = self.dlg.fldSupTerTotPad.text()
+        #if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
+        #    return 'La superficie de terreno carto debe ser numerica'
+        #Sup const priv
+        #texto = self.dlg.fldSupConstPrivPad.text()
+        #if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
+        #    return 'La superficie de construccion comun debe ser numerica'
+        #Sup onst com
+        #texto = self.dlg.fldSupConstComPad.text()
+        #if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
+        #    return 'La superficie de construccion comun debe ser numerica'
+        #Sup const carto
+        #texto = self.dlg.fldSupConstTotPad.text()
+        #if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
+        #   return 'La superficie de construccion comun debe ser numerica'
+        #valor terreno
+        #texto = self.dlg.fldValTerrPad.text()
+        #if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
+        #    return 'El valor de terreno debe ser numerico'
+        #valor construccion
+        #texto = self.dlg.fldValConstPad.text()
+        #if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
+        #    return 'El valor de construccion debe ser numerico'
+        #valor catastral
+        #texto = self.dlg.fldValCatPad.text()
+        #if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
+        #    return 'El valor catastral debe ser numerico'
+        #indiviso
+        #texto = self.dlg.fldIndPad.text()
+        #if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
+        #   return 'El indiviso debe ser numerico'
+
+        return 'Todo en orden'
+
+
+#---------------------------------------------------------------------------------
+
+    def vaciarTodo(self):
+        self.dlg.fldCveCatCed.setText('')
+        self.dlg.fldCveCatAntCed.setText('')
+        self.dlg.fldCPCed.setText('')
+        self.dlg.fldAsentCed.setText('')
+        self.dlg.fldColCed.setText('')
+        self.dlg.fldLocCed.setText('')
+        self.dlg.fldPredCed.setText('')
+        self.dlg.fldMunCed.setText('')
+        self.dlg.fldRegCed.setText('')
+        self.dlg.fldRevCed.setText('')
+        self.dlg.fldFecCed.setText('')
+        self.dlg.lblNomCed.setText('')
+        self.dlg.fldCallCed.setText('')
+
+        #TERRENO
+        self.dlg.fldSueloCed.setText('')
+        self.dlg.fldFondoCed.setText('')
+        self.dlg.fldFrenteCed.setText('')
+        self.dlg.fldOriCed.setText('')
+
+        #COMPARATIVO
+        self.dlg.fldSupTerPrivCed.setText('')
+        self.dlg.fldSupTerComCed.setText('')
+        self.dlg.fldSupTerTotCed.setText('')
+        self.dlg.fldSupConstPrivCed.setText('')
+        self.dlg.fldSupConstComCed.setText('')
+        self.dlg.fldSupConstTotCed.setText('')
+        self.dlg.fldValTerrCed.setText('')
+        self.dlg.fldValConstCed.setText('')
+        self.dlg.fldValCatCed.setText('')
+        self.dlg.fldIndCed.setText('')
+
+
+        self.dlg.fldCveCatPad.setText('')
+        self.dlg.fldCveCatAntPad.setText('')
+        self.dlg.fldCPPad.setText('')
+        self.dlg.fldAsentPad.setText('')
+        self.dlg.fldColPad.setText('')
+        self.dlg.fldLocPad.setText('')
+        self.dlg.fldPredPad.setText('')
+        self.dlg.fldMunPad.setText('')
+        self.dlg.fldRegPad.setText('')
+        self.dlg.fldRevPad.setText('')
+        self.dlg.fldFecPad.setText('')
+        self.dlg.lblNomPad.setText('')
+        self.dlg.fldCallPad.setText('')
+
+        #TERRENO
+        self.dlg.fldSueloPad.setText('')
+        self.dlg.fldFondoPad.setText('')
+        self.dlg.fldFrentePad.setText('')
+        self.dlg.fldOriPad.setText('')
+
+        #COMPARATIVO
+        self.dlg.fldSupTerPrivPad.setText('')
+        self.dlg.fldSupTerComPad.setText('')
+        self.dlg.fldSupTerTotPad.setText('')
+        self.dlg.fldSupConstPrivPad.setText('')
+        self.dlg.fldSupConstComPad.setText('')
+        self.dlg.fldSupConstTotPad.setText('')
+        self.dlg.fldValTerrPad.setText('')
+        self.dlg.fldValConstPad.setText('')
+        self.dlg.fldValCatPad.setText('')
+        self.dlg.fldIndPad.setText('')
+
+
+
+#--------------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------------
+
+
+    def pasarCveCat(self):
+        self.pasarTexto(self.dlg.fldCveCatCed, self.dlg.fldCveCatPad)
+
+    def pasarCveCatAnt(self):
+        self.pasarTexto(self.dlg.fldCveCatAntCed, self.dlg.fldCveCatAntPad)
+
+    def pasarCp(self):
+        self.pasarTexto(self.dlg.fldCPCed, self.dlg.fldCPPad)
+
+    def pasarAsent(self):
+        self.pasarTexto(self.dlg.fldAsentCed, self.dlg.fldAsentPad)
+
+    def pasarColonia(self):
+        self.pasarTexto(self.dlg.fldColCed, self.dlg.fldColPad)
+
+    def pasarLocalidad(self):
+        self.pasarTexto(self.dlg.fldLocCed, self.dlg.fldLocPad)
+
+    def pasarTipoPredio(self):
+        self.pasarTexto(self.dlg.fldPredCed, self.dlg.fldPredPad)
+
+    def pasarCveMunicipio(self):
+        self.pasarTexto(self.dlg.fldMunCed, self.dlg.fldMunPad)
+
+    def pasarRegProp(self):
+        self.pasarTexto(self.dlg.fldRegCed, self.dlg.fldRegPad)
+
+    def pasarRev(self):
+        self.pasarTexto(self.dlg.fldRevCed, self.dlg.fldRevPad)
+
+    def pasarFecha(self):
+        self.pasarTexto(self.dlg.fldFecCed, self.dlg.fldFecPad)
+
+    def pasarNombre(self):
+        self.pasarTexto(self.dlg.lblNomCed, self.dlg.lblNomPad)
+
+    def pasarCalle(self):
+        self.pasarTexto(self.dlg.fldCallCed, self.dlg.fldCallPad)
+
+#---------------------------------------------------------------
+
+    def pasarSuelo(self):
+        self.pasarTexto(self.dlg.fldSueloCed, self.dlg.fldSueloPad)
+
+    def pasarFondo(self):
+        self.pasarTexto(self.dlg.fldFondoCed, self.dlg.fldFondoPad)
+
+    def pasarFrente(self):
+        self.pasarTexto(self.dlg.fldFrenteCed, self.dlg.fldFrentePad)
+
+    def pasarUbic(self):
+        self.pasarTexto(self.dlg.fldOriCed, self.dlg.fldOriPad)
+
+
+#------------------------------------------------------------------------
+
+    def pasarSupTerPriv(self):
+        self.pasarTexto(self.dlg.fldSupTerPrivCed, self.dlg.fldSupTerPrivPad)
+
+    def pasarSupTerCom(self):
+        self.pasarTexto(self.dlg.fldSupTerComCed, self.dlg.fldSupTerComPad)
+
+    def pasarSupTerTot(self):
+        self.pasarTexto(self.dlg.fldSupTerTotCed, self.dlg.fldSupTerTotPad)
+
+    def pasarConstPriv(self):
+        self.pasarTexto(self.dlg.fldSupConstPrivCed, self.dlg.fldSupConstPrivPad)
+
+    def pasarConstCom(self):
+        self.pasarTexto(self.dlg.fldSupConstComCed, self.dlg.fldSupConstComPad)
+
+    def pasarConstTot(self):
+        self.pasarTexto(self.dlg.fldSupConstTotCed, self.dlg.fldSupConstTotPad)
+
+    def pasarValTer(self):
+        self.pasarTexto(self.dlg.fldValTerrCed, self.dlg.fldValTerrPad)
+
+    def pasarValConst(self):
+        self.pasarTexto(self.dlg.fldValConstCed, self.dlg.fldValConstPad)
+
+    def pasarValCat(self):
+        self.pasarTexto(self.dlg.fldValCatCed, self.dlg.fldValCatPad)
+
+    def pasarInd(self):
+        self.pasarTexto(self.dlg.fldIndCed, self.dlg.fldIndPad)
+
+#------------------------------------------------------------------------
+
+    def eliminarCveCat(self):
+        self.eliminarTexto(self.dlg.fldCveCatPad)
+
+    def eliminarCveCatAnt(self):
+        self.eliminarTexto(self.dlg.fldCveCatAntPad)
+
+    def eliminarCp(self):
+        self.eliminarTexto(self.dlg.fldCPPad)
+
+    def eliminarAsent(self):
+        self.eliminarTexto(self.dlg.fldAsentPad)
+
+    def eliminarColonia(self):
+        self.eliminarTexto(self.dlg.fldColPad)
+
+    def eliminarLocalidad(self):
+        self.eliminarTexto(self.dlg.fldLocPad)
+
+    def eliminarTipoPredio(self):
+        self.eliminarTexto(self.dlg.fldPredPad)
+
+    def eliminarCveMunicipio(self):
+        self.eliminarTexto(self.dlg.fldMunPad)
+
+    def eliminarRegProp(self):
+        self.eliminarTexto(self.dlg.fldRegPad)
+
+    def eliminarRev(self):
+        self.eliminarTexto(self.dlg.fldRevPad)
+
+    def eliminarFecha(self):
+        self.eliminarTexto(self.dlg.fldFecPad)
+
+    def eliminarNombre(self):
+        self.eliminarTexto(self.dlg.lblNomPad)
+
+    def eliminarCalle(self):
+        self.eliminarTexto(self.dlg.fldCallPad)
+
+#---------------------------------------------------------------
+
+    def eliminarSuelo(self):
+        self.eliminarTexto(self.dlg.fldSueloPad)
+
+    def eliminarFondo(self):
+        self.eliminarTexto(self.dlg.fldFondoPad)
+
+    def eliminarFrente(self):
+        self.eliminarTexto(self.dlg.fldFrentePad)
+
+    def eliminarUbic(self):
+        self.eliminarTexto(self.dlg.fldOriPad)
+
+
+#------------------------------------------------------------------------
+
+    def eliminarSupTerPriv(self):
+        self.eliminarTexto(self.dlg.fldSupTerPrivPad)
+
+    def eliminarSupTerCom(self):
+        self.eliminarTexto(self.dlg.fldSupTerComPad)
+
+    def eliminarSupTerTot(self):
+        self.eliminarTexto(self.dlg.fldSupTerTotPad)
+
+    def eliminarConstPriv(self):
+        self.eliminarTexto(self.dlg.fldSupConstPrivPad)
+
+    def eliminarConstCom(self):
+        self.eliminarTexto(self.dlg.fldSupConstComPad)
+
+    def eliminarConstTot(self):
+        self.eliminarTexto(self.dlg.fldSupConstTotPad)
+
+    def eliminarValTer(self):
+        self.eliminarTexto(self.dlg.fldValTerrPad)
+
+    def eliminarValConst(self):
+        self.eliminarTexto(self.dlg.fldValConstPad)
+
+    def eliminarValCat(self):
+        self.eliminarTexto(self.dlg.fldValCatPad)
+
+    def eliminarInd(self):
+        self.eliminarTexto(self.dlg.fldIndPad)
+
+
+#-----------------------------------------------
+
+    def pasarTexto(self, fldIzq, fldDer):
+        fldDer.setText(fldIzq.text())
+
+    def eliminarTexto(self, fld):
+        fld.setText('')
+        
+
+
 

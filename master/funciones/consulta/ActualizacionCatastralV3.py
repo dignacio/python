@@ -899,7 +899,8 @@ class ActualizacionCatastralV3:
             else:
                 response = requests.post(url + self.idManzana, headers = headers, data = self.payload)
 
-
+                print(url + self.idManzana)
+                print(self.payload)
 
         except requests.exceptions.RequestException:
             self.UTI.mostrarAlerta("Error de servidor obtenerPintar", QMessageBox().Critical, "Error de servidor")
@@ -1112,7 +1113,7 @@ class ActualizacionCatastralV3:
                     return
 
                 # abrir Cedula
-                self.dockwidget.lista[str(feat['cve_cat'])[0:25]] = CedulaMainWindow(str(feat['cve_cat']), cond = cond, CFG = self.CFG, UTI = self.UTI)
+                self.dockwidget.lista[str(feat['cve_cat'])[0:25]] = CedulaMainWindow(str(feat['cve_cat']), cond = cond, CFG = self.CFG, UTI = self.UTI, cargandoRevision = False)
                 self.dockwidget.lista[str(feat['cve_cat'])[0:25]].show()
                 
             self.cancelaAperturaCedula()

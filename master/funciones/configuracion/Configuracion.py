@@ -105,6 +105,8 @@ class Configuracion():
         self.urlReviCondominios = self.servidorIP + 'busquedasimplewkn/api/revision/combo/condo/'
         self.urlReviCondConsulta = self.servidorIP + 'featureswkn/api/asignacion/revision/obtenerCondominios/'
         self.urlObtenerIdPredio = self.servidorIP + 'busquedasimplewkn/api/asignacion/revision/obtenerIdPredio/'
+        self.urlObtenerCuentaPredial = self.servidorIP + 'busquedasimplewkn/api/asignacion/padron/obtenerCuentaPredial/'
+        self.urlCvesUsuarioMan = self.servidorIP + 'busquedasimplewkn/api/asignacion/'
 
-        self.urlObtenerPadron = self.servidorIP + 'busquedasimplewkn/api/asignacion/campo/descargar/padron'
+        self.urlActualizarPadron = self.servidorIP + 'busquedasimplewkn/api/asignacion/revision/actualizarPadron'
 

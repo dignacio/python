@@ -87,7 +87,7 @@ class VentanaAsignacionPadron:
                     cveCatastral = dato['cveCatastral']
                     cveManzana = cveCatastral[0:20]
                     cveManzanaCorta = cveManzana[-3:]
-                    cvePredio = cveCatastral[-5:]
+                    cvePredio = cveCatastral[-11:]
                     item = QtWidgets.QTableWidgetItem(str(cveCatastral))
                     self.dlg.tablaMazPred.setItem(x, 0 , item)
 
@@ -178,4 +178,4 @@ class VentanaAsignacionPadron:
                 self.dlg.chkTodo.setCheckState(QtCore.Qt.Unchecked)
         else:
             for c in range(0, self.dlg.tablaMazPred.rowCount()):
-                self.dlg.tablaMazPred.item(c, 1 ).setCheckState(QtCore.Qt.Unchecked)     
+                self.dlg.tablaMazPred.item(c, 1 ).setCheckState(QtCore.Qt.Unchecked)
