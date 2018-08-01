@@ -13,11 +13,12 @@ import os, json, requests, sys
 from osgeo import ogr, osr
 
 
-class VentanaAreas(QWidget): 
+class VentanaAreas(QtWidgets.QDialog): 
 
-    def __init__(self, pluginDFS): 
-        QWidget.__init__(self)
+    def __init__(self, pluginDFS, parent = iface.mainWindow()): 
+        super(VentanaAreas, self).__init__(parent)
  
+        #self.parent = iface.mainWindow()
         self.contenedor = QVBoxLayout()
         self.setLayout(self.contenedor)
         self.tablaAreas = QTableWidget()
@@ -25,7 +26,8 @@ class VentanaAreas(QWidget):
         self.pluginDFS = pluginDFS
         self.contenedor.addWidget(self.tablaAreas)
         
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        
+        #self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
         estilo = """
 QWidget{

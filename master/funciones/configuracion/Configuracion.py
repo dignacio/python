@@ -109,4 +109,5 @@ class Configuracion():
         self.urlCvesUsuarioMan = self.servidorIP + 'busquedasimplewkn/api/asignacion/'
 
         self.urlActualizarPadron = self.servidorIP + 'busquedasimplewkn/api/asignacion/revision/actualizarPadron'
-
+        self.urlConfirmarInicioR = self.servidorIP + 'busquedasimplewkn/api/asignacion/confirmarInicio/'
+        self.urlConfirmarFinR = self.servidorIP + 'busquedasimplewkn/api/asignacion/confirmarFin/'

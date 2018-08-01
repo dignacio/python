@@ -63,8 +63,8 @@ class DibujoV3:
         
 
         # Create the dialog (after translation) and keep reference
-        self.dockwidget = DibujoV3Dialog()
-        self.dockwidget.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.dockwidget = DibujoV3Dialog(parent = iface.mainWindow())
+        #self.dockwidget.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
         self.iface = iface
 

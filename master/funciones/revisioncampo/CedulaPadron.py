@@ -145,7 +145,9 @@ class CedulaPadron:
 
         self.dlg.btnGuardar.clicked.connect(self.acutalizarPadron)
 
-        self.usuarioLogeado = 'Jas Selz'
+        self.usuarioLogeado = 'jaz'
+
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
     def run(self, cveCatastral):
         """Run method that performs all the real work"""
@@ -418,6 +420,19 @@ class CedulaPadron:
 
                         if respuesta.status_code == 200:
                             self.pluginM.UTI.mostrarAlerta("Actualizacion exitosa", QMessageBox().Information, "Actualizar Padron")
+                        
+                            headers = {'Content-Type': 'application/json', 'Authorization' : self.pluginM.UTI.obtenerToken()}
+                            respuesta = requests.post(self.pluginM.CFG.urlConfirmarFinR + self.cveCatastral + '/' + self.usuarioLogeado + '/padron', headers = headers)
+
+                            if respuesta.status_code == 200:
+                                    
+                                    print('ACTUALIZADA LA FECCHA FIN')
+                            else:
+                                self.pluginM.UTI.mostrarAlerta('Error al actualizar fecha de fin', QMessageBox().Critical, "Revision")
+                                print(respuesta.json())
+                        
+                        
+                        
                         else:
                             print(respuesta)
                             self.pluginM.UTI.mostrarAlerta("Error de servidor v1", QMessageBox().Critical, "Actualizar Padron")

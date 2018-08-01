@@ -77,8 +77,8 @@ class DivisionFusion:
                 QCoreApplication.installTranslator(self.translator)
 
         # Create the dialog (after translation) and keep reference
-        self.dlg = DivisionFusionDialog()
-        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.dlg = DivisionFusionDialog(parent = iface.mainWindow())
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&DivisionFusion')

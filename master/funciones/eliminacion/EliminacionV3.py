@@ -65,7 +65,7 @@ class EliminacionV3:
         self.TPG = None
 
         self.pluginIsActive = False
-        self.dockwidget = EliminacionV3Dialog()
+        self.dockwidget = EliminacionV3Dialog(parent = iface.mainWindow())
 
         self.listaEliminadaCompleta = []
         self.listaEliminadaCompletaRef = []
@@ -139,7 +139,7 @@ class EliminacionV3:
         self.capaVictima = None
 
         
-        self.dockwidget.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #self.dockwidget.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&EliminacionV3')

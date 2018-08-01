@@ -62,8 +62,8 @@ class ActualizacionCatastralV3:
 
         self.pluginIsActive = False
         self.dockwidget = None
-        self.dockwidget = ActualizacionCatastralV3Dialog()
-        self.dockwidget.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.dockwidget = ActualizacionCatastralV3Dialog(parent = iface.mainWindow())
+        #self.dockwidget.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
         self.dockwidget.botonEditar.clicked.connect(self.actualizarFeature)
         self.dockwidget.botonActualizarRef.clicked.connect(self.actualizarFeatureRef)

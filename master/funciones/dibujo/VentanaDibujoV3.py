@@ -64,10 +64,10 @@ class VentanaDibujoV3:
     def __init__(self, iface, pluginE):
        
         self.pluginE = pluginE  
-        self.dlg = VentanaDibujoV3Dialog(pluginV=self)
+        self.dlg = VentanaDibujoV3Dialog(pluginV=self, parent = iface.mainWindow())
         self.dlg.botonAgregar.clicked.connect(self.confirmarFeature)
         self.dlg.botonCancelar.clicked.connect(self.cancelarFeature)
-        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
         self.listaAtributos = []
         self.comboTipoConst = QtWidgets.QComboBox()
@@ -81,7 +81,7 @@ class VentanaDibujoV3:
         self.ultimo = 0
         self.posibleCerrar = False
 
-        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
     def llenarTabla(self):
 

@@ -70,11 +70,11 @@ class Integracion:
                 QCoreApplication.installTranslator(self.translator)
 
         # Create the dialog (after translation) and keep reference
-        self.dlg = IntegracionDialog()
+        self.dlg = IntegracionDialog(parent = iface.mainWindow())
 
         self.dlg.btnCargar.clicked.connect(self.abrirCarga)
         self.dlg.btnProcesar.clicked.connect(self.corregirLineas)
-        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         QgsProject.instance().layerWasAdded.connect(self.detectarCargas)
         QgsProject.instance().layerWillBeRemoved.connect(self.detectarEliminacion)
         self.procesoCompletado = False

@@ -51,7 +51,7 @@ class VentanaClavesV3:
 
     def __init__(self, iface, pluginDFS):
         
-        self.dlg = VentanaClavesV3Dialog(pluginV=self)
+        self.dlg = VentanaClavesV3Dialog(pluginV=self, parent = iface.mainWindow())
         self.entradaLibre = False
         self.DFS = pluginDFS
         self.listaQuitada = []
@@ -63,7 +63,7 @@ class VentanaClavesV3:
         self.dlg.txtClave.setEnabled(False)
         self.capaPredio = QgsProject.instance().mapLayer(self.DFS.ACA.obtenerIdCapa('predios.geom'))
         self.capaPredio.selectionChanged.connect(self.cargarAsignacionManual)
-        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         
         self.dlg.btnClave.clicked.connect(self.asignacionDesManual)
         self.dlg.btnCompletar.clicked.connect(self.completarSubdivision)

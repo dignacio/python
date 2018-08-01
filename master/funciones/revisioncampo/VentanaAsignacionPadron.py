@@ -47,7 +47,7 @@ class VentanaAsignacionPadron:
         self.pluginM = pluginM
         self.indexSel = []
         self.dlg = VentanaAsignacionPadronDialog()
-        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
         self.dlg.btnLiberar.clicked.connect(self.preguntarLiberar)
         self.dlg.tablaMazPred.hideColumn(0)

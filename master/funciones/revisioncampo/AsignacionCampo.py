@@ -51,7 +51,7 @@ class AsignacionCampo:
 
         # Create the dialog (after translation) and keep reference
         self.dlg = AsignacionCampoDialog()
-        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #self.dlg.setWindowFlags(Qt.WindowMinimizeButtonHint|Qt.WindowMaximizeButtonHint|Qt.WindowCloseButtonHint)
         self.UTI = UTI
 
         self.modeloLocalidad = QStandardItemModel()
@@ -82,10 +82,15 @@ class AsignacionCampo:
 
         self.diccionarioAsignaciones = {}
         self.llaveManzana = None
-
+        self.manzanaCargada = -1
+        self.localidadCargado = -1
+        self.sectorCargado = -1
+        
+        
     def run(self):
         """Run method that performs all the real work"""
         # show the dialog
+        self.resetar()
         self.dlg.show()
         #self.obtenerLocalidades()
         self.UTI.strechtTabla(self.dlg.tablaClaves)
@@ -94,6 +99,7 @@ class AsignacionCampo:
         self.capaPredios = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('predios.geom'))
         #self.contactarPintarCampos()
         self.obtenerLocalidades()
+        
         # Run the dialog event loop
         result = self.dlg.exec_()
         # See if OK was pressed
@@ -153,7 +159,17 @@ class AsignacionCampo:
         if self.dlg.cmbLocalidad.count() > 0 and index > 0:
 
             index = self.dlg.cmbLocalidad.currentIndex()
-            idSector = self.enviosLocalidad[index]
+
+            try:
+                idSector = self.enviosLocalidad[index]
+
+                if self.localidadCargado == idSector:
+                    print('SECTOR POR LOCALIDAD RETORNADOS')
+                    return
+                self.localidadCargado = idSector
+
+            except:
+                return
             
             self.dlg.cmbSector.clear()
 
@@ -201,7 +217,16 @@ class AsignacionCampo:
         if self.dlg.cmbSector.count() > 0 and index > 0:
 
             index = self.dlg.cmbSector.currentIndex()
-            idSector = self.enviosSector[index]
+
+            try:
+                idSector = self.enviosSector[index]
+
+                if self.sectorCargado == idSector:
+                    print('MANZANA POR SECTOR RETORNADOS')
+                    return
+                self.sectorCargado = idSector
+            except:
+                return
 
             self.dlg.cmbManzana.clear()
 
@@ -241,7 +266,9 @@ class AsignacionCampo:
 #---------------------------------------------------------------------------------------------------------------
 
     def contactarPintarCampos(self):
+        print('entro al pintar camposss')
         index = self.dlg.cmbManzana.currentIndex()
+
         if self.validarCombox and index > 0:
             self.ACA.obtenerXCapas()
             cuerpo = {"incluirGeom": "true", "pagina": None, "bbox": "false", "pin": "false", "geomWKT": None, "epsg": None, "properties": None, "epsgGeomWKT": None, "itemsPagina": None, "nombre": "x"}
@@ -249,6 +276,12 @@ class AsignacionCampo:
             self.ACA.payload = payload
             index = self.dlg.cmbManzana.currentIndex()
             self.ACA.idManzana = self.enviosManzana[index]
+
+            if self.manzanaCargada == self.enviosManzana[index]:
+                print('SE RETORNO')
+                return
+            self.manzanaCargada = self.enviosManzana[index]
+            
             self.llaveManzana = self.enviosManzana[index]
             self.ACA.pintarCapasCampo()
 
@@ -349,7 +382,7 @@ class AsignacionCampo:
                 item = QtWidgets.QTableWidgetItem(str(listaKey[x]))
                 self.dlg.tablaMazPred.setItem(rowCount-1, 2 , item)
                 item.setFlags( QtCore.Qt.ItemIsSelectable |  QtCore.Qt.ItemIsEnabled )
-                
+
 #-------------------------------------------------------------------------------------------------------
 
     def pasarDerecha(self):
@@ -497,7 +530,11 @@ class AsignacionCampo:
     def asignarCampo(self):
 
         indiceUsuario = self.dlg.cmbUsuario.currentIndex()
-        usuario = self.enviosUsuario[indiceUsuario]
+
+        try:
+            usuario = self.enviosUsuario[indiceUsuario]
+        except:
+            return
 
         if indiceUsuario > 0:
 
@@ -599,3 +636,12 @@ class AsignacionCampo:
             self.UTI.extenderCombo(self.dlg.cmbUsuario, self.completarUsuario, modeloTemp)
             self.dlg.cmbUsuario.model().item(0).setEnabled(False)
             
+#--------------------------------------------------------------------
+
+    def resetar(self):
+        self.vaciarTabla(self.dlg.tablaClaves)
+        self.vaciarTabla(self.dlg.tablaMazPred)
+        self.dlg.cmbManzana.clear()
+        self.dlg.cmbSector.clear()
+        self.clavesIzq = []
+        self.clavesDer = {}

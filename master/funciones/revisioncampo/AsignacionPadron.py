@@ -50,7 +50,7 @@ class AsignacionPadron:
         self.iface = iface
         self.dlg = AsignacionPadronDialog()
 
-        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.UTI = UTI
 
         self.modeloLocalidad = QStandardItemModel()
@@ -79,15 +79,17 @@ class AsignacionPadron:
         self.dlg.btnAsignar.clicked.connect(self.asignarRevision)
         self.dlg.btnLiberarAsig.clicked.connect(self.llamarLiberar)
 
-
-
         self.diccionarioAsignaciones = {}
         self.llaveManzana = None
 
+        self.manzanaCargada = -1
+        self.localidadCargado = -1
+        self.sectorCargado = -1
 
     def run(self):
         """Run method that performs all the real work"""
         # show the dialog
+        self.resetar()
         self.dlg.show()
         #self.obtenerLocalidades()
         self.UTI.strechtTabla(self.dlg.tablaClaves)
@@ -153,12 +155,23 @@ class AsignacionPadron:
 
     #Llenar segundo combo
     def obtenerSectoresPorLocalidad(self):
+
         index = self.dlg.cmbLocalidad.currentIndex()
         
         if self.dlg.cmbLocalidad.count() > 0 and index > 0:
 
             index = self.dlg.cmbLocalidad.currentIndex()
-            idSector = self.enviosLocalidad[index]
+
+            try:
+                idSector = self.enviosLocalidad[index]
+
+                if self.localidadCargado == idSector:
+                    print('SECTOR POR LOCALIDAD RETORNADOS')
+                    return
+                self.localidadCargado = idSector
+
+            except:
+                return
             
             self.dlg.cmbSector.clear()
 
@@ -206,7 +219,17 @@ class AsignacionPadron:
         if self.dlg.cmbSector.count() > 0 and index > 0:
 
             index = self.dlg.cmbSector.currentIndex()
-            idSector = self.enviosSector[index]
+
+            try:
+                idSector = self.enviosSector[index]
+
+                if self.sectorCargado == idSector:
+                    print('MANZANA POR SECTOR RETORNADOS')
+                    return
+                self.sectorCargado = idSector
+
+            except:
+                return
 
             self.dlg.cmbManzana.clear()
 
@@ -254,6 +277,13 @@ class AsignacionPadron:
             self.ACA.payload = payload
             index = self.dlg.cmbManzana.currentIndex()
             self.ACA.idManzana = self.enviosManzana[index]
+
+            if self.manzanaCargada == self.enviosManzana[index]:
+                print('SE RETORNO')
+                return
+            self.manzanaCargada = self.enviosManzana[index]
+
+
             self.llaveManzana = self.enviosManzana[index]
             self.ACA.pintarCapasCampo()
 
@@ -275,46 +305,48 @@ class AsignacionPadron:
             return
 
         if self.llaveManzana in keysDer: #Si la llave manzana ya existe en la tabla derecha...
+            
             for predio in self.capaPredios.getFeatures():
                 listaH = self.listaCondominiosH(predio)
-                listaVC = self.listaCondominiosVC(predio)
-                if listaH != []:
-                    listaH.append('000000')
-                    for cond in listaH:
-                        cveCat = predio['clave'] + cond
+                listaV = self.listaCondominiosV(predio)
+                
+                for cond in listaH:
+                    cveCat = predio['clave'] + cond
+                    if not cveCat in self.clavesDer[self.llaveManzana]: #Si la clave del predio no esta en el lado derecho...
+                        filtro.append(cveCat)
+
+                for cond in listaV:
+                    listaVC = self.listaCondominiosVC(cond)
+                    for vc in listaVC:
+                        cveCat = predio['clave'] + cond['clave'] + vc
                         if not cveCat in self.clavesDer[self.llaveManzana]: #Si la clave del predio no esta en el lado derecho...
                             filtro.append(cveCat)
-                else:
-                    if listaVC != []:
-                        listaVC.append('000000')
-                        for cond in listaVC:
-                            cveCat = predio['clave'] + cond
-                            if not cveCat in self.clavesDer[self.llaveManzana]: #Si la clave del predio no esta en el lado derecho...
-                                filtro.append(cveCat)
-                    else:
-                        cveCat = predio['clave'] + '000000'
-                        if not cveCat in self.clavesDer[self.llaveManzana]: #Si la clave del predio no esta en el lado derecho...
-                            filtro.append(cveCat)
+                
+                cveCat = predio['clave'] + '000000'
+                if not cveCat in self.clavesDer[self.llaveManzana]: #Si la clave del predio no esta en el lado derecho...
+                    filtro.append(cveCat)
                     
         else: #Si la llave de manzanaaun no la tenemos...
             self.clavesDer[self.llaveManzana] = [] #La agregamos al lado derecho pero vacia...
             for predio in self.capaPredios.getFeatures():
                 listaH = self.listaCondominiosH(predio)
-                listaVC = self.listaCondominiosVC(predio)
-                if listaH != []:
-                    listaH.append('000000')
-                    for cond in listaH:
-                        cveCat = predio['clave'] + cond
+                listaV = self.listaCondominiosV(predio)
+                
+                for cond in listaH:
+                    cveCat = predio['clave'] + cond
+                    if not cveCat in self.clavesDer[self.llaveManzana]: #Si la clave del predio no esta en el lado derecho...
                         filtro.append(cveCat)
-                else:
-                    if listaVC != []:
-                        listaVC.append('000000')
-                        for cond in listaVC:
-                            cveCat = predio['clave'] + cond
+
+                for cond in listaV:
+                    listaVC = self.listaCondominiosVC(cond)
+                    for vc in listaVC:
+                        cveCat = predio['clave'] + cond['clave'] + vc
+                        if not cveCat in self.clavesDer[self.llaveManzana]: #Si la clave del predio no esta en el lado derecho...
                             filtro.append(cveCat)
-                    else:
-                        cveCat = predio['clave'] + '000000'
-                        filtro.append(cveCat)
+                
+                cveCat = predio['clave'] + '000000'
+                if not cveCat in self.clavesDer[self.llaveManzana]: #Si la clave del predio no esta en el lado derecho...
+                    filtro.append(cveCat)
 
         if self.llaveManzana in keysAsig:
             for clave in filtro:
@@ -344,13 +376,24 @@ class AsignacionPadron:
 
 #---------------------------------------------------------------------------
 
-    def listaCondominiosVC(self, predio):
+    def listaCondominiosVC(self, condV):
         
         listaSalida = []
         for cond in self.capaConVC.getFeatures():
             geomCond = cond.geometry()
-            if geomCond.intersects(predio.geometry()):
+            if geomCond.intersects(condV.geometry()):
                 listaSalida.append(cond['clave'])
+
+        return listaSalida
+
+#---------------------------------------------------------------------------------------------------
+
+    def listaCondominiosV(self, predio):
+        listaSalida = []
+        for cond in self.capaConV.getFeatures():
+            geomCond = cond.geometry()
+            if geomCond.buffer(-0.0000001, 1).intersects(predio.geometry()):
+                listaSalida.append(cond)
 
         return listaSalida
 
@@ -495,7 +538,11 @@ class AsignacionPadron:
         
         if text:
             index = self.dlg.cmbLocalidad.findText(text)
-            self.dlg.cmbLocalidad.setCurrentIndex(index)
+            if index < self.dlg.cmbLocalidad.count():
+                print('ENTROOOOOOO')
+                self.dlg.cmbLocalidad.setCurrentIndex(index)
+            else:
+                print('NO ENTROOOOO')
 
 #----------------------------------------------------------------------------------------------------------------------
 
@@ -644,4 +691,13 @@ class AsignacionPadron:
 
             self.UTI.extenderCombo(self.dlg.cmbUsuario, self.completarUsuario, modeloTemp)
             self.dlg.cmbUsuario.model().item(0).setEnabled(False)
-            
+
+#------------------------------------------------------------
+
+    def resetar(self):
+        self.vaciarTabla(self.dlg.tablaClaves)
+        self.vaciarTabla(self.dlg.tablaMazPred)
+        self.dlg.cmbManzana.clear()
+        self.dlg.cmbSector.clear()
+        self.clavesIzq = []
+        self.clavesDer = {}

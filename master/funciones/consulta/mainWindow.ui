@@ -125,7 +125,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="resources.qrc">
+        <iconset>
          <normaloff>:/cedula/icons/flechaBlanca.png</normaloff>:/cedula/icons/flechaBlanca.png</iconset>
        </property>
        <property name="iconSize">
@@ -174,7 +174,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="resources.qrc">
+        <iconset>
          <normaloff>:/cedula/icons/flechaCafe.png</normaloff>:/cedula/icons/flechaCafe.png</iconset>
        </property>
        <property name="iconSize">
@@ -372,7 +372,7 @@ background : rgb(255, 255, 255);
 }</string>
             </property>
             <property name="currentIndex">
-             <number>7</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="tUbicacion">
              <attribute name="title">
@@ -419,7 +419,7 @@ background : rgb(255, 255, 255);
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-102</y>
+                   <y>-130</y>
                    <width>942</width>
                    <height>917</height>
                   </rect>
@@ -1396,7 +1396,7 @@ height:24px
                         <string/>
                        </property>
                        <property name="icon">
-                        <iconset resource="resources.qrc">
+                        <iconset>
                          <normaloff>:/cedula/icons/remove_all.png</normaloff>:/cedula/icons/remove_all.png</iconset>
                        </property>
                       </widget>
@@ -1428,7 +1428,7 @@ height:24px
                         <string/>
                        </property>
                        <property name="icon">
-                        <iconset resource="resources.qrc">
+                        <iconset>
                          <normaloff>:/cedula/icons/add.png</normaloff>:/cedula/icons/add.png</iconset>
                        </property>
                       </widget>
@@ -1460,7 +1460,7 @@ height:24px
                         <string/>
                        </property>
                        <property name="icon">
-                        <iconset resource="resources.qrc">
+                        <iconset>
                          <normaloff>:/cedula/icons/remove_one.png</normaloff>:/cedula/icons/remove_one.png</iconset>
                        </property>
                       </widget>
@@ -2891,7 +2891,7 @@ dentro de la Manzana</string>
                 <widget class="QWidget" name="scrollAreaWidgetContents_3">
                  <property name="geometry">
                   <rect>
-                   <x>-19</x>
+                   <x>0</x>
                    <y>0</y>
                    <width>935</width>
                    <height>787</height>
@@ -3222,7 +3222,7 @@ color : rgb(255, 255, 255)</string>
                         <string/>
                        </property>
                        <property name="icon">
-                        <iconset resource="resources.qrc">
+                        <iconset>
                          <normaloff>:/cedula/icons/remove_one.png</normaloff>:/cedula/icons/remove_one.png</iconset>
                        </property>
                       </widget>
@@ -3337,7 +3337,7 @@ color : rgb(255, 255, 255)</string>
                         <string/>
                        </property>
                        <property name="icon">
-                        <iconset resource="resources.qrc">
+                        <iconset>
                          <normaloff>:/cedula/icons/add.png</normaloff>:/cedula/icons/add.png</iconset>
                        </property>
                       </widget>
@@ -5346,7 +5346,7 @@ background : rgb(250,238,224);
                 <widget class="QWidget" name="scrollAreaWidgetContents_4">
                  <property name="geometry">
                   <rect>
-                   <x>-46</x>
+                   <x>0</x>
                    <y>0</y>
                    <width>962</width>
                    <height>787</height>
@@ -5526,7 +5526,7 @@ color : rgb(255, 255, 255)</string>
                         <string/>
                        </property>
                        <property name="icon">
-                        <iconset resource="resources.qrc">
+                        <iconset>
                          <normaloff>:/cedula/icons/add.png</normaloff>:/cedula/icons/add.png</iconset>
                        </property>
                       </widget>
@@ -5719,7 +5719,7 @@ color : rgb(255, 255, 255)</string>
                         <string/>
                        </property>
                        <property name="icon">
-                        <iconset resource="resources.qrc">
+                        <iconset>
                          <normaloff>:/cedula/icons/remove_one.png</normaloff>:/cedula/icons/remove_one.png</iconset>
                        </property>
                       </widget>
@@ -6592,7 +6592,7 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-236</y>
                    <width>897</width>
                    <height>1042</height>
                   </rect>
@@ -8102,7 +8102,7 @@ height:24px
                      <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 2px;}
 QGroupBox, QLabel{
 background : rgb(250,238,224);
-}</string>
+}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 2px;}</string>
                     </property>
                     <property name="title">
                      <string/>
@@ -8353,7 +8353,7 @@ background : rgb(250,238,224);
                      <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 2px;}
 QGroupBox, QLabel{
 background : rgb(250,238,224);
-}</string>
+}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
                     </property>
                     <property name="title">
                      <string>Datos Adicionales</string>
@@ -8604,7 +8604,7 @@ background : rgb(250,238,224);
                      <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 2px;}
 QGroupBox, QLabel{
 background : rgb(250,238,224);
-}</string>
+}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
                     </property>
                     <property name="title">
                      <string>Notificacion</string>
@@ -8912,7 +8912,7 @@ background : rgb(250,238,224);
                      <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 2px;}
 QGroupBox, QLabel{
 background : rgb(250,238,224);
-}</string>
+}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
                     </property>
                     <property name="title">
                      <string/>
@@ -9493,7 +9493,7 @@ color : rgb(255, 255, 255)</string>
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="resources.qrc">
+               <iconset>
                 <normaloff>:/cedula/icons/zoom_in.png</normaloff>:/cedula/icons/zoom_in.png</iconset>
               </property>
              </widget>
@@ -9839,7 +9839,7 @@ color : rgb(255, 255, 255)</string>
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="resources.qrc">
+                <iconset>
                  <normaloff>:/cedula/icons/zoom_out.png</normaloff>:/cedula/icons/zoom_out.png</iconset>
                </property>
               </widget>
@@ -9936,7 +9936,7 @@ color : rgb(255, 255, 255)</string>
        </font>
       </property>
       <property name="text">
-       <string>Condominio   Predio</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Condominio   Predio&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
@@ -9972,5 +9972,6 @@ color : rgb(255, 255, 255)</string>
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <resources/>
  <connections/>
 </ui>

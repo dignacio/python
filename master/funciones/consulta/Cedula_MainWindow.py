@@ -15,6 +15,7 @@ from qgis.core import QgsProject
 from .fusion_dialog import fusionDialog
 
 import os, json, requests, sys, datetime, base64, time
+import sys
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'mainWindow.ui'))
@@ -126,6 +127,49 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         self.cargandoRevision = cargandoRevision
 
+        self.lbNombrePPad.setText('')
+        self.lbRazonSocPPad.setText('')
+        self.lbCallePPad.setText('')
+        self.lbColoniaPPad.setText('')
+        self.lbCodPosPPad.setText('')
+        self.lbNumeroPPad.setText('')
+
+        self.lbRFCPPad.setText('')
+        self.lbTelefonoPPad.setText('')
+        self.lbCorreoElecPPad.setText('')
+        self.lbCiudadPPad.setText('')
+        self.lbMunicipioPPad.setText('')
+        self.lbEstadoPPad.setText('')
+
+        self.lbCalleNPPad.setText('')
+        self.lbNumOfiNPPad.setText('')
+        self.lbNumInteriorNPPad.setText('')
+        self.lbColoniaNPPad.setText('')
+        self.lbCodPostNPPad.setText('')
+        self.lbEstadoNPPad.setText('')
+        self.lbCiudadNPPad.setText('')
+
+        self.lbNombrePPred.setText('')
+        self.lbApPaternoPPred.setText('')
+        self.lbApMaternoPPred.setText('')
+        self.lbCallePPred.setText('')
+        self.lbNumExtPPred.setText('')
+        self.lbNumInteriorPPred.setText('')
+
+        self.lbColoniaPPred.setText('')
+        self.lbCodPosPPred.setText('')
+        self.lbMunicipioPPred.setText('')
+        self.lbEstadoPPred.setText('')
+        self.lbPaisPPred.setText('')
+
+        self.usuarioLogeado = 'jaz'
+        self.adelanteRevision = False
+
+        if self.cond:
+            self.label_17.setText('Condominio Predio')
+        else:
+            self.label_17.setText('Predio')
+
     def closeEvent(self,event):
 
         if self.errorCerrar:
@@ -207,9 +251,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.leDispPerim.setValidator(QDoubleValidator(0.99,99.99,2))
         self.twColindancias.setColumnHidden(0, True)
         header = self.twColindancias.horizontalHeader()
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
         #self.leSupTerr.setValidator(QDoubleValidator(0.99,99.99,2))
         self.leFondo.setValidator(QDoubleValidator(0.99,99.99,2))
         self.leFrente.setValidator(QDoubleValidator(0.99,99.99,2))
@@ -225,18 +269,18 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.twCaracteristicasP.setColumnHidden(6, True)
         self.twCaracteristicasP.setColumnHidden(7, True)
         header = self.twCaracteristicasP.horizontalHeader()
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(5, QtWidgets.QHeaderView.Stretch)
 
         header = self.twIndivisos.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(6, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(4, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(5, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(6, QtWidgets.QHeaderView.Stretch)
         
         self.twCaracteristicasC.setColumnHidden(0, True)
         self.twCaracteristicasC.setColumnHidden(2, True)
@@ -244,40 +288,40 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.twCaracteristicasC.setColumnHidden(6, True)
         self.twCaracteristicasC.setColumnHidden(7, True)
         header = self.twCaracteristicasC.horizontalHeader()
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(5, QtWidgets.QHeaderView.Stretch)
 
         header = self.twVialidades.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
 
         header = self.twServiciosCalle.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
         self.twServiciosCalle.setColumnHidden(1, True)
 
         header = self.twServiciosPredio.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
         self.twServiciosPredio.setColumnHidden(1, True)
 
         header = self.twServiciosCondo.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
         self.twServiciosCondo.setColumnHidden(1, True)
 
         self.twIndivisos.cellChanged.connect(self.event_updateIndivisos)
 
         header = self.twPropFiscal.horizontalHeader()
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(4, QtWidgets.QHeaderView.Stretch)
         self.twPropFiscal.setColumnHidden(0, True)
         self.twPropFiscal.itemClicked.connect(self.event_itemClicked)
 
         header = self.twPropPred.horizontalHeader()
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
         self.twPropPred.setColumnHidden(0, True)
         self.twPropPred.itemClicked.connect(self.event_itemClickedProp)
 
@@ -378,7 +422,13 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         # -- carga informacion de la cedula segun la clave global
         dataCed = self.consumeWSCedula(self.cveCatastral[0:25])
+
+        if not self.adelanteRevision and self.cargandoRevision:
+            return
+
         self.cargaCedula(dataCed)
+
+        
 
         # -- carga informacion de PADRON
         if self.cargandoRevision:
@@ -402,8 +452,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.cargaPadron(dataPadron)
 
         # -- carga propietarios de PREDIOS
-        dataPropPredio = self.obtienePropPredio(self.cedula['id'])
-        self.cargaPropPredio(dataPropPredio)
+        if self.cedula != {}:
+            dataPropPredio = self.obtienePropPredio(self.cedula['id'])
+            self.cargaPropPredio(dataPropPredio)
 
         if self.cond: # C O N D O M I N I O S
 
@@ -461,6 +512,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             item = QtWidgets.QTableWidgetItem(texto)
             self.tablaSupTerreno.setItem(0, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
+            self.tablaSupTerreno.setRowHidden(0, True)
+
             texto = '-'
             item = QtWidgets.QTableWidgetItem(texto)
             self.tablaSupTerreno.setItem(1, 1 , item)#self.capaActual.getFeatures().attributes()[x])
@@ -468,6 +521,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             texto = '-'
             item = QtWidgets.QTableWidgetItem(texto)
             self.tablaSupTerreno.setItem(1, 2 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            self.tablaSupTerreno.setRowHidden(1, True)
 
             #OCULTAR SUPERFICIES DE CONSTRUCCION
             texto = '-'
@@ -478,6 +533,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             item = QtWidgets.QTableWidgetItem(texto)
             self.tablaSupConst.setItem(0, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
+            self.tablaSupConst.setRowHidden(0, True)
+
             texto = '-'
             item = QtWidgets.QTableWidgetItem(texto)
             self.tablaSupConst.setItem(1, 1 , item)#self.capaActual.getFeatures().attributes()[x])
@@ -486,6 +543,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             item = QtWidgets.QTableWidgetItem(texto)
             self.tablaSupConst.setItem(1, 2 , item)#self.capaActual.getFeatures().attributes()[x])
             
+            self.tablaSupConst.setRowHidden(1, True)
+
             #OCULTAR VALOR CATSTRAL TERRRENO
             texto = '-'
             item = QtWidgets.QTableWidgetItem(texto)
@@ -495,6 +554,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             item = QtWidgets.QTableWidgetItem(texto)
             self.tablaValTerreno.setItem(0, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
+            self.tablaValTerreno.setRowHidden(0, True)
+
             texto = '-'
             item = QtWidgets.QTableWidgetItem(texto)
             self.tablaValTerreno.setItem(1, 1 , item)#self.capaActual.getFeatures().attributes()[x])
@@ -502,6 +563,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             texto = '-'
             item = QtWidgets.QTableWidgetItem(texto)
             self.tablaValTerreno.setItem(1, 2 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            self.tablaValTerreno.setRowHidden(1, True)
 
             #OCULTAR VALOR CATASTRAL DE CONSTRUCCION
             texto = '-'
@@ -512,6 +575,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             item = QtWidgets.QTableWidgetItem(texto)
             self.tablaValConst.setItem(0, 2 , item)#self.capaActual.getFeatures().attributes()[x])
 
+            self.tablaValConst.setRowHidden(0, True)
+
             texto = '-'
             item = QtWidgets.QTableWidgetItem(texto)
             self.tablaValConst.setItem(1, 1 , item)#self.capaActual.getFeatures().attributes()[x])
@@ -519,6 +584,10 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             texto = '-'
             item = QtWidgets.QTableWidgetItem(texto)
             self.tablaValConst.setItem(1, 2 , item)#self.capaActual.getFeatures().attributes()[x])
+
+            self.tablaValConst.setRowHidden(1, True)
+
+            
 
 
         # define lista de porcentaje de zoom
@@ -543,6 +612,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.tabwCedula.currentChanged.connect(self.event_cambioPestania)
         self.tabwCedula.blockSignals(False)
 
+        if not self.adelanteRevision and self.cargandoRevision:
+            print('CIERRATE COCHINADA')
+            self.close()
 
     # --- M E T O D O S ---
 
@@ -661,6 +733,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             facilComun = dataCat['catFacilidadComunicacions']
             # --- SE LLENARA EN UN METODO A PARTE PORQUE NO SE INCLUYE EN LA LISTA DE CATALOGOS
             tipoUsoSuelo = self.catalogoTipoUsoSuelo()
+
             # --- SE LLENARA EN UN METODO A PARTE PORQUE NO SE INCLUYE EN LA LISTA DE CATALOGOS
             valTerr = self.catalogoValorTerreno()
             # cmbUsoSuelo = dataCat['catTipoPredios'] --- SE VA A LLENAR A PARTIR DEL TIPO DE USO DE SUELO (cat_tipo_uso_suelo)
@@ -987,12 +1060,19 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
     def cargaCedula(self, dataCed):
 
         try:
-
+            
             if len(dataCed) == 0:
-                self.createAlert('Sin Resultados', titulo = 'cargaCedula', icono = QMessageBox().Warning)
+
+                if self.cargandoRevision:
+                    self.createAlert('La informacion de campo no ha sido cargada', titulo = 'cargaCedula', icono = QMessageBox().Warning)
+                    self.adelanteRevision = False
+                else:
+                    self.createAlert('Sin Resultados', titulo = 'cargaCedula', icono = QMessageBox().Warning)
+
                 return
 
             self.cedula = dataCed[0]
+            self.adelanteRevision = True
             # -- UBICACION -- 
             self.lbNoExt.setText(self.cedula['numExt'])
             self.leNoExteriorAlf.setText(self.cedula['numExteriorAlf'])
@@ -1297,7 +1377,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         try:
 
             if len(dataPropPredio) == 0:
-                #self.muestraPropPredio()
+                self.muestraPropPredio()
                 return
 
             # - carga propietarios
@@ -1378,6 +1458,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.lbValM2P.setText('')
         self.lbValConstP.setText('')
 
+        self.tabwCedula.removeTab(2)
+
     # - hbilitar construcciones de predio
     def habilitaConstr(self):
 
@@ -1405,6 +1487,21 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.btnZoomIn.setEnabled(True)
         self.btnZoomOut.setEnabled(True)
         self.btnAdelanteImagen.setEnabled(True)
+
+    def muestraPropPredio(self):
+
+        self.lbNombrePPred.setText('')
+        self.lbApPaternoPPred.setText('')
+        self.lbApMaternoPPred.setText('')
+        self.lbCallePPred.setText('')
+        self.lbNumExtPPred.setText('')
+        self.lbNumInteriorPPred.setText('')
+
+        self.lbColoniaPPred.setText('')
+        self.lbCodPosPPred.setText('')
+        self.lbMunicipioPPred.setText('')
+        self.lbEstadoPPred.setText('')
+        self.lbPaisPPred.setText('')
 
     # - guarda de manera temporal los valores de construcciones
     def constrTemp(self):
@@ -2219,6 +2316,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.cmbUsoSuelo.clear()
 
             data = self.consumeWSGeneral(self.CFG.urlCedCatUsoSueloByTipoUso + str(idTipoUS))
+            
             if data == None:
                 return
 
@@ -3805,7 +3903,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         data['idTipoRelieve'] = None if int(idTipoRelieve) == -1 else idTipoRelieve
 
         # valores catastrales
-        data['valorCatastral'] = self.tablaTotales.item(0,1).replace('$', '').replace(',', '')
+        data['valorCatastral'] = self.tablaTotales.item(0,1).text().replace('$', '').replace(',', '')
         data['valorConstruccion'] = self.tablaValConst.item(2,1).text().replace('$', '').replace(',', '')
 
         data['valorTerreno'] = self.tablaValTerreno.item(2,1).text().replace('$', '').replace(',', '')
@@ -3847,6 +3945,17 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.lbRevisorAnt.setText(self.lbRevisor.text())
             now = datetime.datetime.now()
             self.lbUltFechaAct.setText(str(now)[0:19])
+
+
+            headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
+            respuesta = requests.post(self.CFG.urlConfirmarFinR + self.cveCatastral + '/' + self.usuarioLogeado + '/revision', headers = headers)
+
+            if respuesta.status_code == 200:
+                    
+                    print('ACTUALIZADA LA FECCHA FIN')
+            else:
+                self.UTI.mostrarAlerta('Error al actualizar fecha de fin', QMessageBox().Critical, "Revision")
+                print(respuesta.json())
 
     # -- GUARDAR   V O L U M E N   SELECCIONADO
     def event_guardarVolP(self):
@@ -4361,6 +4470,30 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.lbEstadoNPPad.setText(propietario['estadoNotificacion'])
             self.lbCiudadNPPad.setText(propietario['ciudadNotificacion'])
 
+        else:
+
+            self.lbNombrePPad.setText('')
+            self.lbRazonSocPPad.setText('')
+            self.lbCallePPad.setText('')
+            self.lbColoniaPPad.setText('')
+            self.lbCodPosPPad.setText('')
+            self.lbNumeroPPad.setText('')
+
+            self.lbRFCPPad.setText('')
+            self.lbTelefonoPPad.setText('')
+            self.lbCorreoElecPPad.setText('')
+            self.lbCiudadPPad.setText('')
+            self.lbMunicipioPPad.setText('')
+            self.lbEstadoPPad.setText('')
+
+            self.lbCalleNPPad.setText('')
+            self.lbNumOfiNPPad.setText('')
+            self.lbNumInteriorNPPad.setText('')
+            self.lbColoniaNPPad.setText('')
+            self.lbCodPostNPPad.setText('')
+            self.lbEstadoNPPad.setText('')
+            self.lbCiudadNPPad.setText('')
+
     def event_itemClickedProp(self, item):
 
         row = self.twPropPred.currentRow()
@@ -4391,6 +4524,21 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.lbMunicipioPPred.setText(propietario['municipio'])
             self.lbEstadoPPred.setText(propietario['estado'])
             self.lbPaisPPred.setText(propietario['pais'])
+
+        else:
+
+            self.lbNombrePPred.setText('')
+            self.lbApPaternoPPred.setText('')
+            self.lbApMaternoPPred.setText('')
+            self.lbCallePPred.setText('')
+            self.lbNumExtPPred.setText('')
+            self.lbNumInteriorPPred.setText('')
+
+            self.lbColoniaPPred.setText('')
+            self.lbCodPosPPred.setText('')
+            self.lbMunicipioPPred.setText('')
+            self.lbEstadoPPred.setText('')
+            self.lbPaisPPred.setText('')
 
 
     def event_spinBox(self, cadena):

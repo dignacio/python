@@ -70,7 +70,7 @@ class TopologiaV3:
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         self.dockwidget.botonValidar.clicked.connect(self.validarTopologiaManual)
         self.dockwidget.botonValidarRef.clicked.connect(self.validarTopologiaManualRef)
-        self.dockwidget.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #self.dockwidget.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         
         
 

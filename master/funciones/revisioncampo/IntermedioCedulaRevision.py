@@ -25,6 +25,7 @@ from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction, QMessageBox
 from PyQt5 import QtWidgets
+from PyQt5 import QtCore
 
 # Initialize Qt resources from file resources.py
 
@@ -61,6 +62,15 @@ class IntermedioCedulaRevision:
         self.dlg.tablaClaves.hideColumn(0)
         self.dlg.cmbManzana.currentIndexChanged.connect(self.llenarTabla)
 
+        if self.tipo == 'PAD':
+            self.dlg.setWindowTitle('Revision de Padron')
+        elif self.tipo == 'REV':
+            self.dlg.setWindowTitle('Revision de Gabinete')
+
+        self.muestrate = False
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+
+
     def run(self):
         """Run method that performs all the real work"""
         # show the dialog
@@ -68,8 +78,9 @@ class IntermedioCedulaRevision:
         self.usuarioLogeado = 'jaz'
         #self.llenarTabla()
         self.llenarCombito()
-        
-        self.dlg.show()
+
+        if self.muestrate:
+            self.dlg.show()
         
 
 
@@ -78,6 +89,7 @@ class IntermedioCedulaRevision:
         seleccion = sorted(set(index.row() for index in self.dlg.tablaClaves.selectedIndexes()))[0]
         self.cveCatastral = str(self.dlg.tablaClaves.item(seleccion,0).text())
 
+        self.confirmarInicio()
         if self.tipo == 'PAD':
             self.cedulaPadron.run(self.cveCatastral)
         elif self.tipo == 'REV':
@@ -95,7 +107,7 @@ class IntermedioCedulaRevision:
         elif self.tipo == 'REV':
             tabla = 'asignacion_revision'
 
-        self.usuarioLogeado = 'jaz'
+
         index = self.dlg.cmbManzana.currentIndex()
         if index > -1:
             cveManzana = self.dlg.cmbManzana.itemData(index)
@@ -110,7 +122,10 @@ class IntermedioCedulaRevision:
 
                     for x in range(0, len(datos)):
                         dato = datos[x]
-                        claveMedia = dato[-11:]
+                        if self.tipo == 'PAD':
+                            claveMedia = dato[-11:]
+                        elif self.tipo == 'REV':
+                            claveMedia = dato[-5:]
                         self.dlg.tablaClaves.insertRow(x) 
 
                         item = QtWidgets.QTableWidgetItem(str(dato))
@@ -138,21 +153,52 @@ class IntermedioCedulaRevision:
     def llenarCombito(self):
 
         headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
-        respuesta = requests.get(self.CFG.urlAsigPadConsultar + self.usuarioLogeado , headers = headers)
+
+        if self.tipo == 'PAD':
+            respuesta = requests.get(self.CFG.urlAsigPadConsultar + self.usuarioLogeado , headers = headers)
+        elif self.tipo == 'REV':
+            respuesta = requests.get(self.CFG.urlAsigRevConsultar + self.usuarioLogeado , headers = headers)
         self.dlg.cmbManzana.clear()
 
         if respuesta.status_code == 200:
                 
                 datos = respuesta.json()
-                listaManzanas = []
-                for dato in datos:
-                    envioManzana = dato['cveCatastral'][0:20]
-                    cveManzana = envioManzana[-6:]
-                    
-                    if not cveManzana in listaManzanas:
-                        listaManzanas.append(cveManzana)
-                        self.dlg.cmbManzana.addItem(cveManzana, envioManzana)
+
+                if len(datos) > 0:
+                    listaManzanas = []
+                    for dato in datos:
+                        envioManzana = dato['cveCatastral'][0:20]
+                        cveManzana = envioManzana[-6:]
+                        
+                        if not cveManzana in listaManzanas:
+                            listaManzanas.append(cveManzana)
+                            self.dlg.cmbManzana.addItem(cveManzana, envioManzana)
+                    self.muestrate = True
+                else:
+                    self.muestrate = False
+                    if self.tipo == 'PAD':
+                        self.UTI.mostrarAlerta('No se tienen pendientes de padron', QMessageBox().Information, "Consulta de asignaciones")
+                    elif self.tipo == 'REV':
+                        self.UTI.mostrarAlerta('No se tienen pendientes de revision', QMessageBox().Information, "Consulta de asignaciones")
 
         else:
             self.UTI.mostrarAlerta('ERROR AL CARGAR MANZANAS ASIGNADAS', QMessageBox().Critical, "Consulta de asignaciones")
+            print(respuesta.json())
+
+#----------------------------------------------------------------------------------------------------------------------
+
+    def confirmarInicio(self):
+        if self.tipo == 'PAD':
+            tabla = 'padron'
+        elif self.tipo == 'REV':
+            tabla = 'revision'
+
+        headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
+        respuesta = requests.post(self.CFG.urlConfirmarInicioR + self.cveCatastral + '/' + self.usuarioLogeado + '/' + tabla, headers = headers)
+
+        if respuesta.status_code == 200:
+                
+                print('ACTUALIZADA LA FECCHA')
+        else:
+            self.UTI.mostrarAlerta('Error al actualizar fecha de inicio', QMessageBox().Critical, "Consulta de asignaciones")
             print(respuesta.json())

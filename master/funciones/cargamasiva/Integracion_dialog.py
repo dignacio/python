@@ -27,12 +27,8 @@ import os
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
-import os, json, requests
-from osgeo import ogr, osr
-from PyQt5.QtCore import *
-from PyQt5 import QtCore
-from qgis.core import *
-from qgis.utils import *
+from PyQt5.QtCore import Qt
+from qgis.utils import iface
 
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -41,7 +37,8 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 
 class IntegracionDialog(QtWidgets.QDialog, FORM_CLASS):
 	def __init__(self, parent=None):
-		super(IntegracionDialog, self).__init__(parent)
+		super(IntegracionDialog, self).__init__(parent, \
+            flags=Qt.WindowMinimizeButtonHint|Qt.WindowCloseButtonHint)
 		self.setupUi(self)
 		
 		

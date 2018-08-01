@@ -47,7 +47,7 @@ class VentanaAsignacionCampo:
         # Create the dialog (after translation) and keep reference
         self.indexSel = []
         self.dlg = VentanaAsignacionCampoDialog()
-        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
         self.dlg.btnLiberar.clicked.connect(self.preguntarLiberar)
         self.dlg.tablaMazPred.hideColumn(0)
@@ -58,6 +58,15 @@ class VentanaAsignacionCampo:
     def run(self):
         """Run method that performs all the real work"""
         # show the dialog
+        
+        #try:
+        #    print('indice', indiceUsuario)
+        #    cveUsuario = self.pluginM.enviosUsuario[indiceUsuario]
+        #    print('cveusuao', cveUsuario)
+        #except:
+        #    self.pluginM.UTI.mostrarAlerta('El Usuario no existe', QMessageBox().Critical, "Asignacion de campo")
+        #    return
+        
         self.dlg.show()
         #self.pluginM.UTI.strechtTabla(self.dlg.tablaMazPred)
         self.traerAsignaciones()
@@ -74,7 +83,9 @@ class VentanaAsignacionCampo:
     def traerAsignaciones(self):
 
         indiceUsuario = self.pluginM.dlg.cmbUsuario.currentIndex()
+
         cveUsuario = self.pluginM.enviosUsuario[indiceUsuario]
+        
         nombreCompleto = self.pluginM.dlg.cmbUsuario.itemText(indiceUsuario)
         self.dlg.fldUsuario.setText(nombreCompleto)
 

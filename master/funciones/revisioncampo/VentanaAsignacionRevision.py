@@ -46,7 +46,7 @@ class VentanaAsignacionRevision:
         # Create the dialog (after translation) and keep reference
         self.indexSel = []
         self.dlg = VentanaAsignacionRevisionDialog()
-        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
         self.dlg.btnLiberar.clicked.connect(self.preguntarLiberar)
         self.dlg.tablaMazPred.hideColumn(0)

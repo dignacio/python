@@ -53,8 +53,8 @@ class VentanaFusionV3:
     def __init__(self, iface, pluginFD):
         
         self.pluginFD = pluginFD
-        self.dlg = VentanaFusionV3Dialog()
-        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.dlg = VentanaFusionV3Dialog(parent = iface.mainWindow())
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         # Create the dialog (after translation) and keep reference
         
         self.predios = [None, None]
@@ -64,7 +64,7 @@ class VentanaFusionV3:
 
         self.dlg.btnConfirmar.clicked.connect(self.confirmarFusion)
         self.dlg.btnCancelar.clicked.connect(self.cancelarFusion)
-        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         header = self.dlg.tabComp.horizontalHeader()
         for x in range(0, len(self.listaEtiquetas)):
             header.setSectionResizeMode(x, QtWidgets.QHeaderView.ResizeToContents)

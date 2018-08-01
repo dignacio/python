@@ -26,15 +26,19 @@ import os
 
 from PyQt5 import uic
 from PyQt5 import QtWidgets
+from qgis.utils import iface
+from PyQt5.QtCore import Qt
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'AsignacionCampo_dialog_base.ui'))
 
 
 class AsignacionCampoDialog(QtWidgets.QDialog, FORM_CLASS):
-    def __init__(self, parent=None):
+    def __init__(self, parent=iface.mainWindow()):
         """Constructor."""
-        super(AsignacionCampoDialog, self).__init__(parent)
+        super(AsignacionCampoDialog, self).__init__(parent, \
+            flags=Qt.WindowMinimizeButtonHint|Qt.WindowCloseButtonHint)
+        #self.close()
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see

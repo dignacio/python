@@ -77,7 +77,7 @@ class Master:
                 QCoreApplication.installTranslator(self.translator)
 
         # Create the dialog (after translation) and keep reference
-        self.dlg = MasterDialog()
+        self.dlg = MasterDialog(parent = iface.mainWindow())
         self.banderaInicial = True
         # Declare instance attributes
         self.actions = []
@@ -85,7 +85,7 @@ class Master:
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'Master')
         self.toolbar.setObjectName(u'Master')
-        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         #self.CFG = Configuracion
         self.CFG = Configuracion.Configuracion()
         self.UTI = utilidades.Utilidad()

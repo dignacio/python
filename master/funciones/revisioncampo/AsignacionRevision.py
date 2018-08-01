@@ -49,7 +49,7 @@ class AsignacionRevision:
 
         # Create the dialog (after translation) and keep reference
         self.dlg = AsignacionRevisionDialog()
-        self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.UTI = UTI
 
         self.modeloLocalidad = QStandardItemModel()
@@ -81,9 +81,14 @@ class AsignacionRevision:
         self.diccionarioAsignaciones = {}
         self.llaveManzana = None
 
+        self.manzanaCargada = -1
+        self.localidadCargado = -1
+        self.sectorCargado = -1
+
     def run(self):
         """Run method that performs all the real work"""
         # show the dialog
+        self.resetar()
         self.dlg.show()
         #self.obtenerLocalidades()
         self.UTI.strechtTabla(self.dlg.tablaClaves)
@@ -151,7 +156,17 @@ class AsignacionRevision:
         if self.dlg.cmbLocalidad.count() > 0 and index > 0:
 
             index = self.dlg.cmbLocalidad.currentIndex()
-            idSector = self.enviosLocalidad[index]
+
+            try:
+                idSector = self.enviosLocalidad[index]
+
+                if self.localidadCargado == idSector:
+                    print('SECTOR POR LOCALIDAD RETORNADOS')
+                    return
+                self.localidadCargado = idSector
+
+            except:
+                return
             
             self.dlg.cmbSector.clear()
 
@@ -199,7 +214,18 @@ class AsignacionRevision:
         if self.dlg.cmbSector.count() > 0 and index > 0:
 
             index = self.dlg.cmbSector.currentIndex()
-            idSector = self.enviosSector[index]
+
+            try:
+                idSector = self.enviosSector[index]
+
+                if self.sectorCargado == idSector:
+                    print('MANZANA POR SECTOR RETORNADOS')
+                    return
+                self.sectorCargado = idSector
+
+
+            except:
+                return
 
             self.dlg.cmbManzana.clear()
 
@@ -247,6 +273,12 @@ class AsignacionRevision:
             self.ACA.payload = payload
             index = self.dlg.cmbManzana.currentIndex()
             self.ACA.idManzana = self.enviosManzana[index]
+
+            if self.manzanaCargada == self.enviosManzana[index]:
+                print('SE RETORNO')
+                return
+            self.manzanaCargada = self.enviosManzana[index]
+
             self.llaveManzana = self.enviosManzana[index]
             self.ACA.pintarCapasCampo()
 
@@ -585,4 +617,13 @@ class AsignacionRevision:
 
             self.UTI.extenderCombo(self.dlg.cmbUsuario, self.completarUsuario, modeloTemp)
             self.dlg.cmbUsuario.model().item(0).setEnabled(False)
-            
+    
+#-------------------------------------------------------------------------------------------------------
+
+    def resetar(self):
+        self.vaciarTabla(self.dlg.tablaClaves)
+        self.vaciarTabla(self.dlg.tablaMazPred)
+        self.dlg.cmbManzana.clear()
+        self.dlg.cmbSector.clear()
+        self.clavesIzq = []
+        self.clavesDer = {}
