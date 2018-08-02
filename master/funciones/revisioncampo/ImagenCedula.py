@@ -30,166 +30,373 @@ from .resources import *
 # Import the code for the dialog
 from .ImagenCedula_dialog import ImagenCedulaDialog
 import os.path
+from PyQt5 import QtWidgets
+from PyQt5 import QtCore
+# Initialize Qt resources from file resources.py
+import os.path
+from qgis.utils import *
+import os, json, requests
+from osgeo import ogr, osr
+
+from PyQt5 import uic
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
+
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QMessageBox, QListView, QGraphicsView, QGraphicsScene, QFileDialog, QVBoxLayout
+
+from qgis.utils import iface
+from qgis.core import QgsProject
+import os, json, requests, sys, datetime, base64, time
+import sys
 
 
 class ImagenCedula:
     """QGIS Plugin Implementation."""
 
-    def __init__(self, iface):
-        """Constructor.
-
-        :param iface: An interface instance that will be passed to this class
-            which provides the hook by which you can manipulate the QGIS
-            application at run time.
-        :type iface: QgsInterface
-        """
+    def __init__(self, iface, pluginM):
+        
         # Save reference to the QGIS interface
         self.iface = iface
-        # initialize plugin directory
-        self.plugin_dir = os.path.dirname(__file__)
-        # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
-        locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'ImagenCedula_{}.qm'.format(locale))
+        self.pluginM = pluginM
+       
+        self.scaleFactor = 1
+        self.countIM = 0
+        self.countIF = 0
+        self.countID = 0
 
-        if os.path.exists(locale_path):
-            self.translator = QTranslator()
-            self.translator.load(locale_path)
-
-            if qVersion() > '4.3.3':
-                QCoreApplication.installTranslator(self.translator)
+        self.cveCatastral = ''
 
         # Create the dialog (after translation) and keep reference
         self.dlg = ImagenCedulaDialog()
 
-        # Declare instance attributes
-        self.actions = []
-        self.menu = self.tr(u'&ImagenCedula')
-        # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar(u'ImagenCedula')
-        self.toolbar.setObjectName(u'ImagenCedula')
+        self.dlg.btnZoomOut.clicked.connect(self.event_zoomOutIma)
+        self.dlg.btnZoomIn.clicked.connect(self.event_zoomInIma)
+        self.dlg.cmbMFD.currentIndexChanged.connect(self.cambioComboMFD) #YEAH
+        self.dlg.btnAtrasImage.clicked.connect(self.event_atrasImagen)
+        self.dlg.btnAdelanteImagen.clicked.connect(self.event_adelanteImagen)
 
-    # noinspection PyMethodMayBeStatic
-    def tr(self, message):
-        """Get the translation for a string using Qt translation API.
-
-        We implement this ourselves since we do not inherit QObject.
-
-        :param message: String for translation.
-        :type message: str, QString
-
-        :returns: Translated version of message.
-        :rtype: QString
-        """
-        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('ImagenCedula', message)
-
-
-    def add_action(
-        self,
-        icon_path,
-        text,
-        callback,
-        enabled_flag=True,
-        add_to_menu=True,
-        add_to_toolbar=True,
-        status_tip=None,
-        whats_this=None,
-        parent=None):
-        """Add a toolbar icon to the toolbar.
-
-        :param icon_path: Path to the icon for this action. Can be a resource
-            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
-        :type icon_path: str
-
-        :param text: Text that should be shown in menu items for this action.
-        :type text: str
-
-        :param callback: Function to be called when the action is triggered.
-        :type callback: function
-
-        :param enabled_flag: A flag indicating if the action should be enabled
-            by default. Defaults to True.
-        :type enabled_flag: bool
-
-        :param add_to_menu: Flag indicating whether the action should also
-            be added to the menu. Defaults to True.
-        :type add_to_menu: bool
-
-        :param add_to_toolbar: Flag indicating whether the action should also
-            be added to the toolbar. Defaults to True.
-        :type add_to_toolbar: bool
-
-        :param status_tip: Optional text to show in a popup when mouse pointer
-            hovers over the action.
-        :type status_tip: str
-
-        :param parent: Parent widget for the new action. Defaults None.
-        :type parent: QWidget
-
-        :param whats_this: Optional text to show in the status bar when the
-            mouse pointer hovers over the action.
-
-        :returns: The action that was created. Note that the action is also
-            added to self.actions list.
-        :rtype: QAction
-        """
-
-        icon = QIcon(icon_path)
-        action = QAction(icon, text, parent)
-        action.triggered.connect(callback)
-        action.setEnabled(enabled_flag)
-
-        if status_tip is not None:
-            action.setStatusTip(status_tip)
-
-        if whats_this is not None:
-            action.setWhatsThis(whats_this)
-
-        if add_to_toolbar:
-            self.toolbar.addAction(action)
-
-        if add_to_menu:
-            self.iface.addPluginToMenu(
-                self.menu,
-                action)
-
-        self.actions.append(action)
-
-        return action
-
-    def initGui(self):
-        """Create the menu entries and toolbar icons inside the QGIS GUI."""
-
-        icon_path = ':/plugins/ImagenCedula/icon.png'
-        self.add_action(
-            icon_path,
-            text=self.tr(u'ImagenCedula'),
-            callback=self.run,
-            parent=self.iface.mainWindow())
-
-
-    def unload(self):
-        """Removes the plugin menu item and icon from QGIS GUI."""
-        for action in self.actions:
-            self.iface.removePluginMenu(
-                self.tr(u'&ImagenCedula'),
-                action)
-            self.iface.removeToolBarIcon(action)
-        # remove the toolbar
-        del self.toolbar
-
+        # define lista de porcentaje de zoom
+        self.listZoom = {1:1, 2:1.5, 3:2, 4:2.5}
+        # -- carga imagenes
+        
 
     def run(self):
         """Run method that performs all the real work"""
         # show the dialog
+        self.idsMzaIma = self.descargaIdsImag('M', self.cveCatastral)
+        self.idsFacIma = self.descargaIdsImag('F', self.cveCatastral)
+        self.idsDocIma = self.descargaIdsImag('D', self.cveCatastral)
         self.dlg.show()
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
+        self.cambioComboMFD()
+       
+
+    # evento xoom out
+    def event_zoomOutIma(self):
+        
+        self.scaleFactor -= 1
+        self.aplicaZoom()
+
+    # evento zoom in
+    def event_zoomInIma(self):
+
+        self.scaleFactor += 1 
+        self.aplicaZoom()
+
+    # evento para cambio de imagenes, manzanas, fachados y docomuentos
+    def cambioComboMFD(self): #YEAH
+        
+        self.scaleFactor = 1
+        self.countID = 0
+        self.countIM = 0
+        self.countIF = 0
+
+        index = self.dlg.cmbMFD.currentIndex()
+
+        # carga imagenes de manzanas
+        if index == 0:
+
+            if len(self.idsMzaIma) > 0:
+                data = self.idsMzaIma[self.countIM]
+                self.habilitaBotImages()
+
+            else:
+                self.dlg.lbImage.clear()
+                self.deshabilitaBotImages()
+                return
+
+            self.mostrarImagen(data, 'M')
+            self.dlg.lbNumImages.setText(str(self.countIM + 1) + ' de ' + str(len(self.idsMzaIma)))
+
+
+        # carga imagenes de fachadas
+        elif index == 1:
+
+            if len(self.idsFacIma) > 0:
+                data = self.idsFacIma[self.countIF]
+                self.habilitaBotImages()
+            else:
+                self.dlg.lbImage.clear()
+                self.deshabilitaBotImages()
+                return
+
+            self.mostrarImagen(data, 'F')
+            self.dlg.lbNumImages.setText(str(self.countIF + 1) + ' de ' + str(len(self.idsFacIma)))
+
+        # carga imagenes de documentos
+        elif index == 2:
+
+            if len(self.idsDocIma) > 0:
+                data = self.idsDocIma[self.countID]
+                self.habilitaBotImages()
+            else:
+                self.dlg.lbImage.clear()
+                self.deshabilitaBotImages()
+                return
+
+            self.mostrarImagen(data, 'D')
+            self.dlg.lbNumImages.setText(str(self.countID + 1) + ' de ' + str(len(self.idsFacIma)))
+
+        self.dlg.btnZoomIn.setEnabled(self.listZoom[self.scaleFactor] < 2.5)
+        self.dlg.btnZoomOut.setEnabled(self.listZoom[self.scaleFactor] > 1.0)
+
+    # evento que retocede una imagen, una posicion
+    def event_atrasImagen(self):
+
+        self.scaleFactor = 1
+        index = self.dlg.cmbMFD.currentIndex()
+        # manzana
+        if index == 0:
+
+            if self.countIM == 0:
+                self.countIM = (len(self.idsMzaIma) - 1)
+            else:
+                self.countIM -= 1
+
+            if len(self.idsMzaIma) > 0:
+                data = self.idsMzaIma[self.countIM]
+            else:
+                self.dlg.lbImage.clear()
+                return
+
+            self.mostrarImagen(data, 'M')
+            self.dlg.lbNumImages.setText(str(self.countIM + 1) + ' de ' + str(len(self.idsMzaIma)))
+
+        # fachadas
+        elif index == 1:
+            if self.countIF == 0:
+                self.countIF = len(self.idsFacIma) - 1
+            else:
+                self.countIF -= 1
+
+            if len(self.idsFacIma) > 0:
+                data = self.idsFacIma[self.countIF]
+            else:
+                self.dlg.lbImage.clear()
+                return
+
+            self.mostrarImagen(data, 'F')
+            self.dlg.lbNumImages.setText(str(self.countIF + 1) + ' de ' + str(len(self.idsFacIma)))
+
+        # documentos
+        elif index == 2:
+            if self.countID == 0:
+                self.countID = len(self.idsDocIma) - 1
+            else:
+                self.countID -= 1
+
+            if len(self.idsDocIma) > 0:
+                data = self.idsDocIma[self.countID]
+            else:
+                self.dlg.lbImage.clear()
+                return
+
+            self.mostrarImagen(data, 'D')
+            self.dlg.lbNumImages.setText(str(self.countID + 1) + ' de ' + str(len(self.idsDocIma)))
+
+        self.dlg.btnZoomIn.setEnabled(self.listZoom[self.scaleFactor] < 2.5)
+        self.dlg.btnZoomOut.setEnabled(self.listZoom[self.scaleFactor] > 1.0)
+
+    # evento que avanza una imagen, una posicion
+    def event_adelanteImagen(self):
+
+        self.scaleFactor = 1
+        index = self.dlg.cmbMFD.currentIndex()
+        # manzanas
+        if index == 0:
+            if self.countIM == (len(self.idsMzaIma) - 1):
+                self.countIM = 0
+            else:
+                self.countIM += 1
+
+            if len(self.idsMzaIma) > 0:
+                data = self.idsMzaIma[self.countIM]
+            else:
+                self.dlg.lbImage.clear()
+                return
+
+            self.mostrarImagen(data, 'M')
+            self.dlg.lbNumImages.setText(str(self.countIM + 1) + ' de ' + str(len(self.idsMzaIma)))
+
+        # fachadas
+        elif index == 1:
+
+            if self.countIF == (len(self.idsFacIma) - 1):
+                self.countIF = 0
+            else:
+                self.countIF += 1
+
+            if len(self.idsFacIma) > 0:
+                data = self.idsFacIma[self.countIF]
+            else:
+                self.dlg.lbImage.clear()
+                return
+
+            self.mostrarImagen(data, 'F')
+            self.dlg.lbNumImages.setText(str(self.countIF + 1) + ' de ' + str(len(self.idsFacIma)))
+
+        # documentos
+        elif index == 2:      
+
+            if self.countID == (len(self.idsDocIma) - 1):
+                self.countID = 0
+            else:
+                self.countID += 1
+
+            if len(self.idsDocIma) > 0:
+                data = self.idsDocIma[self.countID]
+            else:
+                self.dlg.lbImage.clear()
+                return
+
+            self.mostrarImagen(data, 'D')
+            self.dlg.lbNumImages.setText(str(self.countID + 1) + ' de ' + str(len(self.idsDocIma)))
+
+        self.dlg.btnZoomIn.setEnabled(self.listZoom[self.scaleFactor] < 2.5)
+        self.dlg.btnZoomOut.setEnabled(self.listZoom[self.scaleFactor] > 1.0)
+
+    # --- CERRAR E V E N T O S   Widget ---
+
+    # --- U T I L I D A D E S ---
+
+    # mostrar imagen
+    def mostrarImagen(self, data, tipo):
+
+        v = list(data.values())
+        k = list(data.keys())
+
+        imagen = {}
+        if v[0] is None:
+
+            print('consume', tipo)
+            # consume ws para obtener la imagen
+            imagen = self.obtieneImagen(k[0], tipo)
+            if tipo == 'M':
+                self.idsMzaIma[self.countIM] = {k[0]: imagen}
+            elif tipo == 'F':
+                self.idsFacIma[self.countIF] = {k[0]: imagen}
+            elif tipo == 'D':
+                self.idsDocIma[self.countID] = {k[0]: imagen}
+
+        else:
+            imagen = v[0]
+
+        pixmap = QtGui.QPixmap()
+        pixmap.loadFromData(base64.b64decode(imagen['archivo']))
+
+        size = QSize(453, 255)
+
+        smaller_pixmap = pixmap.scaled(self.listZoom[self.scaleFactor] * size, Qt.KeepAspectRatio, Qt.FastTransformation)
+
+        self.dlg.lbImage.setPixmap(smaller_pixmap)
+
+        self.dlg.lbImage.setScaledContents(True)
+        self.dlg.lbImage.show()
+
+
+    # aplica zoom a la imagen
+    def aplicaZoom(self):
+
+        pixmap = self.dlg.lbImage.pixmap()
+
+        size = QSize(453, 255)
+
+        smaller_pixmap = pixmap.scaled(self.listZoom[self.scaleFactor] * size, Qt.KeepAspectRatio, Qt.FastTransformation)
+
+        self.dlg.lbImage.setPixmap(smaller_pixmap)
+
+        self.dlg.lbImage.setScaledContents(True)
+
+        self.dlg.lbImage.show()
+
+        self.dlg.btnZoomIn.setEnabled(self.listZoom[self.scaleFactor] < 2.5)
+        self.dlg.btnZoomOut.setEnabled(self.listZoom[self.scaleFactor] > 1.0)
+
+#---------------
+
+    def obtieneImagen(self, idImagen, tipo):
+
+        if tipo == 'M':
+            return self.consumeWSGeneral(self.pluginM.pluginM.pluginM.CFG.urlImagenByIdAndCveCata + str(idImagen) + '/' + self.cveCatastral[0:20])
+        elif tipo == 'F' or tipo == 'D':
+            return self.consumeWSGeneral(self.pluginM.pluginM.pluginM.CFG.urlImagenByIdAndCveCata + str(idImagen) + '/' + self.cveCatastral)
+
+
+    def descargaIdsImag(self, tipo, cveCata):
+
+        listaResult = []
+        result = []
+        if tipo == 'M':
+            result = self.consumeWSGeneral(self.pluginM.pluginM.pluginM.CFG.urlObtIdsImagenes + tipo + '/' + cveCata[0:20])
+
+        elif tipo == 'F' or tipo == 'D':
+            result = self.consumeWSGeneral(self.pluginM.pluginM.pluginM.CFG.urlObtIdsImagenes + tipo + '/' + cveCata)
+
+        for r in result :
+            imagen = {}
+            imagen[r] = None
+            listaResult.append(imagen)
+
+        return listaResult
+
+    # - deshabilita manejo de imagenes
+    def deshabilitaBotImages(self):
+
+        self.dlg.btnAtrasImage.setEnabled(False)
+        self.dlg.btnZoomIn.setEnabled(False)
+        self.dlg.btnZoomOut.setEnabled(False)
+        self.dlg.btnAdelanteImagen.setEnabled(False)
+
+    # - habilita manejo de imagenes
+    def habilitaBotImages(self):
+
+        self.dlg.btnAtrasImage.setEnabled(True)
+        self.dlg.btnZoomIn.setEnabled(True)
+        self.dlg.btnZoomOut.setEnabled(True)
+        self.dlg.btnAdelanteImagen.setEnabled(True)
+
+    def consumeWSGeneral(self, url_cons = ""):
+
+        url = url_cons
+        data = ""
+
+        try:
+            headers = {'Content-Type': 'application/json', 'Authorization' : self.pluginM.pluginM.pluginM.UTI.obtenerToken()}
+            response = requests.get(url, headers = headers)
+        except requests.exceptions.RequestException as e:
+            print('arriba')
+            print(e)
+            self.pluginM.pluginM.pluginM.UTI.mostrarAlerta('No se pudo consultar imagen', QMessageBox().Critical, "Consulta de imagenes")
+            return
+
+        if response.status_code == 200:
+            data = response.content
+        else:
+            print('abvajoo')
+            print(response.json())
+            self.pluginM.pluginM.pluginM.UTI.mostrarAlerta('No se pudo consultar imagen', QMessageBox().Critical, "Consulta de imagenes")
+            return
+
+        return json.loads(data)

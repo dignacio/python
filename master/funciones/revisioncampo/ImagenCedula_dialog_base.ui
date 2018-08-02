@@ -120,7 +120,7 @@ color : rgb(255, 255, 255)</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="resources.qrc">
+     <iconset>
       <normaloff>:/plugins/master/funciones/revisioncampo/icons/zoom_in.png</normaloff>:/plugins/master/funciones/revisioncampo/icons/zoom_in.png</iconset>
     </property>
     <property name="iconSize">
@@ -151,6 +151,9 @@ color : rgb(255, 255, 255)</string>
     <property name="text">
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;lbNumImages&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
    </widget>
    <widget class="QPushButton" name="btnZoomOut">
     <property name="geometry">
@@ -180,7 +183,7 @@ color : rgb(255, 255, 255)</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="resources.qrc">
+     <iconset>
       <normaloff>:/plugins/master/funciones/revisioncampo/icons/zoom_out.png</normaloff>:/plugins/master/funciones/revisioncampo/icons/zoom_out.png</iconset>
     </property>
    </widget>
@@ -248,5 +251,6 @@ color : rgb(255, 255, 255)</string>
   <zorder>widget</zorder>
   <zorder>lbImage</zorder>
  </widget>
+ <resources/>
  <connections/>
 </ui>

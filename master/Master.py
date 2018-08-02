@@ -90,7 +90,11 @@ class Master:
         self.CFG = Configuracion.Configuracion()
         self.UTI = utilidades.Utilidad()
 
+        self.UTI.CFG = self.CFG
+
+
         self.ACA = ActualizacionCatastralV3.ActualizacionCatastralV3(iface)
+        self.UTI.ACA = self.ACA
         self.DFS = DivisionFusion.DivisionFusion(iface, self.ACA)
         self.DBJ = DibujoV3.DibujoV3(iface)
         self.ELM = EliminacionV3.EliminacionV3(iface)           
@@ -121,8 +125,7 @@ class Master:
         self.ASPA.CFG = self.CFG
         self.ASPA.ACA = self.ACA
 
-        self.UTI.CFG = self.CFG
-        self.UTI.ACA = self.ACA
+        
 
         self.ACA.CFG = self.CFG
         self.ACA.UTI = self.UTI

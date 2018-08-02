@@ -7,6 +7,8 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt, QSettings
+QSettings().setValue('autor', 'Charro')
 
 class Ui_TopologiaV3DialogBase(object):
     def setupUi(self, TopologiaV3DialogBase):

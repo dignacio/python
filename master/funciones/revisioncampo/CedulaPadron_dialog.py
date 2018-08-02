@@ -34,7 +34,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 
 
 class CedulaPadronDialog(QtWidgets.QDialog, FORM_CLASS):
-    def __init__(self, parent=iface.mainWindow()):
+    def __init__(self, parent=iface.mainWindow(), pluginM = None):
         """Constructor."""
         super(CedulaPadronDialog, self).__init__(parent, \
             flags=Qt.WindowMinimizeButtonHint|Qt.WindowCloseButtonHint)
@@ -43,4 +43,8 @@ class CedulaPadronDialog(QtWidgets.QDialog, FORM_CLASS):
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
+        self.pluginM = pluginM
         self.setupUi(self)
+
+    def closeEvent(self, evnt):
+        self.pluginM.visorImagenes.dlg.close()

@@ -84,6 +84,7 @@ class AsignacionRevision:
         self.manzanaCargada = -1
         self.localidadCargado = -1
         self.sectorCargado = -1
+        self.resetar()
 
     def run(self):
         """Run method that performs all the real work"""
@@ -151,8 +152,12 @@ class AsignacionRevision:
 
     #Llenar segundo combo
     def obtenerSectoresPorLocalidad(self):
+        
         index = self.dlg.cmbLocalidad.currentIndex()
         
+        #self.dlg.cmbManzana.setEnabled(False)
+        self.dlg.cmbManzana.clear()
+
         if self.dlg.cmbLocalidad.count() > 0 and index > 0:
 
             index = self.dlg.cmbLocalidad.currentIndex()
@@ -198,8 +203,7 @@ class AsignacionRevision:
             else:
                 self.dlg.cmbSector.setEnabled(False)
                 self.dlg.cmbSector.clear()
-                self.dlg.cmbManzana.setEnabled(False)
-                self.dlg.cmbManzana.clear()
+                
                 self.clavesIzq = []
                 self.vaciarTabla(self.dlg.tablaClaves)
                 self.llaveManzana = None
@@ -625,5 +629,10 @@ class AsignacionRevision:
         self.vaciarTabla(self.dlg.tablaMazPred)
         self.dlg.cmbManzana.clear()
         self.dlg.cmbSector.clear()
+        self.dlg.cmbManzana.setEnabled(False)
+        self.dlg.cmbSector.setEnabled(False)
         self.clavesIzq = []
         self.clavesDer = {}
+        self.manzanaCargada = -1
+        self.localidadCargado = -1
+        self.sectorCargado = -1

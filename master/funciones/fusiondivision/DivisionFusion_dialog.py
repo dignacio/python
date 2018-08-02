@@ -27,12 +27,12 @@ import os
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 from qgis.utils import iface
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSettings
 
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'DivisionFusion_dialog_base.ui'))
-
+QSettings().setValue('autor', 'Charro')
 
 class DivisionFusionDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=iface.mainWindow()):

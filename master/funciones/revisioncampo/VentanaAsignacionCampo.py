@@ -52,7 +52,7 @@ class VentanaAsignacionCampo:
         self.dlg.btnLiberar.clicked.connect(self.preguntarLiberar)
         self.dlg.tablaMazPred.hideColumn(0)
         self.dlg.chkTodo.stateChanged.connect(self.marcarTodoMazPred)
-        
+        self.dlg.tablaMazPred.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
         self.dlg.fldUsuario.setReadOnly(True)
 
     def run(self):

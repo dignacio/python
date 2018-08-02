@@ -189,6 +189,13 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             header.setSectionResizeMode(x, QtWidgets.QHeaderView.Stretch)
             header.setStretchLastSection(True)
 
+    def verificarArranque(self):
+        dataCed = self.consumeWSCedula(self.cveCatastral[0:25])
+
+        if dataCed != None:
+            self.show()
+        
+
     def showEvent(self, event):
 
         if self.cargada:
@@ -423,8 +430,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         # -- carga informacion de la cedula segun la clave global
         dataCed = self.consumeWSCedula(self.cveCatastral[0:25])
 
-        if not self.adelanteRevision and self.cargandoRevision:
-            return
+        #if not self.adelanteRevision and self.cargandoRevision:
+        #    return
 
         self.cargaCedula(dataCed)
 
@@ -612,9 +619,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.tabwCedula.currentChanged.connect(self.event_cambioPestania)
         self.tabwCedula.blockSignals(False)
 
-        if not self.adelanteRevision and self.cargandoRevision:
-            print('CIERRATE COCHINADA')
-            self.close()
+        
 
     # --- M E T O D O S ---
 
@@ -3911,6 +3916,13 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         # nombre
         data['nombre'] = None if self.leNombre.text() == '' else self.leNombre.text()
+
+        if self.cargandoRevision:
+            headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
+            respuesta = requests.get(self.CFG.urlObtenerIdPredio + self.cveCatastral, headers = headers)
+            if respuesta.status_code == 200:
+                data['id'] = respuesta.json()
+
 
         # --- G U A R D A   P R E D I O S ---
         resp = self.guardaPredioWS(predio = data, url = self.CFG.urlGuardaPredio)

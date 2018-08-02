@@ -82,8 +82,7 @@ class IntermedioCedulaRevision:
         if self.muestrate:
             self.dlg.show()
         
-
-
+    
     def abrirCedula(self):
         
         seleccion = sorted(set(index.row() for index in self.dlg.tablaClaves.selectedIndexes()))[0]
@@ -94,7 +93,8 @@ class IntermedioCedulaRevision:
             self.cedulaPadron.run(self.cveCatastral)
         elif self.tipo == 'REV':
             self.listaCedula[self.cveCatastral] = CedulaMainWindow(cveCatas = self.cveCatastral, cond = False, CFG = self.pluginM.CFG, UTI = self.pluginM.UTI, cargandoRevision = True)
-            self.listaCedula[self.cveCatastral].show()
+            self.listaCedula[self.cveCatastral].verificarArranque()
+            
 
 #--------------------------------------------------------------------------
 

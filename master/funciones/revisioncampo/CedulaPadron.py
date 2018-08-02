@@ -38,6 +38,7 @@ import os.path
 from qgis.utils import *
 import os, json, requests
 from osgeo import ogr, osr
+from .ImagenCedula import ImagenCedula
 
 class CedulaPadron:
     """QGIS Plugin Implementation."""
@@ -45,10 +46,12 @@ class CedulaPadron:
     def __init__(self, iface, pluginM):
         
         self.iface = iface
-        self.dlg = CedulaPadronDialog()
+        self.dlg = CedulaPadronDialog(pluginM = self)
         self.cveCatastral = ''
         self.pluginM = pluginM
     
+        self.visorImagenes = ImagenCedula(iface, self)
+
         self.dlg.btnCveCatCed.clicked.connect(self.pasarCveCat)
         self.dlg.btnCveCatAntCed.clicked.connect(self.pasarCveCatAnt)
         self.dlg.btnCPCed.clicked.connect(self.pasarCp)
@@ -147,7 +150,11 @@ class CedulaPadron:
 
         self.usuarioLogeado = 'jaz'
 
-        #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.dlg.btnImagen.clicked.connect(self.desplegarVisor)
+
+    
+
+
 
     def run(self, cveCatastral):
         """Run method that performs all the real work"""
@@ -177,12 +184,13 @@ class CedulaPadron:
                 idPadron = str(respuesta.json())
             else:
                 print('error aquisito en el padron')
+                print(respuesta.json())
                 self.pluginM.pluginM.UTI.mostrarAlerta(str(respuesta), QMessageBox().Critical, "Consulta de padron")
                 return False
             
             
             respuesta = requests.get(self.pluginM.pluginM.CFG.urlGetPadron + idPadron, headers = headers)
-
+            print(self.pluginM.pluginM.CFG.urlGetPadron + idPadron)
             if respuesta.status_code == 200:
                 
                 if len(respuesta.json() )<= 0:
@@ -192,37 +200,37 @@ class CedulaPadron:
 
                 #------------------------------------------Padron------------------------------------#
                 #UBICACION
-                self.dlg.fldCveCatPad.setText(str(datos["cveCatastral"]))
-                self.dlg.fldCveCatAntPad.setText(str(datos["cveCatastralInicial"]))
-                self.dlg.fldCPPad.setText(str(datos["eCp"]))
-                self.dlg.fldAsentPad.setText(str(datos["tipoAsentamientoHumano"]))
-                self.dlg.fldColPad.setText(str(datos["eUbColonia"]))
-                self.dlg.fldLocPad.setText(str(datos["localidad"]))
-                self.dlg.fldPredPad.setText(str(datos["tipoPredio"]))
-                self.dlg.fldMunPad.setText(str(datos["cveMunicipio"]))
-                self.dlg.fldRegPad.setText(str(datos["regimenProp"]))
-                self.dlg.fldRevPad.setText(str(datos["eActualizaPor"]))
-                self.dlg.fldFecPad.setText(str(datos["eFechaActualizacion"]))
-                self.dlg.lblNomPad.setText(str(datos["nombreEdificio"]))
-                self.dlg.fldCallPad.setText(str(datos["eUbCalle"]))
+                self.dlg.fldCveCatPad.setText(str(datos["cveCatastral"]) or '')
+                self.dlg.fldCveCatAntPad.setText(str(datos["cveCatastralInicial"]) or '')
+                self.dlg.fldCPPad.setText(str(datos["eCp"]) or '')
+                self.dlg.fldAsentPad.setText(str(datos["tipoAsentamientoHumano"]) or '')
+                self.dlg.fldColPad.setText(str(datos["eUbColonia"]) or '')
+                self.dlg.fldLocPad.setText(str(datos["localidad"]) or '')
+                self.dlg.fldPredPad.setText(str(datos["tipoPredio"]) or '')
+                self.dlg.fldMunPad.setText(str(datos["cveMunicipio"]) or '')
+                self.dlg.fldRegPad.setText(str(datos["regimenProp"]) or '')
+                self.dlg.fldRevPad.setText(str(datos["eActualizaPor"]) or '')
+                self.dlg.fldFecPad.setText(str(datos["eFechaActualizacion"]) or '')
+                self.dlg.lblNomPad.setText(str(datos["nombreEdificio"]) or '')
+                self.dlg.fldCallPad.setText(str(datos["eUbCalle"]) or '')
 
                 #TERRENO
-                self.dlg.fldSueloPad.setText(str(datos["giroUsoSuelo"]))
-                self.dlg.fldFondoPad.setText(str(datos["eFondo"]))
-                self.dlg.fldFrentePad.setText(str(datos["eFrente"]))
-                self.dlg.fldOriPad.setText(str(datos["ubicacionPredioManzana"]))
+                self.dlg.fldSueloPad.setText(str(datos["giroUsoSuelo"]) or '')
+                self.dlg.fldFondoPad.setText(str(datos["eFondo"]) or '0')
+                self.dlg.fldFrentePad.setText(str(datos["eFrente"]) or '0')
+                self.dlg.fldOriPad.setText(str(datos["ubicacionPredioManzana"]) or '')
 
                 #COMPARATIVO
-                self.dlg.fldSupTerPrivPad.setText(str(datos["eSupTerPriv"]))
-                self.dlg.fldSupTerComPad.setText(str(datos["eSupTerComun"]))
-                self.dlg.fldSupTerTotPad.setText(str(datos["eSupTerCarto"]))
-                self.dlg.fldSupConstPrivPad.setText(str(datos["eSupConstPriv"]))
-                self.dlg.fldSupConstComPad.setText(str(datos["eSupConstComun"]))
-                self.dlg.fldSupConstTotPad.setText(str(datos["eSupConstCarto"]))
-                self.dlg.fldValTerrPad.setText(str(datos["eValorTer"]))
-                self.dlg.fldValConstPad.setText(str(datos["eValorConst"]))
-                self.dlg.fldValCatPad.setText(str(datos["eValorCat"]))
-                self.dlg.fldIndPad.setText(str(datos["eIndiviso"]))
+                self.dlg.fldSupTerPrivPad.setText(str(datos["eSupTerPriv"]) or '0')
+                self.dlg.fldSupTerComPad.setText(str(datos["eSupTerComun"]) or '0')
+                self.dlg.fldSupTerTotPad.setText(str(datos["eSupTerCarto"]) or '0')
+                self.dlg.fldSupConstPrivPad.setText(str(datos["eSupConstPriv"]) or '0')
+                self.dlg.fldSupConstComPad.setText(str(datos["eSupConstComun"]) or '0')
+                self.dlg.fldSupConstTotPad.setText(str(datos["eSupConstCarto"])or '0')
+                self.dlg.fldValTerrPad.setText(str(datos["eValorTer"]) or '0')
+                self.dlg.fldValConstPad.setText(str(datos["eValorConst"]) or '0')
+                self.dlg.fldValCatPad.setText(str(datos["eValorCat"]) or '0')
+                self.dlg.fldIndPad.setText(str(datos["eIndiviso"]) or '0')
 
                 return True
             else:
@@ -260,25 +268,29 @@ class CedulaPadron:
                 #------------------------------------------cedula------------------------------------#
                 #UBICACION
                 
-                self.dlg.fldCveCatCed.setText(str(datos["cveCat"]))
-                self.dlg.fldCveCatAntCed.setText(str(datos["cveCatAnt"]))
-                self.dlg.fldCPCed.setText(str(datos["cp"]))
-                self.dlg.fldAsentCed.setText(str(datos["tipoAsentamiento"])) #-
-                self.dlg.fldColCed.setText(str(datos["colonia"]))
-                self.dlg.fldLocCed.setText(str(datos["localidad"]["nombre"]))
-                self.dlg.fldPredCed.setText(str(datos["cveTipoPred"]))
-                self.dlg.fldMunCed.setText(str(datos["cveMunicipio"]))
-                self.dlg.fldRegCed.setText(str(datos["regimenPropiedad"]))
-                self.dlg.fldRevCed.setText(str(datos["usuarioAnterior"]))
-                self.dlg.fldFecCed.setText(str(datos["fechaAct"]))
-                self.dlg.lblNomCed.setText(str(datos["nombre"]))
-                self.dlg.fldCallCed.setText(str(datos["calles"][0]["calle"]))
+                self.dlg.fldCveCatCed.setText(str(datos["cveCat"]) or '')
+                self.dlg.fldCveCatAntCed.setText(str(datos["cveCatAnt"]) or '')
+                self.dlg.fldCPCed.setText(str(datos["cp"]) or '')
+                self.dlg.fldAsentCed.setText(str(datos["tipoAsentamiento"]) or '')
+                self.dlg.fldColCed.setText(str(datos["colonia"]) or '')
+                self.dlg.fldLocCed.setText(str(datos["localidad"]["nombre"]) or '')
+                self.dlg.fldPredCed.setText(str(datos["cveTipoPred"]) or '')
+                self.dlg.fldMunCed.setText(str(datos["cveMunicipio"]) or '')
+                self.dlg.fldRegCed.setText(str(datos["regimenPropiedad"]) or '')
+                self.dlg.fldRevCed.setText(str(datos["usuarioAnterior"]) or '')
+                self.dlg.fldFecCed.setText(str(datos["fechaAct"]) or '')
+                self.dlg.lblNomCed.setText(str(datos["nombre"]) or '')
+
+                if len(datos["calles"]) > 0:
+                    self.dlg.fldCallCed.setText(str(datos["calles"][0]["calle"]) or '')
+                else:
+                    self.dlg.fldCallCed.setText('')
 
                 #TERRENO
-                self.dlg.fldSueloCed.setText(str(datos["cveUsoSuelo"]))
-                self.dlg.fldFondoCed.setText(str(datos["fondo"]))
-                self.dlg.fldFrenteCed.setText(str(datos["frente"]))
-                self.dlg.fldOriCed.setText(str(datos["predioUbicacionManzana"]))
+                self.dlg.fldSueloCed.setText(str(datos["cveUsoSuelo"]) or '')
+                self.dlg.fldFondoCed.setText(str(datos["fondo"]) or '0')
+                self.dlg.fldFrenteCed.setText(str(datos["frente"]) or '0')
+                self.dlg.fldOriCed.setText(str(datos["predioUbicacionManzana"]) or '')
 
                 #COMPARATIVO
                 if self.esCondominio():
@@ -313,44 +325,58 @@ class CedulaPadron:
                         condom = verificar[0]
 
 
-                        self.dlg.fldSupTerPrivCed.setText(str(condom["supTerPrivada"]))
-                        self.dlg.fldSupTerComCed.setText(str(condom["supTerComun"]))
+                        self.dlg.fldSupTerPrivCed.setText(str(condom["supTerPrivada"]) or '0')
+                        self.dlg.fldSupTerComCed.setText(str(condom["supTerComun"]) or '0')
 
-                        supTerCarto = condom["supTerPrivada"] + condom["supTerComun"]
-                        self.dlg.fldSupTerTotCed.setText(str(supTerCarto))
+                        if(condom["supTerPrivada"] == None or condom["supTerComun"] == None):
+                            self.dlg.fldSupTerTotCed.setText('0')
+                        else:
+                            supTerCarto = condom["supTerPrivada"] + condom["supTerComun"]
+                            self.dlg.fldSupTerTotCed.setText(str(supTerCarto) or '0')
 
-                        self.dlg.fldSupConstPrivCed.setText(str(condom["supConstruccionPrivada"]))
-                        self.dlg.fldSupConstComCed.setText(str(condom["supConstruccionComun"]))
+                        self.dlg.fldSupConstPrivCed.setText(str(condom["supConstruccionPrivada"]) or '0')
+                        self.dlg.fldSupConstComCed.setText(str(condom["supConstruccionComun"]) or '0')
                         
-                        supComCarto = condom["supConstruccionPrivada"] + condom["supConstruccionComun"]
-                        self.dlg.fldSupConstTotCed.setText(str(supComCarto))
+                        if(condom["supConstruccionPrivada"] == None or condom["supConstruccionComun"] == None):
+                            self.dlg.fldSupTerTotCed.setText('0')
+                        else:
+                            supComCarto = condom["supConstruccionPrivada"] + condom["supConstruccionComun"]
+                            self.dlg.fldSupConstTotCed.setText(str(supComCarto) or '0')
 
-                        valorTer = condom["valorTerrenoComun"] + condom["valorTerrenoPriv"]
-                        self.dlg.fldValTerrCed.setText(str(valorTer))
-
-                        valorConst = condom["valorConstruccionComun"] + condom["valorConstruccionPriv"]
-                        self.dlg.fldValConstCed.setText(str(valorConst))
+                        valorTer = 0
+                        if(condom["valorTerrenoComun"] == None or condom["valorTerrenoPriv"] == None):
+                            self.dlg.fldValTerrCed.setText('0')
+                        else:
+                            valorTer = condom["valorTerrenoComun"] + condom["valorTerrenoPriv"]
+                            self.dlg.fldValTerrCed.setText(str(valorTer) or '0')
+                        
+                        valorConst = 0
+                        if(condom["valorConstruccionComun"] == None or condom["valorConstruccionPriv"] == None):
+                            self.dlg.fldValConstCed.setText('0')
+                        else:
+                            valorConst = condom["valorConstruccionComun"] + condom["valorConstruccionPriv"]
+                            self.dlg.fldValConstCed.setText(str(valorConst) or '0')
                         
                         valorTotal = valorConst + valorTer
-                        self.dlg.fldValCatCed.setText(str(valorTotal))
+                        self.dlg.fldValCatCed.setText(str(valorTotal) or '0')
                         
-                        self.dlg.fldIndCed.setText(str(condom["indiviso"]))
+                        self.dlg.fldIndCed.setText(str(condom["indiviso"]) or '0')
 
                     else:
                         #pass
-                        self.dlg.fldSupTerTotCed.setText(str(datos['supTerr']))
-                        self.dlg.fldSupConstTotCed.setText(str(datos['supContruccion']))
-                        self.dlg.fldValTerrCed.setText(str(datos['valorTerreno']))
-                        self.dlg.fldValConstCed.setText(str(datos['valorConstruccion']))
-                        self.dlg.fldValCatCed.setText(str(datos['valorCatastral']))
+                        self.dlg.fldSupTerTotCed.setText(str(datos['supTerr']) or '0')
+                        self.dlg.fldSupConstTotCed.setText(str(datos['supContruccion']) or '0')
+                        self.dlg.fldValTerrCed.setText(str(datos['valorTerreno']) or '0')
+                        self.dlg.fldValConstCed.setText(str(datos['valorConstruccion']) or '0')
+                        self.dlg.fldValCatCed.setText(str(datos['valorCatastral']) or '0')
 
                 else:
                     #print('NO ES CONDOMINIO WEEEEEE')
-                    self.dlg.fldSupTerTotCed.setText(str(datos['supTerr']))
-                    self.dlg.fldSupConstTotCed.setText(str(datos['supContruccion']))
-                    self.dlg.fldValTerrCed.setText(str(datos['valorTerreno']))
-                    self.dlg.fldValConstCed.setText(str(datos['valorConstruccion']))
-                    self.dlg.fldValCatCed.setText(str(datos['valorCatastral']))
+                    self.dlg.fldSupTerTotCed.setText(str(datos['supTerr']) or '0')
+                    self.dlg.fldSupConstTotCed.setText(str(datos['supContruccion']) or '0')
+                    self.dlg.fldValTerrCed.setText(str(datos['valorTerreno']) or '0')
+                    self.dlg.fldValConstCed.setText(str(datos['valorConstruccion']) or '0')
+                    self.dlg.fldValCatCed.setText(str(datos['valorCatastral']) or '0')
             else:
                 print("ERROR CONDOMINIOS AQCA EN EL ELSE oak2 ")
                 self.pluginM.pluginM.UTI.mostrarAlerta(str(respuesta), QMessageBox().Critical, "Consulta de condominio padron")
@@ -457,37 +483,37 @@ class CedulaPadron:
         if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
             return 'La clave catastral debe ser numerica de 31 digitos'
         #Clave catastral anetrior
-        #texto = self.dlg.fldCveCatAntPad.text()
-        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
-        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        texto = self.dlg.fldCveCatAntPad.text()
+        if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 13): #Cuando es entero
+            return 'La clave anterior debe ser numerica de 13 digitos'
         #Codigo postal
-        #texto = self.dlg.fldCPPad.text()
-        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 5): #Cuando es entero
-        #    return 'El codigo postal debe ser numerico de 5 digitos'
+        texto = self.dlg.fldCPPad.text()
+        if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 5): #Cuando es entero
+            return 'El codigo postal debe ser numerico de 5 digitos'
         #Tipo de asentamiento humano
-        #texto = self.dlg.fldAsentPad.text()
-        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
-        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        texto = self.dlg.fldAsentPad.text()
+        if not (len(texto) <= 100): #Cuando es entero
+            return 'El tipo de asentamiento humano no debe exceder 100 caracteres'
         #Colonia
-        #texto = self.dlg.fldColPad.text()
-        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
-        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        texto = self.dlg.fldColPad.text()
+        if not (len(texto) == 31): #Cuando es entero
+            return 'La colonia no debe exceder 100 caracteres'
         #Localidad
-        #texto = self.dlg.fldLocPad.text()
-        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
-        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        texto = self.dlg.fldLocPad.text()
+        if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
+            return 'La clave catastral debe ser numerica de 31 digitos'
         #Tipo de predio
         texto = self.dlg.fldPredPad.text()
         if not (len(texto) == 1): #Cuando es entero
             return 'El tipo de predio debe ser un caracter'
-        #Clave catastral
-        #texto = self.dlg.fldMunPad.text()
-        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 3): #Cuando es entero
-        #    return 'La clave de municipio debe ser numerica de 3 digitos'
+        #Municipio
+        texto = self.dlg.fldMunPad.text()
+        if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 3): #Cuando es entero
+            return 'La clave de municipio debe ser numerica de 3 digitos'
         #Regimen de propiedad
-        #texto = self.dlg.fldRegPad.text()
-        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
-        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        texto = self.dlg.fldRegPad.text()
+        if not (len(texto) <= 50): #Cuando es entero
+            return 'El regimen de propiedad no debe exceder de 50 caracteres'
         #Actualizado por
         #texto = self.dlg.fldRevPad.text()
         #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
@@ -497,70 +523,70 @@ class CedulaPadron:
         #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
         #    return 'La clave catastral debe ser numerica de 31 digitos'
         #nombre del edificio
-        #texto = self.dlg.lblNomPad.text()
-        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
-        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        texto = self.dlg.lblNomPad.text()
+        if not (len(texto) <= 50): #Cuando es entero
+            return 'El nombre del edificio no debe exceder 50 caracteres'
         #Vialidad principal
-        #texto = self.dlg.fldCallPad.text()
-        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
-        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        texto = self.dlg.fldCallPad.text()
+        if not (len(texto) <= 100): #Cuando es entero
+            return 'La calle principal no debe exceder 100 caracteres'
         #Giro uso suelo
-        #texto = self.dlg.fldSueloPad.text()
-        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
-        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        texto = self.dlg.fldSueloPad.text()
+        if not (len(texto) <= 250): #Cuando es entero
+            return 'El giro de uso de suelo no debe exceder 250 caracteres'
         #Fondo
-        #texto = self.dlg.fldFondoPad.text()
-        #if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
-        #    return 'El fondo debe ser numerico'
+        texto = self.dlg.fldFondoPad.text()
+        if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
+            return 'El fondo debe ser numerico'
         #Frente
-        #texto = self.dlg.fldFrentePad.text()
-        #if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
-        #   return 'El frente debe ser numerico'
+        texto = self.dlg.fldFrentePad.text()
+        if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
+           return 'El frente debe ser numerico'
         #Ubicacion predio
-        #texto = self.dlg.fldOriPad.text()
-        #if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
-        #    return 'La clave catastral debe ser numerica de 31 digitos'
+        texto = self.dlg.fldOriPad.text()
+        if not (len(texto) <= 30): #Cuando es entero
+            return 'La ubicacion del predio respecto a la manzana no debe exceder 30 caracteres'
 
         #Sup ter priv
-        #texto = self.dlg.fldSupTerPrivPad.text()
-        #if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
-        #    return 'La superficie de terreno privada debe ser numerica'
+        texto = self.dlg.fldSupTerPrivPad.text()
+        if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
+            return 'La superficie de terreno privada debe ser numerica'
         #Sup terr com
-        #texto = self.dlg.fldSupTerComPad.text()
-        #if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
-        #    return 'La superficie de terreno comun debe ser numerica'
+        texto = self.dlg.fldSupTerComPad.text()
+        if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
+            return 'La superficie de terreno comun debe ser numerica'
         #Sup terr carto
-        #texto = self.dlg.fldSupTerTotPad.text()
-        #if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
-        #    return 'La superficie de terreno carto debe ser numerica'
+        texto = self.dlg.fldSupTerTotPad.text()
+        if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
+            return 'La superficie de terreno carto debe ser numerica'
         #Sup const priv
-        #texto = self.dlg.fldSupConstPrivPad.text()
-        #if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
-        #    return 'La superficie de construccion comun debe ser numerica'
+        texto = self.dlg.fldSupConstPrivPad.text()
+        if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
+            return 'La superficie de construccion comun debe ser numerica'
         #Sup onst com
-        #texto = self.dlg.fldSupConstComPad.text()
-        #if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
-        #    return 'La superficie de construccion comun debe ser numerica'
+        texto = self.dlg.fldSupConstComPad.text()
+        if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
+            return 'La superficie de construccion comun debe ser numerica'
         #Sup const carto
-        #texto = self.dlg.fldSupConstTotPad.text()
-        #if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
-        #   return 'La superficie de construccion comun debe ser numerica'
+        texto = self.dlg.fldSupConstTotPad.text()
+        if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
+           return 'La superficie de construccion comun debe ser numerica'
         #valor terreno
-        #texto = self.dlg.fldValTerrPad.text()
-        #if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
-        #    return 'El valor de terreno debe ser numerico'
+        texto = self.dlg.fldValTerrPad.text()
+        if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
+            return 'El valor de terreno debe ser numerico'
         #valor construccion
-        #texto = self.dlg.fldValConstPad.text()
-        #if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
-        #    return 'El valor de construccion debe ser numerico'
+        texto = self.dlg.fldValConstPad.text()
+        if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
+            return 'El valor de construccion debe ser numerico'
         #valor catastral
-        #texto = self.dlg.fldValCatPad.text()
-        #if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
-        #    return 'El valor catastral debe ser numerico'
+        texto = self.dlg.fldValCatPad.text()
+        if not (self.pluginM.pluginM.UTI.esFloat(texto)): #Cuando es entero
+            return 'El valor catastral debe ser numerico'
         #indiviso
-        #texto = self.dlg.fldIndPad.text()
-        #if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
-        #   return 'El indiviso debe ser numerico'
+        texto = self.dlg.fldIndPad.text()
+        if not (self.pluginM.pluginM.UTI.esFloat(texto) ): #Cuando es entero
+           return 'El indiviso debe ser numerico'
 
         return 'Todo en orden'
 
@@ -823,6 +849,9 @@ class CedulaPadron:
     def eliminarTexto(self, fld):
         fld.setText('')
         
+    def desplegarVisor(self):
+        self.visorImagenes.cveCatastral = self.dlg.fldCveCatCed.text()
+        self.visorImagenes.run()
 
 
 
