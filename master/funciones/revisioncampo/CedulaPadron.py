@@ -496,12 +496,12 @@ class CedulaPadron:
             return 'El tipo de asentamiento humano no debe exceder 100 caracteres'
         #Colonia
         texto = self.dlg.fldColPad.text()
-        if not (len(texto) == 31): #Cuando es entero
+        if not (len(texto) <= 100): #Cuando es entero
             return 'La colonia no debe exceder 100 caracteres'
         #Localidad
         texto = self.dlg.fldLocPad.text()
-        if not (self.pluginM.pluginM.UTI.esEntero(texto) and len(texto) == 31): #Cuando es entero
-            return 'La clave catastral debe ser numerica de 31 digitos'
+        if not (len(texto) <= 30): #Cuando es entero
+            return 'La localidad no debe exceder 30 caracteres'
         #Tipo de predio
         texto = self.dlg.fldPredPad.text()
         if not (len(texto) == 1): #Cuando es entero

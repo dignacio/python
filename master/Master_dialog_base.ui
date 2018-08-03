@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>404</width>
-    <height>360</height>
+    <width>403</width>
+    <height>340</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>403</width>
-    <height>296</height>
+    <height>339</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>404</width>
-    <height>360</height>
+    <width>403</width>
+    <height>340</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -72,7 +72,7 @@ background: rgb(217, 217, 217)
      <string/>
     </property>
     <property name="icon">
-     <iconset>
+     <iconset resource="resources.qrc">
       <normaloff>:/plugins/Master/icons/DivisionFusion.png</normaloff>:/plugins/Master/icons/DivisionFusion.png</iconset>
     </property>
     <property name="iconSize">
@@ -107,7 +107,17 @@ background: rgb(217, 217, 217)
 }</string>
     </property>
     <property name="text">
-     <string>Asig. Pad.</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="resources.qrc">
+      <normaloff>:/plugins/Master/icons/AsigPadron.png</normaloff>:/plugins/Master/icons/AsigPadron.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>106</width>
+      <height>106</height>
+     </size>
     </property>
    </widget>
    <widget class="QPushButton" name="btnDibujo">
@@ -138,7 +148,7 @@ background: rgb(217, 217, 217)
      <string/>
     </property>
     <property name="icon">
-     <iconset>
+     <iconset resource="resources.qrc">
       <normaloff>:/plugins/Master/icons/dibujo.png</normaloff>:/plugins/Master/icons/dibujo.png</iconset>
     </property>
     <property name="iconSize">
@@ -176,7 +186,7 @@ background: rgb(217, 217, 217)
      <string/>
     </property>
     <property name="icon">
-     <iconset>
+     <iconset resource="resources.qrc">
       <normaloff>:/plugins/Master/icons/Eliminar.png</normaloff>:/plugins/Master/icons/Eliminar.png</iconset>
     </property>
     <property name="iconSize">
@@ -214,7 +224,7 @@ background: rgb(217, 217, 217)
      <string/>
     </property>
     <property name="icon">
-     <iconset>
+     <iconset resource="resources.qrc">
       <normaloff>:/plugins/Master/icons/Topologia.png</normaloff>:/plugins/Master/icons/Topologia.png</iconset>
     </property>
     <property name="iconSize">
@@ -252,7 +262,7 @@ background: rgb(217, 217, 217)
      <string/>
     </property>
     <property name="icon">
-     <iconset>
+     <iconset resource="resources.qrc">
       <normaloff>:/plugins/Master/icons/carga.png</normaloff>:/plugins/Master/icons/carga.png</iconset>
     </property>
     <property name="iconSize">
@@ -287,7 +297,17 @@ background: rgb(217, 217, 217)
 }</string>
     </property>
     <property name="text">
-     <string>Asig. Campo</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="resources.qrc">
+      <normaloff>:/plugins/Master/icons/AsigCampo.png</normaloff>:/plugins/Master/icons/AsigCampo.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>106</width>
+      <height>106</height>
+     </size>
     </property>
    </widget>
    <widget class="QPushButton" name="btnAsigRev">
@@ -315,7 +335,17 @@ background: rgb(217, 217, 217)
 }</string>
     </property>
     <property name="text">
-     <string>Asig. Rev.</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="resources.qrc">
+      <normaloff>:/plugins/Master/icons/AsigRevision.png</normaloff>:/plugins/Master/icons/AsigRevision.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>106</width>
+      <height>106</height>
+     </size>
     </property>
    </widget>
    <widget class="QPushButton" name="btnConsulta">
@@ -346,7 +376,7 @@ background: rgb(217, 217, 217)
      <string/>
     </property>
     <property name="icon">
-     <iconset>
+     <iconset resource="resources.qrc">
       <normaloff>:/plugins/Master/icons/consulta.png</normaloff>:/plugins/Master/icons/consulta.png</iconset>
     </property>
     <property name="iconSize">
@@ -449,6 +479,5 @@ Padron</string>
    <zorder>btnInterPad</zorder>
   </widget>
  </widget>
- <resources/>
  <connections/>
 </ui>

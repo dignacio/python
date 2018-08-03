@@ -68,6 +68,10 @@ class AsignacionCampo:
         self.dlg.cmbSector.currentIndexChanged.connect(self.obtenerManzanasPorSector)
         self.dlg.cmbManzana.currentIndexChanged.connect(self.contactarPintarCampos)
         
+        self.dlg.cmbLocalidad.highlighted.connect(self.bypassSectorLoc)
+        self.dlg.cmbSector.highlighted.connect(self.bypassManzanaSector)
+        self.dlg.cmbManzana.highlighted.connect(self.bypassPintar)
+
         self.VentanaLiberacion = VentanaAsignacionCampo(iface, self)
 
         self.dlg.btnMas.clicked.connect(self.pasarDerecha)
@@ -87,6 +91,12 @@ class AsignacionCampo:
         self.sectorCargado = -1
         self.resetar()
         
+        self.indexCompLocalidad = -1
+        self.indexCompSector = -1
+        self.indexCompManzana = -1
+
+        self.bypass = False
+
     def run(self):
         """Run method that performs all the real work"""
         # show the dialog
@@ -105,6 +115,20 @@ class AsignacionCampo:
         # See if OK was pressed
         if result:
             pass
+
+    def bypassSectorLoc(self, index):
+        #print('se acrtivooooo')
+        self.bypass = True
+        #self.obtenerSectoresPorLocalidad()
+
+    def bypassManzanaSector(self, index):
+        self.bypass = True
+        #self.obtenerManzanasPorSector()
+
+    def bypassPintar(self, index):
+        self.bypass = True
+        #self.contactarPintarCampos()
+
 
 #_-------------------------------------------------------------------------------------------------
 
@@ -154,116 +178,127 @@ class AsignacionCampo:
 
     #Llenar segundo combo
     def obtenerSectoresPorLocalidad(self):
+
+        #print('lo tiro una vez')
         index = self.dlg.cmbLocalidad.currentIndex()
         
-        self.dlg.cmbManzana.setEnabled(False)
-        self.dlg.cmbManzana.clear()
+        #print('tenemos ', index, self.indexCompLocalidad, self.bypass)
+        if index == self.indexCompLocalidad or self.bypass:
+            #self.indexCompLocalidad = -1
+            #print('pasooooo')
+            self.bypass = False
+            self.dlg.cmbManzana.setEnabled(False)
+            self.dlg.cmbManzana.clear()
 
-        if self.dlg.cmbLocalidad.count() > 0 and index > 0:
+            if self.dlg.cmbLocalidad.count() > 0 and index > 0:
 
-            index = self.dlg.cmbLocalidad.currentIndex()
+                index = self.dlg.cmbLocalidad.currentIndex()
 
-            try:
-                idSector = self.enviosLocalidad[index]
+                try:
+                    idSector = self.enviosLocalidad[index]
 
-                if self.localidadCargado == idSector:
-                    print('SECTOR POR LOCALIDAD RETORNADOS')
+                    if self.localidadCargado == idSector:
+                        print('SECTOR POR LOCALIDAD RETORNADOS')
+                        return
+                    self.localidadCargado = idSector
+
+                except:
                     return
-                self.localidadCargado = idSector
-
-            except:
-                return
-            
-            self.dlg.cmbSector.clear()
-
-            try:
-                headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
-                respuesta = requests.get(self.CFG.urlSectores + idSector + '/sector/', headers = headers)
-            except requests.exceptions.RequestException:
-                self.UTI.mostrarAlerta("Error de servidor SEC01", QMessageBox().Critical, "Cargar Sectores")
-                print('ERROR: SEC000')
-
-            lenJson = len(list(respuesta.json()))
-
-            if lenJson > 0:
-                listaTemp = ['--Selecciona--']
-                self.enviosSector = ['-']
-                for sector in respuesta.json():
-                    listaTemp.append(sector['label'])
-                    self.enviosSector.append(sector['value'])
-                modeloTemp = QStandardItemModel()
-                for i,word in enumerate( listaTemp ):   
-                    
-                    item = QStandardItem(word)
-                    modeloTemp.setItem(i, 0, item)
-
                 
-                self.UTI.extenderCombo(self.dlg.cmbSector, self.completarSector, modeloTemp)
-                self.dlg.cmbSector.model().item(0).setEnabled(False)
-                self.dlg.cmbSector.setEnabled(True)
-            else:
-                self.dlg.cmbSector.setEnabled(False)
                 self.dlg.cmbSector.clear()
-                
-                self.clavesIzq = []
-                self.vaciarTabla(self.dlg.tablaClaves)
-                self.llaveManzana = None
 
-                self.UTI.mostrarAlerta("No existen sectores en la localidad", QMessageBox().Information, "Cargar Sectores")
+                try:
+                    headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
+                    respuesta = requests.get(self.CFG.urlSectores + idSector + '/sector/', headers = headers)
+                except requests.exceptions.RequestException:
+                    self.UTI.mostrarAlerta("Error de servidor SEC01", QMessageBox().Critical, "Cargar Sectores")
+                    print('ERROR: SEC000')
+
+                lenJson = len(list(respuesta.json()))
+
+                if lenJson > 0:
+                    listaTemp = ['--Selecciona--']
+                    self.enviosSector = ['-']
+                    for sector in respuesta.json():
+                        listaTemp.append(sector['label'])
+                        self.enviosSector.append(sector['value'])
+                    modeloTemp = QStandardItemModel()
+                    for i,word in enumerate( listaTemp ):   
+                        
+                        item = QStandardItem(word)
+                        modeloTemp.setItem(i, 0, item)
+
+                    
+                    self.UTI.extenderCombo(self.dlg.cmbSector, self.completarSector, modeloTemp)
+                    self.dlg.cmbSector.model().item(0).setEnabled(False)
+                    self.dlg.cmbSector.setEnabled(True)
+                else:
+                    self.dlg.cmbSector.setEnabled(False)
+                    self.dlg.cmbSector.clear()
+                    
+                    self.clavesIzq = []
+                    self.vaciarTabla(self.dlg.tablaClaves)
+                    self.llaveManzana = None
+
+                    self.UTI.mostrarAlerta("No existen sectores en la localidad", QMessageBox().Information, "Cargar Sectores")
 
 #--------------------------------------------------------------------------------------------------------------
 
     def obtenerManzanasPorSector(self):
     
         index = self.dlg.cmbSector.currentIndex()
-        if self.dlg.cmbSector.count() > 0 and index > 0:
 
-            index = self.dlg.cmbSector.currentIndex()
+        if index == self.indexCompSector or self.bypass:
 
-            try:
-                idSector = self.enviosSector[index]
+            self.bypass = False
+            if self.dlg.cmbSector.count() > 0 and index > 0:
+                #self.indexCompSector = -1
+                index = self.dlg.cmbSector.currentIndex()
 
-                if self.sectorCargado == idSector:
-                    print('MANZANA POR SECTOR RETORNADOS')
+                try:
+                    idSector = self.enviosSector[index]
+
+                    if self.sectorCargado == idSector:
+                        print('MANZANA POR SECTOR RETORNADOS')
+                        return
+                    self.sectorCargado = idSector
+                except:
                     return
-                self.sectorCargado = idSector
-            except:
-                return
 
-            self.dlg.cmbManzana.clear()
-
-            try:
-                headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
-                respuesta = requests.get(self.CFG.urlManzanas + idSector + '/manzana/', headers = headers)
-            except requests.exceptions.RequestException:
-                self.UTI.mostrarAlerta("Error de servidor MAN01", QMessageBox().Critical, "Cargar Manzanas")
-                print('ERROR: MAN000')
-
-            lenJson = len(list(respuesta.json()))
-
-            if lenJson > 0:
-                listaTemp = ['--Selecciona--']
-                self.enviosManzana = ['-']
-                for manzana in respuesta.json():
-                    listaTemp.append(manzana['label'])
-                    self.enviosManzana.append(manzana['other'])
-                modeloTemp = QStandardItemModel()
-                for i,word in enumerate( listaTemp ):   
-                    
-                    item = QStandardItem(word)
-                    modeloTemp.setItem(i, 0, item)
-
-                
-                self.UTI.extenderCombo(self.dlg.cmbManzana, self.completarManzana, modeloTemp)
-                self.dlg.cmbManzana.model().item(0).setEnabled(False)
-                self.dlg.cmbManzana.setEnabled(True)
-            else:
-                self.dlg.cmbManzana.setEnabled(False)
                 self.dlg.cmbManzana.clear()
-                self.clavesIzq = []
-                self.vaciarTabla(self.dlg.tablaClaves)
-                self.llaveManzana = None
-                self.UTI.mostrarAlerta("No existen manzanas en el sector", QMessageBox().Information, "Cargar Manzanas")
+
+                try:
+                    headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
+                    respuesta = requests.get(self.CFG.urlManzanas + idSector + '/manzana/', headers = headers)
+                except requests.exceptions.RequestException:
+                    self.UTI.mostrarAlerta("Error de servidor MAN01", QMessageBox().Critical, "Cargar Manzanas")
+                    print('ERROR: MAN000')
+
+                lenJson = len(list(respuesta.json()))
+
+                if lenJson > 0:
+                    listaTemp = ['--Selecciona--']
+                    self.enviosManzana = ['-']
+                    for manzana in respuesta.json():
+                        listaTemp.append(manzana['label'])
+                        self.enviosManzana.append(manzana['other'])
+                    modeloTemp = QStandardItemModel()
+                    for i,word in enumerate( listaTemp ):   
+                        
+                        item = QStandardItem(word)
+                        modeloTemp.setItem(i, 0, item)
+
+                    
+                    self.UTI.extenderCombo(self.dlg.cmbManzana, self.completarManzana, modeloTemp)
+                    self.dlg.cmbManzana.model().item(0).setEnabled(False)
+                    self.dlg.cmbManzana.setEnabled(True)
+                else:
+                    self.dlg.cmbManzana.setEnabled(False)
+                    self.dlg.cmbManzana.clear()
+                    self.clavesIzq = []
+                    self.vaciarTabla(self.dlg.tablaClaves)
+                    self.llaveManzana = None
+                    self.UTI.mostrarAlerta("No existen manzanas en el sector", QMessageBox().Information, "Cargar Manzanas")
 
 #---------------------------------------------------------------------------------------------------------------
 
@@ -271,23 +306,29 @@ class AsignacionCampo:
         print('entro al pintar camposss')
         index = self.dlg.cmbManzana.currentIndex()
 
-        if self.validarCombox and index > 0:
-            self.ACA.obtenerXCapas()
-            cuerpo = {"incluirGeom": "true", "pagina": None, "bbox": "false", "pin": "false", "geomWKT": None, "epsg": None, "properties": None, "epsgGeomWKT": None, "itemsPagina": None, "nombre": "x"}
-            payload = json.dumps(cuerpo)
-            self.ACA.payload = payload
-            index = self.dlg.cmbManzana.currentIndex()
-            self.ACA.idManzana = self.enviosManzana[index]
+        if index == self.indexCompManzana or self.bypass:
+            #self.indexCompManzana = -1
+            self.bypass = False
+            if self.validarCombox and index > 0:
+                self.ACA.obtenerXCapas()
+                cuerpo = {"incluirGeom": "true", "pagina": None, "bbox": "false", "pin": "false", "geomWKT": None, "epsg": None, "properties": None, "epsgGeomWKT": None, "itemsPagina": None, "nombre": "x"}
+                payload = json.dumps(cuerpo)
+                self.ACA.payload = payload
+                index = self.dlg.cmbManzana.currentIndex()
+                self.ACA.idManzana = self.enviosManzana[index]
 
-            if self.manzanaCargada == self.enviosManzana[index]:
-                print('SE RETORNO')
-                return
-            self.manzanaCargada = self.enviosManzana[index]
-            
-            self.llaveManzana = self.enviosManzana[index]
-            self.ACA.pintarCapasCampo()
+                if self.manzanaCargada == self.enviosManzana[index]:
+                    print('SE RETORNO')
+                    return
+                self.manzanaCargada = self.enviosManzana[index]
+                
+                self.llaveManzana = self.enviosManzana[index]
+                self.ACA.pintarCapasCampo()
 
-            self.llenadoDeTablas()
+                self.llenadoDeTablas()
+                self.manzanaCargada = -1
+                self.localidadCargado = -1
+                self.sectorCargado = -1
             
 #----------------------------------------------------------------------------------------------------------------
 
@@ -470,8 +511,12 @@ class AsignacionCampo:
 
     def completarLocalidad(self, text):
         
+        #print('entro al de afuera')
         if text:
+            #print('entro al de adentro con ', text)
             index = self.dlg.cmbLocalidad.findText(text)
+            self.indexCompLocalidad = index
+            #print('indice a completa', index)
             self.dlg.cmbLocalidad.setCurrentIndex(index)
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -480,6 +525,7 @@ class AsignacionCampo:
         
         if text:
             index = self.dlg.cmbSector.findText(text)
+            self.indexCompSector = index
             self.dlg.cmbSector.setCurrentIndex(index)
 
 #---------------------------------------------------------------------------------------------------------------------
@@ -487,7 +533,9 @@ class AsignacionCampo:
     def completarManzana(self, text):
         
         if text:
+            
             index = self.dlg.cmbManzana.findText(text)
+            self.indexCompManzana = index
             self.dlg.cmbManzana.setCurrentIndex(index)
 
 #---------------------------------------------------------------------------------------------------

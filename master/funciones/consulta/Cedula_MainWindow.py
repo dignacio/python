@@ -221,7 +221,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.strechtTabla(self.tablaValTerreno)
         self.strechtTabla(self.tablaValConst)
         self.strechtTabla(self.tablaTotales)
-
+        """
         self.strechtTabla(self.twVialidades)
         self.strechtTabla(self.twColindancias)
         self.strechtTabla(self.twServiciosCalle)
@@ -230,7 +230,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.strechtTabla(self.twCaracteristicasC)
         self.strechtTabla(self.twIndivisos)
         self.strechtTabla(self.twPropFiscal)
-        self.strechtTabla(self.twPropPred)
+        self.strechtTabla(self.twPropPred)"""
 
 
         self.leSupConstPrivCond.setValidator(QDoubleValidator(0.999,99.999,3))
@@ -258,9 +258,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.leDispPerim.setValidator(QDoubleValidator(0.99,99.99,2))
         self.twColindancias.setColumnHidden(0, True)
         header = self.twColindancias.horizontalHeader()
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
         #self.leSupTerr.setValidator(QDoubleValidator(0.99,99.99,2))
         self.leFondo.setValidator(QDoubleValidator(0.99,99.99,2))
         self.leFrente.setValidator(QDoubleValidator(0.99,99.99,2))
@@ -276,18 +276,18 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.twCaracteristicasP.setColumnHidden(6, True)
         self.twCaracteristicasP.setColumnHidden(7, True)
         header = self.twCaracteristicasP.horizontalHeader()
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
 
         header = self.twIndivisos.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(4, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(6, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(6, QtWidgets.QHeaderView.ResizeToContents)
         
         self.twCaracteristicasC.setColumnHidden(0, True)
         self.twCaracteristicasC.setColumnHidden(2, True)
@@ -295,42 +295,49 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.twCaracteristicasC.setColumnHidden(6, True)
         self.twCaracteristicasC.setColumnHidden(7, True)
         header = self.twCaracteristicasC.horizontalHeader()
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.Stretch)
+        #self.twCaracteristicasC.resizeColumnsToContents()
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
 
         header = self.twVialidades.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        #self.twCaracteristicasC.resizeColumnsToContents()
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
 
         header = self.twServiciosCalle.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         self.twServiciosCalle.setColumnHidden(1, True)
+        #self.twServiciosCalle.resizeColumnsToContents()
 
         header = self.twServiciosPredio.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         self.twServiciosPredio.setColumnHidden(1, True)
+        #self.twServiciosPredio.resizeColumnsToContents()
 
         header = self.twServiciosCondo.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         self.twServiciosCondo.setColumnHidden(1, True)
+        #self.twServiciosCondo.resizeColumnsToContents()
 
         self.twIndivisos.cellChanged.connect(self.event_updateIndivisos)
 
         header = self.twPropFiscal.horizontalHeader()
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(4, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
         self.twPropFiscal.setColumnHidden(0, True)
         self.twPropFiscal.itemClicked.connect(self.event_itemClicked)
+        #self.twPropFiscal.resizeColumnsToContents()
 
         header = self.twPropPred.horizontalHeader()
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
         self.twPropPred.setColumnHidden(0, True)
         self.twPropPred.itemClicked.connect(self.event_itemClickedProp)
+        #self.twPropPred.resizeColumnsToContents()
 
         
         self.leNivPropP.setAlignment(Qt.AlignCenter)
@@ -619,7 +626,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.tabwCedula.currentChanged.connect(self.event_cambioPestania)
         self.tabwCedula.blockSignals(False)
 
-        
+        self.cambioComboMFD()
 
     # --- M E T O D O S ---
 
@@ -4506,6 +4513,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.lbEstadoNPPad.setText('')
             self.lbCiudadNPPad.setText('')
 
+            self.vaciarDomPadFis()
+
     def event_itemClickedProp(self, item):
 
         row = self.twPropPred.currentRow()
@@ -5058,3 +5067,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
          # Run the dialog event loop
         result = self.msg.exec_()
 
+
+    def vaciarDomPadFis(self):
+        
+        self.lbCallePF.setText('')
+        self.lbNumExtPF.setText('')
+        self.lbNumInteriorPF.setText('')
+        self.lbCodPostalPF.setText('')
+        self.lbColoniaPF.setText('')

@@ -123,7 +123,7 @@ class ImagenCedula:
                 self.habilitaBotImages()
 
             else:
-                self.dlg.lbImage.clear()
+                self.dlg.lbImage_2.clear()
                 self.deshabilitaBotImages()
                 return
 
@@ -138,7 +138,7 @@ class ImagenCedula:
                 data = self.idsFacIma[self.countIF]
                 self.habilitaBotImages()
             else:
-                self.dlg.lbImage.clear()
+                self.dlg.lbImage_2.clear()
                 self.deshabilitaBotImages()
                 return
 
@@ -152,7 +152,7 @@ class ImagenCedula:
                 data = self.idsDocIma[self.countID]
                 self.habilitaBotImages()
             else:
-                self.dlg.lbImage.clear()
+                self.dlg.lbImage_2.clear()
                 self.deshabilitaBotImages()
                 return
 
@@ -178,7 +178,7 @@ class ImagenCedula:
             if len(self.idsMzaIma) > 0:
                 data = self.idsMzaIma[self.countIM]
             else:
-                self.dlg.lbImage.clear()
+                self.dlg.lbImage_2.clear()
                 return
 
             self.mostrarImagen(data, 'M')
@@ -194,7 +194,7 @@ class ImagenCedula:
             if len(self.idsFacIma) > 0:
                 data = self.idsFacIma[self.countIF]
             else:
-                self.dlg.lbImage.clear()
+                self.dlg.lbImage_2.clear()
                 return
 
             self.mostrarImagen(data, 'F')
@@ -210,7 +210,7 @@ class ImagenCedula:
             if len(self.idsDocIma) > 0:
                 data = self.idsDocIma[self.countID]
             else:
-                self.dlg.lbImage.clear()
+                self.dlg.lbImage_2.clear()
                 return
 
             self.mostrarImagen(data, 'D')
@@ -234,7 +234,7 @@ class ImagenCedula:
             if len(self.idsMzaIma) > 0:
                 data = self.idsMzaIma[self.countIM]
             else:
-                self.dlg.lbImage.clear()
+                self.dlg.lbImage_2.clear()
                 return
 
             self.mostrarImagen(data, 'M')
@@ -251,7 +251,7 @@ class ImagenCedula:
             if len(self.idsFacIma) > 0:
                 data = self.idsFacIma[self.countIF]
             else:
-                self.dlg.lbImage.clear()
+                self.dlg.lbImage_2.clear()
                 return
 
             self.mostrarImagen(data, 'F')
@@ -268,7 +268,7 @@ class ImagenCedula:
             if len(self.idsDocIma) > 0:
                 data = self.idsDocIma[self.countID]
             else:
-                self.dlg.lbImage.clear()
+                self.dlg.lbImage_2.clear()
                 return
 
             self.mostrarImagen(data, 'D')
@@ -310,26 +310,26 @@ class ImagenCedula:
 
         smaller_pixmap = pixmap.scaled(self.listZoom[self.scaleFactor] * size, Qt.KeepAspectRatio, Qt.FastTransformation)
 
-        self.dlg.lbImage.setPixmap(smaller_pixmap)
+        self.dlg.lbImage_2.setPixmap(smaller_pixmap)
 
-        self.dlg.lbImage.setScaledContents(True)
-        self.dlg.lbImage.show()
+        self.dlg.lbImage_2.setScaledContents(True)
+        self.dlg.lbImage_2.show()
 
 
     # aplica zoom a la imagen
     def aplicaZoom(self):
 
-        pixmap = self.dlg.lbImage.pixmap()
+        pixmap = self.dlg.lbImage_2.pixmap()
 
         size = QSize(453, 255)
 
         smaller_pixmap = pixmap.scaled(self.listZoom[self.scaleFactor] * size, Qt.KeepAspectRatio, Qt.FastTransformation)
 
-        self.dlg.lbImage.setPixmap(smaller_pixmap)
+        self.dlg.lbImage_2.setPixmap(smaller_pixmap)
 
-        self.dlg.lbImage.setScaledContents(True)
+        self.dlg.lbImage_2.setScaledContents(True)
 
-        self.dlg.lbImage.show()
+        self.dlg.lbImage_2.show()
 
         self.dlg.btnZoomIn.setEnabled(self.listZoom[self.scaleFactor] < 2.5)
         self.dlg.btnZoomOut.setEnabled(self.listZoom[self.scaleFactor] > 1.0)

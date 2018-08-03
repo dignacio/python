@@ -272,7 +272,7 @@ class ActualizacionCatastralV3:
 
                     #Modo desarrollor
                     self.modoDesarrollo = True
-                    self.cargaRapida = False
+                    self.cargaRapida = True
                     #01001001020004054011
                     #01001001020004027003
                     #01001001020004063010

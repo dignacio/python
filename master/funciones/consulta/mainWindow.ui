@@ -62,248 +62,280 @@
       <property name="styleSheet">
        <string notr="true"/>
       </property>
-      <widget class="QLabel" name="lbTipoCond">
-       <property name="geometry">
-        <rect>
-         <x>1080</x>
-         <y>10</y>
-         <width>137</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Century Gothic</family>
-         <pointsize>14</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background : rgb(255,255,255,0)</string>
-       </property>
-       <property name="text">
-        <string>lbTipoCond</string>
-       </property>
-       <property name="margin">
-        <number>10</number>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btnGuardarCedCond">
-       <property name="geometry">
-        <rect>
-         <x>1270</x>
-         <y>0</y>
-         <width>61</width>
-         <height>50</height>
-        </rect>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>50</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>120</width>
-         <height>50</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Century Gothic</family>
-         <pointsize>11</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background : rgb(255,255,255,0)</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>:/cedula/icons/flechaBlanca.png</normaloff>:/cedula/icons/flechaBlanca.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>48</width>
-         <height>48</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btnGuardarCed">
-       <property name="geometry">
-        <rect>
-         <x>1360</x>
-         <y>0</y>
-         <width>61</width>
-         <height>50</height>
-        </rect>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>50</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>120</width>
-         <height>50</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Century Gothic</family>
-         <pointsize>11</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background : rgb(255,255,255,0)</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>:/cedula/icons/flechaCafe.png</normaloff>:/cedula/icons/flechaCafe.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>48</width>
-         <height>48</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="lbPredioGlobal">
-       <property name="geometry">
-        <rect>
-         <x>830</x>
-         <y>10</y>
-         <width>131</width>
-         <height>37</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>20</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background : rgb(255,255,255,0);
+      <layout class="QGridLayout" name="gridLayout_36">
+       <item row="0" column="10">
+        <spacer name="horizontalSpacer_15">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="1">
+        <spacer name="horizontalSpacer_13">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="8">
+        <widget class="QLabel" name="label_17">
+         <property name="maximumSize">
+          <size>
+           <width>240</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Century Gothic</family>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Condominio | Predio&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignJustify|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="lbCveCata">
+         <property name="maximumSize">
+          <size>
+           <width>520</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Century Gothic</family>
+           <pointsize>14</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>00-000-000-00-0000-000-000-00000</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QLabel" name="lbPredioGlobal">
+         <property name="font">
+          <font>
+           <pointsize>18</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background : rgb(255,255,255,0);
 </string>
-       </property>
-       <property name="text">
-        <string>000000</string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="cmbCondo">
-       <property name="geometry">
-        <rect>
-         <x>960</x>
-         <y>10</y>
-         <width>100</width>
-         <height>32</height>
-        </rect>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>100</width>
-         <height>32</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>100</width>
-         <height>32</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Century Gothic</family>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;000000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_1">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Century Gothic</family>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Clave Catastral Cartografica</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="5">
+        <widget class="QComboBox" name="cmbCondo">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Century Gothic</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
 QListView{color: black ; font-size: 16px; outline:none; font-weight:bold; font-family: &quot;Century Gothic&quot;;}QListView::item:selected { color: red; background-color: lightgray; font-family: &quot;Century Gothic&quot;;}
 QComboBox{ background : rgb(255,255,255); font-family: &quot;Century Gothic&quot;;}</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_1">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>301</width>
-         <height>25</height>
-        </rect>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Century Gothic</family>
-         <pointsize>14</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>Clave Catastral Cartografica</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="lbCveCata">
-       <property name="geometry">
-        <rect>
-         <x>330</x>
-         <y>10</y>
-         <width>520</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>520</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Century Gothic</family>
-         <pointsize>16</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>00-000-000-00-0000-000-000-00000</string>
-       </property>
-      </widget>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="7">
+        <widget class="QPushButton" name="btnGuardarCedCond">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Century Gothic</family>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background : rgb(255,255,255,0)</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/cedula/icons/flechaBlanca.png</normaloff>:/cedula/icons/flechaBlanca.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>48</width>
+           <height>48</height>
+          </size>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="6">
+        <widget class="QLabel" name="lbTipoCond">
+         <property name="font">
+          <font>
+           <family>Century Gothic</family>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background : rgb(255,255,255,0)</string>
+         </property>
+         <property name="text">
+          <string>lbTipoCond</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="margin">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="9">
+        <widget class="QPushButton" name="btnGuardarCed">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Century Gothic</family>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background : rgb(255,255,255,0)</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/cedula/icons/flechaCafe.png</normaloff>:/cedula/icons/flechaCafe.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>48</width>
+           <height>48</height>
+          </size>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <spacer name="horizontalSpacer_16">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
     </item>
     <item row="3" column="0">
@@ -372,7 +404,7 @@ background : rgb(255, 255, 255);
 }</string>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>6</number>
             </property>
             <widget class="QWidget" name="tUbicacion">
              <attribute name="title">
@@ -419,7 +451,7 @@ background : rgb(255, 255, 255);
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-130</y>
+                   <y>-102</y>
                    <width>942</width>
                    <height>917</height>
                   </rect>
@@ -525,9 +557,8 @@ background : rgb(255, 255, 255);
                      </font>
                     </property>
                     <property name="styleSheet">
-                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold; font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray; font-family: &quot;Century Gothic&quot;;}</string>
+                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                     </property>
                     <property name="inputMethodHints">
                      <set>Qt::ImhNone</set>
@@ -702,6 +733,9 @@ font-size:12px;
 height:24px
 }</string>
                        </property>
+                       <attribute name="horizontalHeaderMinimumSectionSize">
+                        <number>200</number>
+                       </attribute>
                        <column>
                         <property name="text">
                          <string>VIALIDAD</string>
@@ -1527,6 +1561,9 @@ height:24px
                        <property name="columnCount">
                         <number>4</number>
                        </property>
+                       <attribute name="horizontalHeaderMinimumSectionSize">
+                        <number>200</number>
+                       </attribute>
                        <column>
                         <property name="text">
                          <string>idOrientacion</string>
@@ -2081,9 +2118,8 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                      </font>
                     </property>
                     <property name="styleSheet">
-                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                     </property>
                    </widget>
                   </item>
@@ -2307,7 +2343,7 @@ color : rgb(255, 255, 255)</string>
                    <x>0</x>
                    <y>0</y>
                    <width>916</width>
-                   <height>806</height>
+                   <height>834</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_5">
@@ -2342,9 +2378,8 @@ color : rgb(255, 255, 255)</string>
                      </font>
                     </property>
                     <property name="styleSheet">
-                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                     </property>
                    </widget>
                   </item>
@@ -2364,9 +2399,8 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                      </font>
                     </property>
                     <property name="styleSheet">
-                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                     </property>
                    </widget>
                   </item>
@@ -2386,9 +2420,8 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                      </font>
                     </property>
                     <property name="styleSheet">
-                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                     </property>
                    </widget>
                   </item>
@@ -2503,6 +2536,9 @@ font-size:12px;
 height:24px
 }</string>
                     </property>
+                    <attribute name="horizontalHeaderMinimumSectionSize">
+                     <number>200</number>
+                    </attribute>
                     <column>
                      <property name="text">
                       <string>Servicio</string>
@@ -2531,9 +2567,8 @@ height:24px
                      </font>
                     </property>
                     <property name="styleSheet">
-                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                     </property>
                    </widget>
                   </item>
@@ -2553,9 +2588,8 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                      </font>
                     </property>
                     <property name="styleSheet">
-                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                     </property>
                    </widget>
                   </item>
@@ -2575,9 +2609,8 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                      </font>
                     </property>
                     <property name="styleSheet">
-                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                     </property>
                    </widget>
                   </item>
@@ -2649,9 +2682,8 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                      </font>
                     </property>
                     <property name="styleSheet">
-                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                     <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                     </property>
                    </widget>
                   </item>
@@ -2667,6 +2699,9 @@ font-size:12px;
 height:24px
 }</string>
                     </property>
+                    <attribute name="horizontalHeaderMinimumSectionSize">
+                     <number>200</number>
+                    </attribute>
                     <column>
                      <property name="text">
                       <string>Servicio</string>
@@ -2894,7 +2929,7 @@ dentro de la Manzana</string>
                    <x>0</x>
                    <y>0</y>
                    <width>935</width>
-                   <height>787</height>
+                   <height>815</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_17">
@@ -2952,6 +2987,9 @@ font-size:12px;
 height:24px
 }</string>
                        </property>
+                       <attribute name="horizontalHeaderMinimumSectionSize">
+                        <number>200</number>
+                       </attribute>
                        <column>
                         <property name="text">
                          <string>idGrupo</string>
@@ -3264,9 +3302,8 @@ color : rgb(255, 255, 255)</string>
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -3520,9 +3557,8 @@ color : rgb(255, 255, 255)</string>
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -3633,9 +3669,8 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -3795,9 +3830,8 @@ color : rgb(255, 255, 255)</string>
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -3914,9 +3948,8 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -3989,9 +4022,8 @@ color : rgb(255, 255, 255)</string>
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -4017,9 +4049,8 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -4303,7 +4334,7 @@ QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListVi
                    <x>0</x>
                    <y>0</y>
                    <width>916</width>
-                   <height>806</height>
+                   <height>834</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_26">
@@ -4367,6 +4398,9 @@ font-size:12px;
 height:24px
 }</string>
                     </property>
+                    <attribute name="horizontalHeaderMinimumSectionSize">
+                     <number>200</number>
+                    </attribute>
                     <column>
                      <property name="text">
                       <string>Servicio</string>
@@ -5349,7 +5383,7 @@ background : rgb(250,238,224);
                    <x>0</x>
                    <y>0</y>
                    <width>962</width>
-                   <height>787</height>
+                   <height>815</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_20">
@@ -5407,6 +5441,9 @@ font-size:12px;
 height:24px
 }</string>
                        </property>
+                       <attribute name="horizontalHeaderMinimumSectionSize">
+                        <number>200</number>
+                       </attribute>
                        <column>
                         <property name="text">
                          <string>idGrupo</string>
@@ -5498,9 +5535,8 @@ height:24px
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -5752,9 +5788,8 @@ color : rgb(255, 255, 255)</string>
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -5993,9 +6028,8 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -6051,9 +6085,8 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -6094,9 +6127,8 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -6122,9 +6154,8 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -6150,9 +6181,8 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -6401,9 +6431,8 @@ color : rgb(255, 255, 255)</string>
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -6423,9 +6452,8 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -6515,9 +6543,8 @@ color : rgb(255, 255, 255)</string>
                         </font>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25; font-family: &quot;Century Gothic&quot;;}
-QListView{color: black ; font-size: 16px; outline:none; font-weight:bold, font-family: &quot;Century Gothic&quot;;}
-QListView::item:selected { color: red; background-color: lightgray;font-family: &quot;Century Gothic&quot;;}</string>
+                        <string notr="true">QComboBox QAbstractItemView::item { min-height: 25;}
+QListView{color: black ; font-size: 16px; outline:none; font-weight:bold}QListView::item:selected { color: red; background-color: lightgray;}</string>
                        </property>
                       </widget>
                      </item>
@@ -6592,7 +6619,7 @@ QListView::item:selected { color: red; background-color: lightgray;font-family: 
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-236</y>
+                   <y>0</y>
                    <width>897</width>
                    <height>1042</height>
                   </rect>
@@ -7167,7 +7194,7 @@ height:24px
                    <x>0</x>
                    <y>0</y>
                    <width>916</width>
-                   <height>806</height>
+                   <height>834</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_30">
@@ -7360,6 +7387,9 @@ font-size:12px;
 height:24px
 }</string>
                     </property>
+                    <attribute name="horizontalHeaderMinimumSectionSize">
+                     <number>200</number>
+                    </attribute>
                     <column>
                      <property name="text">
                       <string>Cuenta/Predio</string>
@@ -7958,7 +7988,7 @@ color : rgb(255, 255, 255)</string>
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-386</y>
+                   <y>0</y>
                    <width>877</width>
                    <height>1172</height>
                   </rect>
@@ -7988,6 +8018,9 @@ font-size:12px;
 height:24px
 }</string>
                     </property>
+                    <attribute name="horizontalHeaderMinimumSectionSize">
+                     <number>200</number>
+                    </attribute>
                     <column>
                      <property name="text">
                       <string>claveProp</string>
@@ -8068,6 +8101,9 @@ font-size:12px;
 height:24px
 }</string>
                     </property>
+                    <attribute name="horizontalHeaderMinimumSectionSize">
+                     <number>200</number>
+                    </attribute>
                     <column>
                      <property name="text">
                       <string>idProp</string>
@@ -8102,7 +8138,7 @@ height:24px
                      <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 2px;}
 QGroupBox, QLabel{
 background : rgb(250,238,224);
-}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 2px;}</string>
+}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 2px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 2px;}</string>
                     </property>
                     <property name="title">
                      <string/>
@@ -8353,7 +8389,7 @@ background : rgb(250,238,224);
                      <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 2px;}
 QGroupBox, QLabel{
 background : rgb(250,238,224);
-}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
+}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
                     </property>
                     <property name="title">
                      <string>Datos Adicionales</string>
@@ -8604,7 +8640,7 @@ background : rgb(250,238,224);
                      <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 2px;}
 QGroupBox, QLabel{
 background : rgb(250,238,224);
-}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
+}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
                     </property>
                     <property name="title">
                      <string>Notificacion</string>
@@ -8912,7 +8948,7 @@ background : rgb(250,238,224);
                      <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 2px;}
 QGroupBox, QLabel{
 background : rgb(250,238,224);
-}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
+}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
                     </property>
                     <property name="title">
                      <string/>
@@ -9411,7 +9447,7 @@ background : rgb(250,238,224);
                <x>0</x>
                <y>0</y>
                <width>479</width>
-               <height>814</height>
+               <height>842</height>
               </rect>
              </property>
              <widget class="QPushButton" name="btnAtrasImage">
@@ -9463,6 +9499,9 @@ color : rgb(255, 255, 255)</string>
               </property>
               <property name="text">
                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;lbNumImages&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
              <widget class="QPushButton" name="btnZoomIn">
@@ -9917,27 +9956,6 @@ color : rgb(255, 255, 255)</string>
         </widget>
        </item>
       </layout>
-     </widget>
-    </item>
-    <item row="2" column="0" alignment="Qt::AlignRight">
-     <widget class="QLabel" name="label_17">
-      <property name="maximumSize">
-       <size>
-        <width>240</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Century Gothic</family>
-        <pointsize>12</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Condominio   Predio&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
      </widget>
     </item>
    </layout>
