@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/plugins/eliminacion">
+		<file>icons/flechaBlanca.png</file>
+		<file>icons/flechaCafe.png</file>
+  </qresource>
+</RCC>

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/plugins/master/funciones/revisioncampo" >
+		<file>icons/zoom_in.png</file>
+		<file>icons/zoom_out.png</file>
+    </qresource>
+</RCC>
