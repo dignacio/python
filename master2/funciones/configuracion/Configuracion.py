@@ -87,6 +87,8 @@ class Configuracion():
         self.urlEliminaIma = self.servidorIP + 'archivoswkn/api/archivo-resource/deleteArchivo'
         #Url subir imagen
         self.urlSubirIma = self.servidorIP + 'archivoswkn/api/archivo-resource/saveArchivo/'
+        #Url actualizar imagen
+        self.urlActualizaImg = self.servidorIP + 'archivoswkn/api/archivo-resource/updateDataArchivo/'
         #Urls para asignacion de campo
         self.urlAsigCampoAgregar = self.servidorIP + 'busquedasimplewkn/api/asignacion/campo/asignar/'
         self.urlAsigCampoEliminar = self.servidorIP + 'busquedasimplewkn/api/asignacion/campo/eliminar/'

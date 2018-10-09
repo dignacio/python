@@ -1,3 +1,4 @@
+
 import os
 import operator
 
@@ -14,7 +15,7 @@ from qgis.utils import iface
 from qgis.core import QgsProject
 from .fusion_dialog import fusionDialog
 
-import os, json, requests, sys, datetime, base64, time
+import os, json, requests, sys, datetime, base64, time, hashlib
 import sys
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -383,6 +384,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         #subir imagen
         self.btnSubir.clicked.connect(self.event_subirImg)
+
+        #guardar imagen 
+        self.btnGuardaImg.clicked.connect(self.event_guardaImg)
         
         # self.cmbFactorConstrP.setView(self.generaQListView()) --- SE deshabilito, ya no se va usar
 
@@ -767,9 +771,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
     def cargaCatalogos(self, dataCat):
 
         try:
+            
             if len(dataCat) == 0:
                 self.createAlert('Sin Resultados', icono = QMessageBox().Warning)
                 return
+            
 
             # UBICACION
             tipoPredio = dataCat['catTipoPredios']
@@ -1001,7 +1007,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         try:
             if len(dataConstC) == 0:
                 self.deshabilitaConstrC()
-                self.createAlert('Sin Resultados', titulo = 'cargaConstrCondo', icono = QMessageBox().Warning)
+                #self.createAlert('Sin Resultados', titulo = 'cargaConstrCondo', icono = QMessageBox().Warning)
                 
                 return
 
@@ -1235,7 +1241,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                     self.twServiciosCalle.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(dsc['servicio']))
 
             # cargar servicios de predio
-            dataServCuenta = self.obtieneServiciosCuenta(self.cveCatastral)
+            dataServCuenta = self.obtieneServiciosCuenta(str(self.cedula['id']) + '/C')
 
             for dsc in dataServCuenta:
 
@@ -1616,6 +1622,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.btnZoomIn.setEnabled(False)
         self.btnZoomOut.setEnabled(False)
         self.btnAdelanteImagen.setEnabled(False)
+        self.btnRotarI.setEnabled(False)
+        self.btnRotarD.setEnabled(False)
+
+
+        
 
     # - habilita manejo de imagenes
     def habilitaBotImages(self):
@@ -1624,6 +1635,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.btnZoomIn.setEnabled(True)
         self.btnZoomOut.setEnabled(True)
         self.btnAdelanteImagen.setEnabled(True)
+        self.btnRotarI.setEnabled(True)
+        self.btnRotarD.setEnabled(True)
 
     def muestraPropPredio(self):
 
@@ -2326,13 +2339,33 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.createAlert("Error de servidor, 'subirImgWS()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
             return str(e)
 
-        if response.status_code == 200:
-            data = response.content
+        if response.status_code == 200 or response.status_code == 201:
+            data = response.json()
         else:
             self.createAlert('Error en peticion "subirImgWS()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
             return response.text
 
-        return 'OK'        
+        return data  
+
+    def actualizaImgWS(self,actualiza, url, cveCata):
+        data = ""
+        
+        jsonActualizaImg = json.dumps(actualiza)
+        try:
+            self.headers['Authorization'] = self.UTI.obtenerToken()
+            response = requests.put(url + cveCata, headers = self.headers, data = jsonActualizaImg)
+        except requests.exceptions.RequestException as e:
+            self.createAlert("Error de servidor, 'actualizaImgWS()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
+            return str(e)
+
+        if response.status_code == 200:
+            data = response.content
+        else:
+            self.createAlert('Error en peticion "actualizaImgWS()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
+            return response.text
+
+        return 'OK'
+
 
 
     # --- S E R V I C I O S   W E B   CIERRA ---
@@ -4355,15 +4388,24 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         # nombre
         data['nombre'] = None if self.leNombre.text() == '' else self.leNombre.text()
 
+        '''
         if self.cargandoRevision:
             headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
             respuesta = requests.get(self.CFG.urlObtenerIdPredio + self.cveCatastral, headers = headers)
             if respuesta.status_code == 200:
                 data['id'] = respuesta.json()
+        '''
 
+        count = self.cmbVolumenP.count()
+        superficie = 0
+
+        for index in range(0, count):
+            superficie += self.cmbVolumenP.itemData(index)['supConst'] or 0
+
+        data['supContruccion'] = superficie
 
         # --- G U A R D A   P R E D I O S ---
-        resp = self.guardaPredioWS(predio = data, url = self.CFG.urlGuardaPredio)
+        resp = self.guardaPredioWS(predio = data, url = self.CFG.urlGuardaPredio + '/R/G')
 
         if resp == 'OK':
 
@@ -4383,7 +4425,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                         listaServicios.append(servicio)
 
                 # consumir ws para guardar los servicios
-                resp = self.guardaServiciosPredWS(listaServicios, cveCata = self.cveCatastral, url = self.CFG.urlGuardaServiciosP)
+                resp = self.guardaServiciosPredWS(listaServicios, cveCata = str(self.cedula['id']) + '/' + self.cveCatastral + '/R/G', url = self.CFG.urlGuardaServiciosP)
 
                 if resp != 'OK':
                     return
@@ -5076,8 +5118,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 self.lbNumImages.setText('Sin imagenes')
                 return
 
-            
-
 
         # carga imagenes de fachadas
         elif index == 1:
@@ -5093,8 +5133,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 self.lbNumImages.setText('Sin imagenes')
                 return
 
-            
-
         # carga imagenes de documentos
         elif index == 2:
 
@@ -5108,9 +5146,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 self.deshabilitaBotImages()
                 self.lbNumImages.setText('Sin imagenes')
                 return
-
-            
-
+ 
         self.btnZoomIn.setEnabled(self.listZoom[self.scaleFactor] < 2.5)
         self.btnZoomOut.setEnabled(self.listZoom[self.scaleFactor] > 1.0)
         
@@ -5241,7 +5277,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         v = list(data.values())
         k = list(data.keys())
-
         imagen = {}
         if v[0] is None:
 
@@ -5291,39 +5326,143 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         
     #rotar imagen a la derecha 90°
     def rotarDer (self):
-        pixmap = self.lbImage.pixmap()
-        size = QSize(453, 255)
         
-        t =  QtGui.QTransform()
+        pixmap = self.lbImage.pixmap()
+        size = QSize(453, 255)    
+        t = QtGui.QTransform()
         t.rotate(90)
-
         rotated_pixmap = pixmap.transformed(t)
+        self.lbImage.setPixmap(rotated_pixmap)
 
-        self.lbImage.setPixmap( rotated_pixmap)
+        imagen = self.lbImage.pixmap()
+        image = imagen.toImage()
+        data = QByteArray()
+        buf = QBuffer(data)
+        image.save(buf, 'PNG')
+        img = ''
+        enconde_string = base64.b64encode(data)
+        img = enconde_string.decode("utf-8")
+        index = self.cmbMFD.currentIndex()
+
+         # carga imagenes de manzanas
+        if index == 0:
+            if len(self.idsMzaIma) > 0:
+                data = self.idsMzaIma[self.countIM]
+        # carga imagenes de fachadas
+        elif index == 1:
+            if len(self.idsFacIma) > 0:
+                data = self.idsFacIma[self.countIF]   
+        # carga imagenes de documentos
+        elif index == 2:
+            if len(self.idsDocIma) > 0:
+                data = self.idsDocIma[self.countID]
+
+        v = list(data.values())
+        
+        valor = v[0]
+
+        if valor['archivo'] != img:
+            valor['archivo'] = img
+
+            index = self.cmbMFD.currentIndex()
+                # carga imagenes de manzanas
+            if index == 0:
+                m = {}
+                m[valor['id']] = valor
+                self.idsMzaIma[self.countIM] = m
+
+            # carga imagenes de fachadas
+            elif index == 1:
+                m = {}
+                m[valor['id']] = valor
+                self.idsFacIma[self.countIF] = m
+
+            # carga imagenes de documentos
+            elif index == 2:
+                m = {}
+                m[valor['id']] = valor
+                self.idsDocIma[self.countID] = m
+
+            
+
+    
 
     #rotar imagen a la izquierda 90°
     def rotarIzq (self):
         pixmap = self.lbImage.pixmap()
-        size = QSize(453, 255)
-        
-        t =  QtGui.QTransform()
+        size = QSize(453, 255)    
+        t = QtGui.QTransform()
         t.rotate(-90)
-
         rotated_pixmap = pixmap.transformed(t)
+        self.lbImage.setPixmap(rotated_pixmap)
 
-        self.lbImage.setPixmap( rotated_pixmap)
+        imagen = self.lbImage.pixmap()
+        image = imagen.toImage()
+        data = QByteArray()
+        buf = QBuffer(data)
+        image.save(buf, 'PNG')
+        img = ''
+        enconde_string = base64.b64encode(data)
+        img = enconde_string.decode("utf-8")
 
-    
+
+        index = self.cmbMFD.currentIndex()
+
+         # carga imagenes de manzanas
+        if index == 0:
+            if len(self.idsMzaIma) > 0:
+                data = self.idsMzaIma[self.countIM]
+        # carga imagenes de fachadas
+        elif index == 1:
+            if len(self.idsFacIma) > 0:
+                data = self.idsFacIma[self.countIF]   
+        # carga imagenes de documentos
+        elif index == 2:
+            if len(self.idsDocIma) > 0:
+                data = self.idsDocIma[self.countID]
+
+        v = list(data.values())
+        
+        valor = v[0]
+
+        if valor['archivo'] != img:
+            valor['archivo'] = img
+
+            index = self.cmbMFD.currentIndex()
+                # carga imagenes de manzanas
+            if index == 0:
+                m = {}
+                m[valor['id']] = valor
+                self.idsMzaIma[self.countIM] = m
+
+            # carga imagenes de fachadas
+            elif index == 1:
+                m = {}
+                m[valor['id']] = valor
+                self.idsFacIma[self.countIF] = m
+
+            # carga imagenes de documentos
+            elif index == 2:
+                m = {}
+                m[valor['id']] = valor
+                self.idsDocIma[self.countID] = m
+
+
+       
+
     #subir imagen
     def event_subirImg(self):
         x = ''
+        BLOCKSIZE = 65536
         path = QFileDialog.getOpenFileName(self, 'Subir imagen', os.getenv('HOME'), 'Image tiles(*.jpg, *.png )')
-        if path:
+        if path !=('',''):
+            hasher = hashlib.md5(open(path[0],'rb').read()).hexdigest().upper()
             with open(path[0], "rb") as path:
                 encoded_string = base64.b64encode(path.read())
-                x= encoded_string.decode("utf-8") 
-
-
+                x= encoded_string.decode("utf-8")
+        else:
+            return
+        
         index = self.cmbMFD.currentIndex()
 
         #clave manzana
@@ -5341,44 +5480,145 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             idTipoArch = 3 
         
         subir = {}
-        subir['archivo'] =[x] 
+        subir['archivo'] =x
         subir['id'] = None
         subir['idTipoArchivo'] = idTipoArch 
         subir['idTipoExtension'] = 1
         subir['latitud'] = None
         subir['longitud'] = None
-        subir['md5'] = None
+        subir['md5'] = hasher 
         subir['nombreArchivo'] = None
         subir['tmpid'] = None
 
+        # manzanas
+        if self.cmbMFD.currentIndex() == 0:
+            self.idsMzaIma.append({-1: subir})
+
+        # fachadas
+        elif self.cmbMFD.currentIndex() == 1:
+            self.idsFacIma.append({-1: subir})
+            
+        # documentos
+        elif self.cmbMFD.currentIndex() == 2:
+            self.idsDocIma.append({-1: subir})
+
+        self.cambioComboMFD()
         
-        print(subir)
-        print(type(subir))
-        print(type(encoded_string))
-        print(type(x))
-        
-        respuesta = self.subirImgWS(subir, url = self.CFG.urlSubirIma, cveCata = self.cveCatastral)
+    #guardar imagen
+    def event_guardaImg(self):
+        index = self.cmbMFD.currentIndex()
 
-        print('---------------------------------',respuesta)
-
-        if respuesta == 'OK':
-            self.createAlert('Guardado correcto', QMessageBox.Information)
-            '''    
-            # manzanas
-            if self.cmbMFD.currentIndex() == 0:
-                self.idsMzaIma.append(self.countIM)
-
-            # fachadas
-            elif self.cmbMFD.currentIndex() == 1:
-                self.idsFacIma.append(self.countIF)
+         # carga imagenes de manzanas
+        if index == 0:
+            if len(self.idsMzaIma) > 0:
+                data = self.idsMzaIma[self.countIM]
+               
+            else:
+                self.createAlert('No se ha seleccionado imagen a guardar', QMessageBox.Warning)
+                return
+        # carga imagenes de fachadas
+        elif index == 1:
+            if len(self.idsFacIma) > 0:
+                data = self.idsFacIma[self.countIF]
                 
-            # documentos
-            elif self.cmbMFD.currentIndex() == 2:
-                self.idsDocIma.append(self.countID)
+            else:
+                self.createAlert('No se ha seleccionado imagen a guardar', QMessageBox.Warning)
+                return    
+        # carga imagenes de documentos
+        elif index == 2:
+            if len(self.idsDocIma) > 0:
+                data = self.idsDocIma[self.countID]
+               
+            else:
+                self.createAlert('No se ha seleccionado imagen a guardar', QMessageBox.Warning)
+                return
+
+         #clave manzana
+        claveDes = self.cveCatastral
+
+        if self.cmbMFD.currentIndex() ==0:
+            claveDes = claveDes[0:20]       
+
+
+        v = list(data.values())
+        k = list(data.keys())
+        valor = v[0]
+
+        if k[0] is -1:
+            respuesta = self.subirImgWS(valor, url = self.CFG.urlSubirIma, cveCata = claveDes)
+
+            self.createAlert('Guardado correcto', QMessageBox.Information)
+
+            va = list(respuesta.values())
+
+            id = va[1]
+            i= id
+            
+            valor['id'] = i
+
+            index = self.cmbMFD.currentIndex()
+            
+            # carga imagenes de manzanas
+            if index == 0:
+                m = {}
+                m[i] = valor
+                self.idsMzaIma[self.countIM] = m
+
+            # carga imagenes de fachadas
+            elif index == 1:
+                m = {}
+                m[i] = valor
+                self.idsFacIma[self.countIF] = m
     
-            self.cambioComboMFD()
-            '''
+            # carga imagenes de documentos
+            elif index == 2:
+                m = {}
+                m[i] = valor
+                self.idsDocIma[self.countID] = m
+           
         
+            self.cambioComboMFD()
+        
+        else:
+            index = self.cmbMFD.currentIndex()
+
+            # carga imagenes de manzanas
+            if index == 0:
+                if len(self.idsMzaIma) > 0:
+                    data = self.idsMzaIma[self.countIM]
+            
+            # carga imagenes de fachadas
+            elif index == 1:
+                if len(self.idsFacIma) > 0:
+                    data = self.idsFacIma[self.countIF]
+                
+            # carga imagenes de documentos
+            elif index == 2:
+                if len(self.idsDocIma) > 0:
+                    data = self.idsDocIma[self.countID]
+
+            claveDes = self.cveCatastral
+
+            if self.cmbMFD.currentIndex() ==0:
+                claveDes = claveDes[0:20]
+            
+            if valor['md5'] == None:
+                
+                decoded = base64.decodebytes(valor['archivo'].encode('ascii'))
+                encry= hashlib.md5(decoded).hexdigest().upper()
+                #decoded = base64.decodebytes(t)
+                valor['md5'] = encry
+                
+                print(encry)
+            print(valor)
+                
+            respuesta = self.actualizaImgWS(valor, url = self.CFG.urlActualizaImg, cveCata = claveDes)
+            #print(respuesta)
+
+            if respuesta == 'OK':
+                self.createAlert('Imagen actualizada.', QMessageBox.Information)
+            
+                
          
     #elimina imagen seleccionada 
     def event_elimImg(self):
@@ -5450,11 +5690,10 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             Elimina['idArchivo'] = idArch
             Elimina['idTipoArchivo'] =idTipoArchori 
 
-            print(Elimina)
             
             resp = self.elimImgWS(Elimina, url = self.CFG.urlEliminaIma)
 
-            print(resp, '++++++++++++++++++++++')
+           
 
             if resp == 'OK':
                 self.createAlert('Eliminado correcto', QMessageBox.Information)
@@ -5649,7 +5888,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         spinvalue = QtWidgets.QDoubleSpinBox()
         spinvalue.setRange(rangeInit, rangeEnd)
         spinvalue.setDecimals(decimals)
-        spinvalue.setSingleStep(0.01);
+        spinvalue.setSingleStep(0.01)
         spinvalue.setValue(sBValue)
 
         spinvalue.valueChanged.connect(self.event_spinBox)

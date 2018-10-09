@@ -1,6 +1,6 @@
 <RCC>
   <qresource prefix="cedula">
-    <file>icons/subir.png</file>
+    <file>icons/guardar.png</file>
     <file>icons/delete.png</file>
     <file>icons/subir.png</file>
     <file>icons/rotarDer.png</file>

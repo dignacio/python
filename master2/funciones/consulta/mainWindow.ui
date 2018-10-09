@@ -404,7 +404,7 @@ background : rgb(255, 255, 255);
 }</string>
             </property>
             <property name="currentIndex">
-             <number>2</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="tUbicacion">
              <attribute name="title">
@@ -9482,31 +9482,6 @@ color : rgb(255, 255, 255)</string>
                <string>&lt;</string>
               </property>
              </widget>
-             <widget class="QLabel" name="lbNumImages">
-              <property name="geometry">
-               <rect>
-                <x>100</x>
-                <y>359</y>
-                <width>191</width>
-                <height>21</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <family>Century Gothic</family>
-                <pointsize>10</pointsize>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background : rgb(255,255,255,0)</string>
-              </property>
-              <property name="text">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;lbNumImages&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
              <widget class="QPushButton" name="btnZoomIn">
               <property name="geometry">
                <rect>
@@ -9856,7 +9831,7 @@ color : rgb(255, 255, 255)</string>
               <widget class="QPushButton" name="btnZoomOut">
                <property name="geometry">
                 <rect>
-                 <x>290</x>
+                 <x>260</x>
                  <y>310</y>
                  <width>41</width>
                  <height>36</height>
@@ -9888,7 +9863,7 @@ color : rgb(255, 255, 255)</string>
               <widget class="QPushButton" name="btnAdelanteImagen">
                <property name="geometry">
                 <rect>
-                 <x>330</x>
+                 <x>300</x>
                  <y>310</y>
                  <width>41</width>
                  <height>36</height>
@@ -9917,8 +9892,8 @@ color : rgb(255, 255, 255)</string>
               <widget class="QComboBox" name="cmbMFD">
                <property name="geometry">
                 <rect>
-                 <x>380</x>
-                 <y>311</y>
+                 <x>350</x>
+                 <y>310</y>
                  <width>81</width>
                  <height>31</height>
                 </rect>
@@ -9949,7 +9924,7 @@ color : rgb(255, 255, 255)</string>
                <property name="geometry">
                 <rect>
                  <x>440</x>
-                 <y>370</y>
+                 <y>310</y>
                  <width>31</width>
                  <height>31</height>
                 </rect>
@@ -10062,38 +10037,80 @@ color : rgb(255, 255, 255)</string>
                  <normaloff>:/cedula/icons/subir.png</normaloff>:/cedula/icons/subir.png</iconset>
                </property>
               </widget>
-             </widget>
-             <widget class="QPushButton" name="btnRotarD">
-              <property name="geometry">
-               <rect>
-                <x>250</x>
-                <y>350</y>
-                <width>41</width>
-                <height>36</height>
-               </rect>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>30</width>
-                <height>24</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>45</width>
-                <height>36</height>
-               </size>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background : rgb(255,255,255,0)</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="resources.qrc">
-                <normaloff>:/cedula/icons/rotarDer.png</normaloff>:/cedula/icons/rotarDer.png</iconset>
-              </property>
+              <widget class="QLabel" name="lbNumImages">
+               <property name="geometry">
+                <rect>
+                 <x>80</x>
+                 <y>320</y>
+                 <width>191</width>
+                 <height>21</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Century Gothic</family>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background : rgb(255,255,255,0)</string>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;lbNumImages&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="btnRotarD">
+               <property name="geometry">
+                <rect>
+                 <x>230</x>
+                 <y>310</y>
+                 <width>41</width>
+                 <height>36</height>
+                </rect>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>30</width>
+                 <height>24</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>45</width>
+                 <height>36</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background : rgb(255,255,255,0)</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/cedula/icons/rotarDer.png</normaloff>:/cedula/icons/rotarDer.png</iconset>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="btnGuardaImg">
+               <property name="geometry">
+                <rect>
+                 <x>440</x>
+                 <y>370</y>
+                 <width>31</width>
+                 <height>31</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/cedula/icons/guardar.png</normaloff>:/cedula/icons/guardar.png</iconset>
+               </property>
+              </widget>
              </widget>
              <widget class="QPushButton" name="btnRotarI">
               <property name="geometry">
@@ -10155,11 +10172,9 @@ color : rgb(255, 255, 255)</string>
              </widget>
              <zorder>widget_10</zorder>
              <zorder>btnAtrasImage</zorder>
-             <zorder>lbNumImages</zorder>
              <zorder>btnZoomIn</zorder>
              <zorder>scrollArea_9</zorder>
              <zorder>widget_3</zorder>
-             <zorder>btnRotarD</zorder>
              <zorder>btnRotarI</zorder>
              <zorder>rbtnCopiar</zorder>
              <zorder>rbtnCortar</zorder>
@@ -10205,7 +10220,6 @@ color : rgb(255, 255, 255)</string>
   </customwidget>
  </customwidgets>
  <resources>
- 
  </resources>
  <connections/>
 </ui>
