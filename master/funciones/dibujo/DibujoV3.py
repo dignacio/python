@@ -66,6 +66,7 @@ class DibujoV3:
         self.dockwidget = DibujoV3Dialog(parent = iface.mainWindow())
         #self.dockwidget.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
+        
         self.iface = iface
 
         self.CFG = None
@@ -83,7 +84,7 @@ class DibujoV3:
         self.dockwidget.botonDibujar.clicked.connect(self.eventos.alternarModoDibujo)
         iface.currentLayerChanged.connect(self.eventos.actualizarCapaActiva)
         self.eventos.deactivated.connect(self.eventos.recargarQgsMapTool)
-
+        
 
 
         # Declare instance attributes
@@ -255,7 +256,7 @@ class Evento(QgsMapTool):
         self.canvas = canvas    
         self.pluginM = pluginM
         self.ventana = VentanaDibujoV3(iface, self)
-
+        
         #Creacion de Rubber Band para Poligonos
         self.rubberPoli = QgsRubberBand(self.canvas, QgsWkbTypes.PolygonGeometry)
         self.rubberPoli.setFillColor(QColor(0,0,0,0))
@@ -266,7 +267,7 @@ class Evento(QgsMapTool):
         self.rubberPunto = QgsRubberBand(self.canvas, QgsWkbTypes.PointGeometry)
         self.rubberPunto.setColor(Qt.red)
         self.rubberPunto.setWidth(6)
-
+        
         #Creacion de rubberband para lineas
         self.rubberLinea = QgsRubberBand(self.canvas, QgsWkbTypes.PointGeometry)
         self.rubberLinea.setFillColor(QColor(0,0,0,0))
@@ -296,7 +297,7 @@ class Evento(QgsMapTool):
         #Inicializacion de booleanas
         self.dibujando = False
         self.primerClick = False
-
+        
         #Creacion del Snapper
         self.snapper = self.canvas.snappingUtils()
         config = QgsSnappingConfig()
@@ -373,7 +374,7 @@ class Evento(QgsMapTool):
                                         "+.............+",
                                         "+++++++++++++++",
                                         "       +++      "]))
-
+        
 ######################################################################################################        
 
 

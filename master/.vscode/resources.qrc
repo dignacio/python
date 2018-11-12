@@ -1,0 +1,14 @@
+<RCC>
+  <qresource prefix="/plugins/Master">
+	<file>icon.png</file>
+    <file>icons/consulta.png</file>
+	<file>icons/dibujo.png</file>
+	<file>icons/DivisionFusion.png</file>
+	<file>icons/Eliminar.png</file>
+	<file>icons/Topologia.png</file>
+	<file>icons/carga.png</file>
+	<file>icons/AsigCampo.png</file>
+	<file>icons/AsigPadron.png</file>
+	<file>icons/AsigRevision.png</file>
+  </qresource>
+</RCC>

@@ -8,7 +8,7 @@
                               -------------------
         begin                : 2018-07-02
         git sha              : $Format:%H$
-        copyright            : (C) 2018 by ActualizacionCatastralV3
+        copyright            : (C) 2018 by Charro
         email                : ActualizacionCatastralV3
  ***************************************************************************/
 
@@ -217,6 +217,9 @@ class ActualizacionCatastralV3:
         # show the dialog
 
         adelante = False
+        # muestra siempre la primer tab
+        self.dockwidget.tabWidget.setCurrentIndex(0)
+
         self.obtenerXCapas()
         if QSettings().value('integrando') == 'True':
             
@@ -357,7 +360,7 @@ class ActualizacionCatastralV3:
             #self.idManzana = '01001001020004026040' #Cortita y chiquita
             #self.idManzana = '01001001020004060004' 
                              #01001001020  4026040
-            self.idManzana = '01001001020004060004'  #La larga que le gusta a mi jefe
+            self.idManzana = '01001001020004060004'  #La larga
             
             #01001001020004026039
             #01001001020  4026039
@@ -475,6 +478,7 @@ class ActualizacionCatastralV3:
 
     def intermediarioReferencia(self):
         nameCapa = self.dockwidget.comboCapaReferencia.currentText()
+        self.UTI.mostrarAlerta(self.dockwidget.botonCargarReferencia.accessibleDescription(), QMessageBox().Information, "siiiiiiiiiiiiiiiii")
 
         try:
             bound = self.obtenerBoundingBox().asWkt()
@@ -552,12 +556,22 @@ class ActualizacionCatastralV3:
 
                 if not self.pintarNum(self.xPredNum):
                     return
+                
+                if not self.pintarUnaCapa(self.xConst):
+                    return
 
                 if not self.pintarUnaCapa(self.xHoriGeom):
                     return
 
                 if not self.pintarNum(self.xHoriNum):
                     return
+                
+                if not self.pintarUnaCapa(self.xVert):
+                    return
+                
+                if not self.pintarUnaCapa(self.xCvesVert):
+                    return
+            
                 
 
             else:
@@ -1103,13 +1117,13 @@ class ActualizacionCatastralV3:
                 #validar si la clave ya existe
                 for key, value in self.dockwidget.lista.items():
                     if str(key) == str(feat['cve_cat'][0:25]):
-                        self.UTI.createAlert('La Clave: \'' + str(feat['cve_cat'][0:25]) + '\' se encuentra abierta', QMessageBox.Information, 'Cedula Catastral')
+                        self.UTI.mostrarAlerta('La Clave: \'' + str(feat['cve_cat'][0:25]) + '\' se encuentra abierta', QMessageBox().Information, 'Cedula Catastral')
                         self.cancelaAperturaCedula()
                         return
 
                 # limite de cedulas abiertas
                 if len(self.dockwidget.lista) == 5:
-                    self.UTI.createAlert('Excedio el limite de cedulas abiertas', QMessageBox().Warning, 'Cedula Catastral')
+                    self.UTI.mostrarAlerta('Excedio el limite de cedulas abiertas', QMessageBox().Warning, 'Cedula Catastral')
                     return
 
                 # abrir Cedula

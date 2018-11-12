@@ -36,6 +36,7 @@ class Utilidad:
 		url = self.CFG.urlAutenticacion
 		payload = {"username" : "user", "password" : "user"}
 		payload = json.dumps(payload)
+		#headers = {'Content-Type': 'application/json', 'Authorization' : 'bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJhZG1pbiIsInNjb3BlIjpbIm9wZW5pZCJdLCJhdGkiOiJmNTJjMThiZS1lODhiLTRjMzktYmRhNy1jMDI5MzMwZTMyMTIiLCJleHAiOjE1NDE2MDg4ODQsImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1VTRVIiXSwianRpIjoiMWI4YjgxNzUtNDczYy00ODMzLWI3YTctZTQzNTY1MDU1MmU2IiwiY2xpZW50X2lkIjoid2ViX2FwcCJ9.X_HIFP8t9YbRMmQp4txz8dddwLA8Rg3NjTC6Dg33lIYw8VMWgv1e4ggBFk98qiERtpBFquos1C8I6p6Sh38gfRH6X9wn6FXN53rdaQ8QeoDxMB9ESjL-vFUPNrqQeckyTLv221y1wlS2GVc4MVJ5a5sXxEC88PEueL1b2ttRAKXP7nEFhO_XCarkqnRksL7EhqJ0csuROamTR26iYO9mH1X34QQDoifzj5H1Mwpli1FiQ9LyPPzZ_BoLe3hbqrYxoMe5ZTvo3HA2Zqfs0SBFSCUtGxxCJS6WnGF2sJIyuS6-wiU7d6vQE8P47suoGzB0Vj828WISmjAPIXVo2mHNOA'}
 		headers = {'Content-Type': 'application/json'}
 
 		response = requests.post(url, headers = headers, data = payload)

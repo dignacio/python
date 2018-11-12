@@ -1,18 +1,56 @@
-
+from PyQt5.QtCore import QThread
 import qgis
 from qgis.utils import iface
 from qgis.core import *
-from PyQt5.QtCore import QFileInfo, QSettings, QCoreApplication
-from PyQt5.QtWidgets import QAction, QMessageBox
+from PyQt5.QtCore import QFileInfo, QSettings, QCoreApplication, QTimer
+from PyQt5.QtWidgets import QAction, QMessageBox, QApplication
 from PyQt5.QtGui import *
-import json, requests, os
+import json, requests, os, time, threading
+from osgeo import ogr, osr
 
+class ThreadingExample(object):
+    """ Threading example class
+    The run() method will be started and it will run in the background
+    until the application exits.
+    """
+
+    def __init__(self, interval=1):
+        """ Constructor
+        :type interval: int
+        :param interval: Check interval, in seconds
+        """
+        self.interval = interval
+        self.contador = 0
+
+        thread = threading.Thread(target=self.run, args=())
+        thread.daemon = True                            # Daemonize thread
+        thread.start()                                  # Start the execution
+
+
+    def run(self):
+        """ Method that runs forever """
+        while True:
+            # Do something
+            print('Doing something imporant in the background')
+            #print(self.interval)
+            time.sleep(self.interval)
+
+    def funcion(self, argumento):
+        while True:
+            self.contador += 1
+            print('hola ---------')
+            print('hola ---------')
+            print('hola ---------')
+            print('hola ---------')
 
 class Startup():
 
     def __init__(self):
+
         menuVector = iface.vectorMenu().actions()
         menuOpciones = iface.settingsMenu().actions()
+        menuOpciones2 = iface.settingsMenu()
+
         menuPlug = iface.pluginMenu().actions()
         helpBar = iface.helpToolBar()
 
@@ -45,6 +83,7 @@ class Startup():
         QSettings().setValue('xPredRef', "None")
 
         self.var = QSettings()
+        self.idManzana = '01001001020004060004'
 
         self.tablas = {'manzana': 'e_manzana', 'predios.geom': 'e_predio', 'construcciones': 'e_construccion',  'horizontales.geom':'e_condominio_horizontal', 'verticales':'e_condominio_vertical', 'cves_verticales':'e_condominio_vert_clave'}
 
@@ -52,35 +91,165 @@ class Startup():
 
         clickFuga = QAction(QIcon("C:/AplicacionQGIS/reload.png"), QCoreApplication.translate("Groundwater Modeling", "Cerrar Sesion"), iface.mainWindow())
         clickCerrar = QAction(QIcon("C:/AplicacionQGIS/cerrar.png"), QCoreApplication.translate("Groundwater Modeling", "Cerrar Sesion"), iface.mainWindow())
-        clickBorrarTodoAlv = QAction(QIcon("C:/AplicacionQGIS/borrartodoalv.png"), QCoreApplication.translate("Groundwater Modeling", "Cerrar Sesion"), iface.mainWindow())
+        clickBorrarTodoAlv = QAction(QIcon("C:/AplicacionQGIS/notify_off.png"), QCoreApplication.translate("Groundwater Modeling", "btnPrueba"), iface.mainWindow())
         clickGuardar = QAction(QIcon("C:/AplicacionQGIS/guardar.png"), QCoreApplication.translate("Groundwater Modeling", "Guardar Cambios"), iface.mainWindow())
 
         clickFuga.triggered.connect(self.cerrarSinPreguntar)
         clickCerrar.triggered.connect(self.preguntarCerrarSesion)
         clickBorrarTodoAlv.triggered.connect(self.borrarTodoAlv)
-        clickGuardar.triggered.connect(self.guardarCambios)
 
         helpBar.addAction(clickFuga)
-        helpBar.addAction(clickGuardar)
-        #helpBar.addAction(clickBorrarTodoAlv)
-        
-        
+        helpBar.addAction(clickBorrarTodoAlv)
+        #helpBar.addAction(clickGuardar)
+        #helpBar.addAction(clickCerrar)
         self.var.setValue("reglasTopologicas", [])
         self.var.setValue("posibleGuardar", "False")
         self.var.setValue("posibleGuardarRef", "False")
 
+        QSettings().setValue('integrando', 'False') 
+        self.counter = 0
+        '''
+        self.timer = QTimer()
+        self.timer.setInterval(1000)
+        self.timer.timeout.connect(self.recurring_timer)
+        self.timer.start()
+        '''
+        #ThreadingExample()
+
     def borrarTodoAlv(self):
-        grupoLayers =  QgsProject.instance().layerTreeRoot().findGroup('consulta')
-        layers = grupoLayers.findLayers()
-        for layer in layers:
-            layer.layer().startEditing()
-            for f in layer.layer().getFeatures():
-                layer.layer().dataProvider().deleteFeatures([f.id()])
-            layer.layer().triggerRepaint()
-            layer.layer().commitChanges()
+        #grupoLayers =  QgsProject.instance().layerTreeRoot().findGroup('consulta')
+        #layers = grupoLayers.findLayers()
+        #for layer in layers:
+        #    layer.layer().startEditing()
+        #    for f in layer.layer().getFeatures():
+        #        layer.layer().dataProvider().deleteFeatures([f.id()])
+        #    layer.layer().triggerRepaint()
+        #    layer.layer().commitChanges()
         #print(self.capita.id())
         #capa = QgsProject.instance().mapLayer(self.capita.id())
         #print(capa.name())
+        print("VA EN EL ---------->: %d <------------" % self.counter)
+        #iface.settingsMenu()
+        #print(type(menuOpciones2))
+
+        #menuOpciones2
+
+        #ThreadingExample()
+        '''
+        nombreCapa = 'predios.geom'
+        print ("Cargando... " + nombreCapa)
+    
+        xPredG = QSettings().value('xPredGeom')
+        self.xPredGeom = QgsProject.instance().mapLayer(xPredG)
+        mem_layer = self.xPredGeom
+
+        if mem_layer == None:
+            self.createAlert('No existe la capa ' + str(nombreCapa), QMessageBox().Critical, 'Cargar capas')
+            return False
+        
+        data = self.obtenerAPintar(mem_layer.id())
+
+        
+
+        type(data)
+        srid = QSettings().value("srid")
+        inSpatialRef = osr.SpatialReference()
+        inSpatialRef.ImportFromEPSG(int(srid))
+        outSpatialRef = osr.SpatialReference()
+        outSpatialRef.ImportFromEPSG(int(srid))
+        coordTrans = osr.CoordinateTransformation(inSpatialRef, outSpatialRef)
+        if not bool(data):
+            self.UTI.mostrarAlerta("Error de servidor pintcap", QMessageBox().Critical, "Cargar capa de consulta")
+            print('ERROR: CAP000')
+
+        #Obtenemos todos los atributos del JSON
+        #print(data)
+        if data['features'] == []:
+            print('no se han traido ', nombreCapa)
+            return True
+        
+        varKeys = data['features'][0]['properties']
+
+        keys = list(varKeys.keys())
+
+        properties = []
+        geoms = []
+
+        
+
+        for feature in data['features']:
+
+            geom = feature['geometry']
+            
+            property = feature['properties']
+            geom = json.dumps(geom)
+            geometry = ogr.CreateGeometryFromJson(geom)
+            geometry.Transform(coordTrans)
+            geoms.append(geometry.ExportToWkt())
+            l = []
+            for i in range(0, len(keys)):
+                l.append(property[keys[i]])
+            properties.append(l)
+
+        prov = mem_layer.dataProvider()
+        feats = [ QgsFeature() for i in range(len(geoms)) ]
+
+        for i, feat in enumerate(feats):
+            feat.setAttributes(properties[i])
+            feat.setGeometry(QgsGeometry.fromWkt(geoms[i]))
+
+        prov.addFeatures(feats)
+
+        mem_layer.triggerRepaint()
+        return True
+        '''
+
+    def obtenerAPintar(self, idCapa):
+        cuerpo = {"incluirGeom": "true", "pagina": None, "bbox": "false", "pin": "false", "geomWKT": None, "epsg": None, "properties": None, "epsgGeomWKT": None, "itemsPagina": None, "nombre": "x"}
+        payload = json.dumps(cuerpo)
+
+        url = 'http://192.168.0.40:8080/busquedasimplewkn/api/manzana/predios/'
+
+        #idManzana = self.dockwidget.comboManzana.currentText()
+        try:
+            headers = {'Content-Type': 'application/json', 'Authorization' : self.obtenerToken()}
+
+            response = requests.post(url + self.idManzana, headers = headers, data = payload)
+
+            print(url + self.idManzana)
+            print(payload)
+
+        except requests.exceptions.RequestException:
+            self.UTI.mostrarAlerta("Error de servidor obtenerPintar", QMessageBox().Critical, "Error de servidor")
+            print('ERROR OAP000')
+            return
+        data = ""
+        if response.status_code == 200:
+            
+            data = response.content
+
+        else:
+            self.UTI.mostrarAlerta('Error en peticion:\n' + response.text, QMessageBox().Critical, "Cargar capa")
+            print('ERROR: CAP001')
+
+        #if self.traducirIdCapa(idCapa) == 'horizontales.geom':
+        #    print(json.loads(data.decode('utf-8')))
+
+        #print(json.loads(data.decode('utf-8')))
+        return json.loads(data.decode('utf-8'))
+
+
+        #Metodo que crea un elemento QMessageBox
+
+
+    def recurring_timer(self):
+        self.counter +=1
+
+        if self.counter%10 == 0:
+            self.borrarTodoAlv()
+        
+        print("Counter: %d" % self.counter)
+        
 
     def cerrarSinPreguntar(self):
         os.kill(os.getpid(), 9)
@@ -103,7 +272,7 @@ class Startup():
             
         else:
             self.var.setValue("token", "None")
-            self.var.setValue("logeado", "Flase")
+            self.var.setValue("logeado", "False")
 
         log = self.var.value("logeado")
         sal = self.var.value("salida")
@@ -118,9 +287,15 @@ class Startup():
         
 
         if log == "True" or self.modoDesarrollo:  
-            cargarCapas()
-            #cargarWebService()
-            agregarBotones()
+            #print('etrnooooo rasaaaa')
+            self.cargarCapas(log)
+            #helpBar.addAction(clickFuga)
+            #helpBar.addAction(clickGuardar)
+            #helpBar.addAction(clickCerrar)
+            #self.var.setValue("reglasTopologicas", [])
+            #self.var.setValue("posibleGuardar", "False")
+            #self.var.setValue("posibleGuardarRef", "False")
+            #agregarBotones()
 
 
     def preguntarCerrarSesion(self):
@@ -142,7 +317,7 @@ class Startup():
                 respuesta = QMessageBox.question(iface.mainWindow(), "Guardar Cambios", mensaje, QMessageBox.Yes, QMessageBox.No)
 
                 if respuesta == QMessageBox.Yes:
-                    guardarCambios()
+                    self.guardarCambios()
             
             else:
                 createAlert('No es posible guardar los cambios debido a \n que no se ha validado la topologia', QMessageBox.Critical, 'Error al guardar cambios')
@@ -201,185 +376,6 @@ class Startup():
 
 ########################################################################################################################
 
-    def guardarCambios(self):
-
-        print('entro al guardar')
-
-        
-        root = QgsProject.instance().layerTreeRoot()
-
-        group = root.findGroup('ERRORES DE TOPOLOGIA')
-        if not group is None:
-            for child in group.children():
-                dump = child.dump()
-                id = dump.split("=")[-1].strip()
-                QgsProject.instance().removeMapLayer(id)
-            root.removeChildNode(group)
-
-        for layer in iface.mapCanvas().layers():
-            layer.triggerRepaint()
-
-        if self.var.value('posibleGuardar') == 'True':
-            print('fue posible guardar')
-            self.listaAGuardar = []
-
-            self.agregarALista('manzana')
-            self.agregarALista('predios.geom')
-            self.agregarALista('construcciones')
-            self.agregarALista('horizontales.geom')
-            self.agregarALista('verticales')
-            self.agregarALista('cves_verticales')
-            self.agregarAListaEliminados()
-
-            
-            #Formato para solicitar la peticion
-            jsonParaGuardarAtributos = json.dumps(self.listaAGuardar)
-
-            print (jsonParaGuardarAtributos)
-            
-            #try:
-            
-            url='http://192.168.0.40:8080/featureswkn/api/manzana/'
-            payload = jsonParaGuardarAtributos
-            headers = {'Content-Type': 'application/json', 'Authorization' : self.obtenerToken()}
-            try:
-                response = requests.post(url, headers = headers, data = payload)
-            
-            except requests.exceptions.RequestException:
-                self.createAlert("No se ha podido conectar al servidor v1", QMessageBox.Critical, "Guardar Cambios v1")#Error en la peticion de consulta
-            
-            print(response.json())
-            print(response.status_code)
-            if response.status_code == 200:
-                self.createAlert("Cambios guardados con exito", QMessageBox.Information, "Guardar Cambios")
-                QSettings().setValue('listaEliminada', [])
-                #Guardado de datos correcto
-            elif response.status_code == 202:
-
-                root.insertGroup(0, 'ERRORES DE TOPOLOGIA')
-
-                capa = QgsVectorLayer('Point?crs=epsg:' + str(QSettings().value('srid')) +'&field=mensaje:string(80)', 'ERRORES PUNTO', 'memory')
-
-                QgsProject.instance().addMapLayers([capa], False)
-
-                props = capa.renderer().symbol().symbolLayer(0).properties()
-                props['color'] = '#FF0000'
-                capa.renderer().setSymbol(QgsMarkerSymbol.createSimple(props))
-
-                self.etiquetarCapa(capa.name())
-
-                QgsProject.instance().addMapLayer(capa, False)
-                grupoErrores = root.findGroup('ERRORES DE TOPOLOGIA')
-                capaError = QgsLayerTreeLayer(capa)
-                capa.startEditing()
-
-                puntosMalos = response.json()
-                #print (type(puntosMalos))
-
-                for malo in puntosMalos:
-                    
-                    #print(malo)
-                    #print(type(malo))
-                    geom = QgsGeometry.fromWkt(malo["wkt"])
-                    feat = QgsFeature()
-                    feat.setGeometry(geom)
-                    feat.setAttributes([malo['mensaje']])
-                    capa.dataProvider().addFeatures([feat])
-                    capa.updateFeature(feat)
-
-                capa.triggerRepaint()
-                capa.commitChanges()
-                grupoErrores.insertChildNode(0, capaError)
-
-            else:
-                self.createAlert("No se ha podido conectar al servidor v2\n" + str(response.json()[0]['mensaje']), QMessageBox.Critical, "Guardar Cambios v2")
-                #Error al guardar datos
-
-            #except ValueError:
-                #self.createAlert("No se ha podido conectar al servidor v3", QMessageBox.Critical, "Guardar Cambios v3")
-            
-        else:
-            self.createAlert("Se debe validar la topologia antes de guardar", QMessageBox.Critical, "Guardar Cambios v4")
-        
-
-        QSettings().setValue('posibleGuardar', 'False')
-
-#######################################################################################################################
-
-    def agregarALista(self, idCapa):
-
-        capa = QgsProject.instance().mapLayer( self.obtenerIdCapa( idCapa))
-        listaTemp = []
-
-        for feat in capa.getFeatures():
-            campos = {}
-            campos['wkt'] = feat.geometry().asWkt()
-            campos['srid'] = QSettings().value('srid')
-            campos['tabla'] = self.tablas[capa.name()]
-            atributos = {}
-            nombresAtrbutos = capa.fields()   
-
-            nombres = [campo.name() for campo in nombresAtrbutos]
-
-            for x in range(0, len(nombres)):
-                atributo = feat.attributes()[x]
-                if str(feat.attributes()[x]) == "NULL":
-                    atributo = None
-                atributos[str(nombres[x])] = atributo
-                
-                if capa.id() == self.obtenerIdCapa('predios.geom'):
-                    punto = self.exteriorPredio(feat.geometry())
-                    if punto != None:
-                        atributos['numExt'] = punto['numExt']
-                        atributos['geom_num'] = punto.geometry().asWkt()
-
-                elif capa.id() == self.obtenerIdCapa('horizontales.geom'):
-                    punto = self.exteriorCondom(feat.geometry())
-                    if punto != None:
-                        atributos['num_ofi'] = punto['num_ofi']
-                        atributos['geom_num'] = punto.geometry().asWkt()
-                    
-            campos['attr'] = atributos
-            if campos['attr']['id'] == None:
-                campos['nuevo'] = True
-                campos['eliminado'] = False
-            else:
-                campos['nuevo'] = False
-                campos['eliminado'] = False
-            self.listaAGuardar.append(campos)
-
-############################################################################################
-
-    def agregarAListaEliminados(self):
-
-        listaTemp = QSettings().value('listaEliminada')
-
-        if listaTemp == None:
-            return
-		
-        for elemento in listaTemp:
-            self.listaAGuardar.append(elemento)
-
-#####################################################################################################################
-
-    def exteriorPredio(self, predio):
-
-        puntos = QgsProject.instance().mapLayer(self.obtenerIdCapa('predios.num')).getFeatures()
-
-        for punto in puntos:
-            if punto.geometry().intersects(predio):
-                return punto
-
-    def exteriorCondom(self, condominio):
-
-        puntos = QgsProject.instance().mapLayer(self.obtenerIdCapa('horizontales.num')).getFeatures()
-
-        for punto in puntos:
-            if punto.geometry().intersects(condominio):
-                return punto
-
-###########################################################################################
-
     #Metodo que crea un elemento QMessageBox
     def createAlert(self, mensaje, icono, titulo):
         #Create QMessageBox
@@ -397,7 +393,8 @@ class Startup():
 
 #######################################################################################################
 
-    def cargarCapas(self):
+    def cargarCapas(self, log):
+        
         
         headers = {'Content-Type': 'application/json', 'Authorization' : self.obtenerToken()}
 
@@ -413,7 +410,8 @@ class Startup():
 
             QSettings().setValue('srid', srid)
         else:
-            self.createAlert('No se ha podido cargar el SRID, se establecerá el valor por defecto: 32614', QMessageBox().Critical, 'Cargar SRID')
+            #self.createAlert('No se ha podido cargar el SRID, se establecerá el valor por defecto: 32614', QMessageBox().Critical, 'Cargar SRID')
+            print('NO SE PUDO CARGAR SRDI')
             QSettings().setValue('srid', '32614')
         #print(respuesta.json())
         
@@ -422,6 +420,7 @@ class Startup():
         root.addGroup('consulta')
         root.addGroup('referencia')
 
+        self.consultarLlenadoDeCapa('areas_inscritas')
         self.consultarLlenadoDeCapa('cves_verticales')
         self.consultarLlenadoDeCapa('verticales')
         self.consultarLlenadoDeCapa('horizontales.num')
@@ -436,7 +435,11 @@ class Startup():
     
     def etiquetarCapa(self, nombreCapa):
 
+        
         capa = QgsProject.instance().mapLayer(self.obtenerIdCapa(nombreCapa))
+        
+        if capa == None:
+            capa = QgsProject.instance().mapLayersByName(nombreCapa)[0]
         
         etiquetaField = ""
         colorCapa = ""
@@ -464,6 +467,9 @@ class Startup():
             etiquetaField = "clave"
             colorCapa = QColor(255,153,0)
         elif nombreCapa == "cves_verticales":
+            etiquetaField = "clave"
+            colorCapa = QColor(255,153,0)
+        elif nombreCapa == "areas_inscritas":
             etiquetaField = "clave"
             colorCapa = QColor(255,153,0)
         else:
@@ -612,11 +618,10 @@ class Startup():
             #print('habemus token')
             data = response.content
         else:
-            self.createAlert('Error de autenticacion', QMessageBox().Critical, 'Autenticacion')
+            print(response)
+            self.createAlert('No se ha conseguido token de startup', QMessageBox().Critical, 'Autenticacion')
             return
-            ##print('no se arma el token')
 
-        #print(json.loads(data)['access_token'])
         return 'bearer ' + json.loads(data)['access_token']
 
 
@@ -850,6 +855,7 @@ class Startup():
         diccionarioGeom["horizontales.num"] = 'Point'
         diccionarioGeom["verticales"] = 'Polygon'
         diccionarioGeom["cves_verticales"] = 'Point'
+        diccionarioGeom["areas_inscritas"] = 'Polygon'
 
         tipoGeom = diccionarioGeom[capaParam]
 
@@ -859,10 +865,13 @@ class Startup():
             stringCapa = 'Point?crs=epsg:' +str(QSettings().value('srid')) +'&field=numExt:string(50)'
         elif capaParam == 'horizontales.num':
             stringCapa = 'Point?crs=epsg:' +str(QSettings().value('srid')) +'&field=num_ofi:string(50)'
+        elif capaParam == 'areas_inscritas':
+            stringCapa = 'Polygon?crs=epsg:32614&field=id:string(15)&field=valor:integer(15)&field=descripcion:string(15)&field=clave:string(15)&index=yes'
 
         else:
             stringTabla = diccionarioTabla[capaParam]
-            urlCapas = 'http://192.168.0.40:8080/busquedasimplewkn/api/thematics/lista/campos/' + stringTabla + '/false'
+            urlCapas = 'http://192.168.0.40:8080/busquedasimplewkn/api/thematics/lista/campos/' + stringTabla + '/' + 'false'
+            #urlCapas = 'http://192.168.0.40:8080/busquedasimplewkn/api/thematics/lista/campos/' + stringTabla
             respuesta = requests.post(urlCapas, headers = headers)
             
             stringCapa = tipoGeom + "?crs=epsg:" + str(QSettings().value('srid'))
@@ -885,10 +894,9 @@ class Startup():
                         stringCapa += "("+str(longitud)+")"
                     
                 stringCapa += '&index=yes'
-
                 
             else:
-                
+            
                 print(respuesta.status_code)
             
         nuevaCapa = QgsVectorLayer(stringCapa, capaParam, 'memory')
@@ -949,6 +957,12 @@ class Startup():
             symbol = QgsFillSymbol.createSimple({'color':'255,0,0,0', 'color_border':'#C68C21', 'width_border':'0.5'})
             render.setSymbol(symbol)
 
+        elif capaParam == 'areas_inscritas':
+            QSettings().setValue('xAreasInscritas', nuevaCapa.id())
+            render = nuevaCapa.renderer()
+            symbol = QgsFillSymbol.createSimple({'color':'255,0,0,0', 'color_border':'#F646F3', 'width_border':'0.5'})
+            render.setSymbol(symbol)
+
         elif capaParam == 'horizontales.num':
             QSettings().setValue('xHoriNum', nuevaCapa.id())
             props = nuevaCapa.renderer().symbol().symbolLayer(0).properties()
@@ -976,13 +990,117 @@ class Startup():
         group.insertChildNode(0, capaArbol)
 
         self.etiquetarCapa(capaParam)
-        self.ineditarCapa(capaParam)
+        #self.ineditarCapa(capaParam)
 
 ##################################################################################################################
 
+    def cargarWorkstation(self):
+        GAzu = QgsVectorLayer('Polygon?crs=epsg:32614&field=clave:string(15)&index=yes', 'Polis Azules', 'memory')
+        GVer = QgsVectorLayer('Polygon?crs=epsg:32614&field=clave:string(15)&index=yes', 'Polis Verdes', 'memory')
+        GRoj = QgsVectorLayer('Polygon?crs=epsg:32614&field=clave:string(15)&index=yes', 'Polis Rojos', 'memory')
+        GAma = QgsVectorLayer('Polygon?crs=epsg:32614&field=clave:string(15)&index=yes', 'Polis Amarillos', 'memory')
+
+        capaManzana = QgsVectorLayer('Polygon?crs=epsg:32614&field=clave:string(15)&index=yes', 'manzana', 'memory')
+        capaPredios = QgsVectorLayer('Polygon?crs=epsg:32614&field=clave:string(15)&index=yes', 'predios.geom', 'memory')
+        capaConst = QgsVectorLayer('Polygon?crs=epsg:32614&field=clave:string(15)&index=yes', 'construcciones', 'memory')
+        capaHorizontalesG = QgsVectorLayer('Polygon?crs=epsg:32614&field=clave:string(15)&index=yes', 'horizontales.geom', 'memory')
+        capaVerticalesG = QgsVectorLayer('Polygon?crs=epsg:32614&field=clave:string(15)&index=yes', 'verticales', 'memory')
+        capaVerticalesCve = QgsVectorLayer('Point?crs=epsg:32614&field=clave:string(15)&index=yes', 'cves_verticales', 'memory')
+        capaHorizontalesnum = QgsVectorLayer('Point?crs=epsg:32614&field=clave:string(15)&index=yes', 'horizontales.num', 'memory')
+        capaPrediosNum = QgsVectorLayer('Point?crs=epsg:32614&field=clave:string(15)&index=yes', 'predios.num', 'memory')
+
+        LAzu = QgsVectorLayer('LineString?crs=epsg:32614&field=clave:string(15)&index=yes', 'Lineas Azules', 'memory')
+        LVer = QgsVectorLayer('LineString?crs=epsg:32614&field=clave:string(15)&index=yes', 'Lineas Verdes', 'memory')
+        LRoj = QgsVectorLayer('LineString?crs=epsg:32614&field=clave:string(15)&index=yes', 'Lineas Rojos', 'memory')
+        LAma = QgsVectorLayer('LineString?crs=epsg:32614&field=clave:string(15)&index=yes', 'Lineas Amarillos', 'memory')
+
+        PAzu = QgsVectorLayer('Point?crs=epsg:32614&field=clave:string(15)&index=yes', 'Puntos Azules', 'memory')
+        PVer = QgsVectorLayer('Point?crs=epsg:32614&field=clave:string(15)&index=yes', 'Puntos Verdes', 'memory')
+        PRoj = QgsVectorLayer('Point?crs=epsg:32614&field=clave:string(15)&index=yes', 'Puntos Rojos', 'memory')
+        PAma = QgsVectorLayer('Point?crs=epsg:32614&field=clave:string(15)&index=yes', 'Puntos Amarillos', 'memory')
+        
+        self.colorearPuntos(PAzu, '0,181,255,255')
+        self.colorearPuntos(PVer, '0,237,32,255')
+        self.colorearPuntos(PRoj, '255,67,0,255')
+        self.colorearPuntos(PAma, '255,255,0,255')
+        
+        self.colorearPuntos(capaPrediosNum, '0,255,0,255')
+        self.colorearPuntos(capaHorizontalesnum, '198,140,33,255')
+        self.colorearPuntos(capaVerticalesCve, '255,153,0,255')
+
+        self.colorearLineas(LAzu, QColor.fromRgb(0,181,255))
+        self.colorearLineas(LVer, QColor.fromRgb(0,237,32))
+        self.colorearLineas(LRoj, QColor.fromRgb(255,67,0))
+        self.colorearLineas(LAma, QColor.fromRgb(255,255,0))
+        
+
+        self.colorearPolis(GAzu, '0,181,255,255', '0,181,255,127')
+        self.colorearPolis(GVer, '0,237,32,255', '0,237,32,127')
+        self.colorearPolis(GRoj, '255,67,0,255', '255,67,0,127')
+        self.colorearPolis(GAma, '255,255,0,255', '225,255,0,127')
+        
+
+        self.colorearPolis(capaManzana, '#F5A9F2', '255,0,0,0')
+        self.colorearPolis(capaPredios, '#00ff00', '255,0,0,0')
+        self.colorearPolis(capaConst, '#000000', '255,0,0,0')
+        self.colorearPolis(capaHorizontalesG, '#C68C21', '255,0,0,0')
+        self.colorearPolis(capaVerticalesG, '#ff9900', '255,0,0,0')
+
+        self.agregarCapaArbol(capaVerticalesCve)
+        self.agregarCapaArbol(capaVerticalesG)
+        self.agregarCapaArbol(capaHorizontalesnum)
+        self.agregarCapaArbol(capaHorizontalesG)
+        self.agregarCapaArbol(capaConst)
+        self.agregarCapaArbol(capaPrediosNum)
+        self.agregarCapaArbol(capaPredios)
+        self.agregarCapaArbol(capaManzana) #P
+        
+        
+        
+        
+        
+        
+
+        #self.agregarCapaArbol(GAzu) #P
+        #self.agregarCapaArbol(GVer)
+        #self.agregarCapaArbol(GRoj)
+        #self.agregarCapaArbol(GAma)
+
+        self.agregarCapaArbol(LAzu) #P
+        #self.agregarCapaArbol(LVer)
+        self.agregarCapaArbol(LRoj)
+        #self.agregarCapaArbol(LAma)
+
+        #self.agregarCapaArbol(PAzu)
+        #self.agregarCapaArbol(PVer)
+        #self.agregarCapaArbol(PRoj)
+        #self.agregarCapaArbol(PAma)
+
+
+    def colorearPuntos(self, capa, color):
+        props = capa.renderer().symbol().symbolLayer(0).properties()
+        props['color'] = color
+        capa.renderer().setSymbol(QgsMarkerSymbol.createSimple(props))
+
+    def colorearPolis(self, capa, contorno, relleno):
+        render = capa.renderer()
+        symbol = QgsFillSymbol.createSimple({'color':relleno, 'color_border':contorno, 'width_border':'0.2'})
+        render.setSymbol(symbol)
+
+    def colorearLineas(self, capa, color):
+        symbols = capa.renderer().symbols(QgsRenderContext())
+        symbol = symbols[0]
+        symbol.setColor(color)
+
+    def agregarCapaArbol(self, capa):
+        QgsProject.instance().addMapLayer(capa, True)
+
+
 startup = Startup()
 startup.mostrarConsola()
-startup.cargarCapas()
+startup.checarLogin()
+#startup.cargarWorkstation()
+#startup.cargarCapas()
 
 
 

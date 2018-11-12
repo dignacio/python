@@ -62,7 +62,8 @@ class VentanaClavesV3:
 
         self.dlg.txtClave.setEnabled(False)
         self.capaPredio = QgsProject.instance().mapLayer(self.DFS.ACA.obtenerIdCapa('predios.geom'))
-        self.capaPredio.selectionChanged.connect(self.cargarAsignacionManual)
+        if self.capaPredio:
+            self.capaPredio.selectionChanged.connect(self.cargarAsignacionManual)
         #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         
         self.dlg.btnClave.clicked.connect(self.asignacionDesManual)

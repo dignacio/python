@@ -14,7 +14,7 @@ from qgis.utils import iface
 from qgis.core import QgsProject
 from .fusion_dialog import fusionDialog
 
-import os, json, requests, sys, datetime, base64, time
+import os, json, requests, sys, datetime, base64, time, hashlib
 import sys
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -103,7 +103,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.condominios = []
         self.constrCond = []
         self.servCuentaCond = []
-
+        
+        self.imagen = []
         self.bloqueado = True
 
         self.indivisos = []
@@ -120,6 +121,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.countID = 0
 
         self.setupUi(self)
+
 
         #NUEVO DISENO
         self.leDispPerim.setPlaceholderText('Introduzca Dist. Perimetral')
@@ -165,10 +167,10 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.usuarioLogeado = 'jaz'
         self.adelanteRevision = False
 
-        if self.cond:
-            self.label_17.setText('Condominio Predio')
-        else:
-            self.label_17.setText('Predio')
+        self.dataCed = {}
+
+        if not self.cond:
+            self.label_17.hide()
 
     def closeEvent(self,event):
 
@@ -176,7 +178,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             event.accept()
             self.errorCerrar = False
         else:
-            reply = QMessageBox.question(self,'Message',"Are you sure to quit? - " + self.windowTitle(), QMessageBox.Yes, QMessageBox.No)
+            reply = QMessageBox.question(self,'Message',"¿Está seguro de abandonar el proceso? - " + self.windowTitle(), QMessageBox.Yes, QMessageBox.No)
             if reply == QMessageBox.Yes:
                 event.accept()
             else:
@@ -190,11 +192,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             header.setStretchLastSection(True)
 
     def verificarArranque(self):
-        dataCed = self.consumeWSCedula(self.cveCatastral[0:25])
+        #dataCed = self.consumeWSCedula(self.cveCatastral[0:25])
 
-        if dataCed != None:
+        if self.dataCed != None:
             self.show()
-        
+
 
     def showEvent(self, event):
 
@@ -354,7 +356,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         # Diseño - construcciones predios
         self.cmbTipoPredio.setView(self.generaQListView())
-        self.cmbTipoAsentH.setView(self.generaQListView())
+        #self.cmbTipoAsentH.setView(self.generaQListView())
         self.cmbRegimenProp.setView(self.generaQListView())
         self.cmbOrientacion.setView(self.generaQListView())
         self.cmbTipoUsoSuelo.setView(self.generaQListView())
@@ -370,11 +372,28 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.cmbDestinoP.setView(self.generaQListView())
         self.cmbEdoConstrP.setView(self.generaQListView())
         self.cmbCategoriaP.setView(self.generaQListView())
+
+        #diseño -cortar y copiar imagen
+        self.cmbDest.setView(self.generaQListView())
+        self.cmbClcata.setView(self.generaQListView())
+        self.btnProc.clicked.connect(self.event_copiaImg)
+
+        #eliminar imagen
+        self.btnDelete.clicked.connect(self.event_elimImg)
+
+        #subir imagen
+        self.btnSubir.clicked.connect(self.event_subirImg)
+
+        #guardar imagen 
+        self.btnGuardaImg.clicked.connect(self.event_guardaImg)
+        
         # self.cmbFactorConstrP.setView(self.generaQListView()) --- SE deshabilito, ya no se va usar
 
         # -- Eventos
         self.btnDelConstrP.clicked.connect(self.event_elimConstrC)
+        self.btnDelConstrC.clicked.connect(self.event_elimConstrCo)
         self.btnAddConstP.clicked.connect(self.event_nuevaConstrC)
+        
         self.btnGuardarCed.clicked.connect(self.event_guardarPredio)
         self.btnGuardarCedCond.clicked.connect(self.event_guardarCondominio)
 
@@ -416,12 +435,23 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         # Eventos - imagenes
         self.btnZoomOut.clicked.connect(self.event_zoomOutIma)
         self.btnZoomIn.clicked.connect(self.event_zoomInIma)
+        self.btnRotarD.clicked.connect(self.rotarDer)
+        self.btnRotarI.clicked.connect(self.rotarIzq)
         self.cmbMFD.currentIndexChanged.connect(self.cambioComboMFD) #YEAH
         self.btnAtrasImage.clicked.connect(self.event_atrasImagen)
         self.btnAdelanteImagen.clicked.connect(self.event_adelanteImagen)
 
         # -- Titulo
-        self.setWindowTitle(self.descomponeCveCata(self.cveCatastral))
+        if self.cargandoRevision == False:
+            self.setWindowTitle(self.descomponeCveCata(self.cveCatastral )+ '-'+'Cédula')
+            self.deshhabilitaCedula()
+            self.ckbGuardadoTemCed.hide()
+            self.ckbGuardadoTemCedCond.hide()
+            self.btnGuardarCedCond.hide()
+            self.btnGuardarCed.hide()
+            
+        else:
+            self.setWindowTitle(self.descomponeCveCata(self.cveCatastral )+ '-'+'Revisión')
 
         # -- muestra clave
         self.lbCveCata.setText(self.descomponeCveCata(self.cveCatastral))
@@ -435,13 +465,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.cargaCatalogosConstruccionesP(self.cond)
 
         # -- carga informacion de la cedula segun la clave global
-        dataCed = self.consumeWSCedula(self.cveCatastral[0:25])
-
+        self.dataCed = self.consumeWSCedula(self.cveCatastral[0:25])
         #if not self.adelanteRevision and self.cargandoRevision:
         #    return
 
-        self.cargaCedula(dataCed)
-
+        self.cargaCedula(self.dataCed)
         
 
         # -- carga informacion de PADRON
@@ -455,6 +483,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             if response.status_code == 200:
                 data = response.content
+                
             else:
                 self.createAlert('Error en peticion "consumeWSGeneral()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
                 return
@@ -482,9 +511,20 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             # se carga el combo de condominios
             if self.cargandoRevision:
-                dataCond = self.consumeWSGeneral(self.CFG.urlReviCondominios + self.cveCatastral)
+                
+                headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
+                respuesta = requests.get(self.CFG.urlObtenerIdPredioEc + self.cveCatastral, headers = headers)
+                if respuesta.status_code == 200:
+                    idPredio = respuesta.json()
+
+                dataCond = self.consumeWSGeneral(self.CFG.urlReviCondominios + str(idPredio))
+                print('entro revision -----------------------------------------')
             else:
                 dataCond = self.consumeWSGeneral(self.CFG.urlCedCondominios + self.cveCatastral)
+                print('entro predio -----------------------------------------')
+
+
+            
             self.defineComboCond(dataCond)
 
             # carga indivisos
@@ -508,7 +548,16 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.lbTipoCond.setText('')
             self.cmbCondo.hide()
             self.btnGuardarCedCond.hide()
+            self.ckbGuardadoTemCedCond.hide()
+            if self.cargandoRevision == False:
+                self.ckbGuardadoTemCed.hide()
+                self.ckbGuardadoTemCedCond.hide()
+                self.btnGuardarCed.hide()
+                
+            
+            
 
+            
             # quita las tab que corresponden a condominios
             self.tabwCedula.removeTab(3)
             self.tabwCedula.removeTab(3)
@@ -603,14 +652,19 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             
 
-
         # define lista de porcentaje de zoom
         self.listZoom = {1:1, 2:1.5, 3:2, 4:2.5}
         # -- carga imagenes
         self.idsMzaIma = self.descargaIdsImag('M', self.cveCatastral)
         self.idsFacIma = self.descargaIdsImag('F', self.cveCatastral)
         self.idsDocIma = self.descargaIdsImag('D', self.cveCatastral)
+        
+        #muestra las calves de la manzana
+        claves = self.obtieneClaMza(self.cveCatastral)
+        for k, v in claves.items():
+            self.cmbClcata.addItem(str(v), str(k))
 
+        
 
         # muestra siempre la primer tab
         self.tabwCedula.setCurrentIndex(0)
@@ -644,7 +698,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.cmbFraccionesC.currentIndexChanged.connect(self.event_cambioFraccCondo)
         self.cmbUsoConstrC.currentIndexChanged.connect(self.event_cambioUsoConstrCondo)
         self.cmbCategoriaC.currentIndexChanged.connect(self.event_cambioCategoriaCondo)
-
+        self.btnAddConstC.clicked.connect(self.event_nuevaConstrCo)
+        
     def generaQListView(self):
         view = QListView()
         view.setWordWrap(True)
@@ -731,14 +786,16 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
     def cargaCatalogos(self, dataCat):
 
         try:
+            
             if len(dataCat) == 0:
                 self.createAlert('Sin Resultados', icono = QMessageBox().Warning)
                 return
+            
 
             # UBICACION
             tipoPredio = dataCat['catTipoPredios']
             # --- SE LLENARA EN UN METODO A PARTE PORQUE NO SE INCLUYE EN LA LISTA DE CATALOGOS
-            tipoAsentH = self.catalogoTipoAsentH() 
+            #tipoAsentH = self.catalogoTipoAsentH() 
             orientacion = dataCat['catColindacias'] # --- CAT_ORIENTACION
             regimenProp = dataCat['catRegimenPropiedades']
             # TERRENO
@@ -753,7 +810,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             tipoRelieve = dataCat['catTipoRelieves']
             formaPredio = dataCat['catPredioFormas']
             orientPredMza = dataCat['catPredioUbicMznas']
-
+            
             # -- tipo de predio
             if len(tipoPredio) > 0:
                 self.cmbTipoPredio.addItem('', -1)
@@ -804,13 +861,13 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 self.cmbOrientPredMza.addItem('', -1)
                 for predm in orientPredMza:
                     self.cmbOrientPredMza.addItem(str(predm['descripcion']), predm['id'])
-
+            '''
             # -- tipo de asentamiento humano
             if len(tipoAsentH) > 0:
                 self.cmbTipoAsentH.addItem('', -1)
                 for tipa in tipoAsentH:
                     self.cmbTipoAsentH.addItem(str(tipa['descripcion']), tipa['id'])
-
+            '''
             # -- tipo uso suelo
             if len(tipoUsoSuelo) > 0:
                 self.cmbTipoUsoSuelo.addItem('', -1)
@@ -832,10 +889,10 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
     def obtienePropPredio(self, idPredio):
         return self.consumeWSGeneral(self.CFG.urlGetPropPredio + str(idPredio))
-
+    '''
     def catalogoTipoAsentH(self):
         return self.consumeWSGeneral(self.CFG.urlTipoAsentamiento)
-
+    '''
     def catalogoTipoUsoSuelo(self):
         return self.consumeWSGeneral(self.CFG.urlCedCatTipoUsoSuelo)
 
@@ -872,8 +929,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
     def obtieneIndivisos(self, cveCata):
         return self.consumeWSGeneral(self.CFG.urlIndivisos + cveCata)
 
-    def guardaIndivisos(self, listaInd):
-        return self.consumeWSGuardadoIndiv(listaInd, self.CFG.urlGuardaIndivisos)
+    def guardaIndivisos(self, listaInd, complemento):
+        return self.consumeWSGuardadoIndiv(listaInd, self.CFG.urlGuardaIndivisos + complemento)
+    
+    def obtieneClaMza(self, cveCata):
+        return self.consumeWSGeneral(self.CFG.urlGetManzana + cveCata)
 
     def obtieneImagen(self, idImagen, tipo):
 
@@ -882,7 +942,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         elif tipo == 'F' or tipo == 'D':
             return self.consumeWSGeneral(self.CFG.urlImagenByIdAndCveCata + str(idImagen) + '/' + self.cveCatastral)
 
-
+    
     def descargaIdsImag(self, tipo, cveCata):
 
         listaResult = []
@@ -899,13 +959,14 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             listaResult.append(imagen)
 
         return listaResult
+        
 
     # - carga la informacion de las construcciones
     def cargaConstrPred(self, dataConstP):
         
         try:
 
-
+            
             if len(dataConstP) == 0:
                 #self.createAlert('Sin Resultados', titulo = 'cargaConstrPred', icono = QMessageBox().Warning)
                 # se llama el metodo deshabilitar construcciones 
@@ -956,20 +1017,29 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.createAlert('Error durante la carga de informacion "cargaConstrPred()": ' + str(e))
 
     # - carga la informacion de las construcciones condominios
-    def cargaConstrCondo(self, dataConstC):
+    def cargaConstrCondo(self, dataConstC, cveCata):
         
         try:
             if len(dataConstC) == 0:
-                self.createAlert('Sin Resultados', titulo = 'cargaConstrCondo', icono = QMessageBox().Warning)
+                self.deshabilitaConstrC()
+                #self.createAlert('Sin Resultados', titulo = 'cargaConstrCondo', icono = QMessageBox().Warning)
+                
                 return
 
             self.cmbVolumenC.clear()
             self.cmbFraccionesC.clear()
 
+            print('antes')
+            print(dataConstC)
             # ordena las construcciones segun el volumen
             construcciones = self.ordenaConstr(dataConstC)
-
+            print('despues')
+            print(construcciones)
             for dcp in construcciones:
+                print('compara ------------------------------')
+                print(dcp['cveCatastral'], cveCata)
+                if dcp['cveCatastral'] != cveCata:
+                    continue
 
                 dcp['accion'] = 'update'
                 fracciones = dcp['fracciones']
@@ -1076,14 +1146,16 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             if len(dataCed) == 0:
 
                 if self.cargandoRevision:
-                    self.createAlert('La informacion de campo no ha sido cargada', titulo = 'cargaCedula', icono = QMessageBox().Warning)
-                    self.adelanteRevision = False
+                   self.createAlert('La informacion de campo no ha sido cargada', titulo = 'cargaCedula', icono = QMessageBox().Warning)
+                   self.adelanteRevision = False
+                
                 else:
                     self.createAlert('Sin Resultados', titulo = 'cargaCedula', icono = QMessageBox().Warning)
-
+                
                 return
 
             self.cedula = dataCed[0]
+           
             self.adelanteRevision = True
             # -- UBICACION -- 
             self.lbNoExt.setText(self.cedula['numExt'])
@@ -1098,19 +1170,22 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             self.pteObservaciones.setPlainText(self.cedula['observaciones'])
             self.lbRevisor.setText(self.cedula['usuarioActual'])
             self.lbRevisorAnt.setText(self.cedula['usuarioAnterior'])
+            self.lbTipAsenHum.setText(self.cedula['tipoAsentamiento'])
+            self.lbCaso.setText(self.cedula['caso'])
+            self.lbNomEntrev.setText(self.cedula['nomEntrevistado'])
 
             # tipo de predio
             if self.cedula['cveTipoPred'] != None:
                 index = self.cmbTipoPredio.findData(self.cedula['cveTipoPred'])
                 if index >= 0:
                     self.cmbTipoPredio.setCurrentIndex(index)
-
+            '''
             # asentamiento humano
             if self.cedula['idTipoAsentamiento'] is not None:
                 index = self.cmbTipoAsentH.findData(self.cedula['idTipoAsentamiento'])
                 if index >= 0:
                     self.cmbTipoAsentH.setCurrentIndex(index)
-            
+            '''
             # regimen de propiedad
             if self.cedula['idRegimenPropiedad'] is not None:
                 index = self.cmbRegimenProp.findData(self.cedula['idRegimenPropiedad'])
@@ -1191,8 +1266,16 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
                     self.twServiciosCalle.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(dsc['servicio']))
 
+            if self.cargandoRevision == False:
+                cargaC = 'C'
+            else:
+                cargaC = 'R'
+
+            cargarCe =  '/' + cargaC
+            
             # cargar servicios de predio
-            dataServCuenta = self.obtieneServiciosCuenta(self.cveCatastral)
+            #dataServCuenta = self.obtieneServiciosCuenta(str(dc['id']) + '/' + ('R' if self.cargandoRevision else 'C') + '/' + tipoCond + ('C' if self.cargandoRevision else ''))
+            dataServCuenta = self.obtieneServiciosCuenta(str(self.cedula['id']) + cargarCe + '/P' + ('C' if self.cargandoRevision else ''))
 
             for dsc in dataServCuenta:
 
@@ -1265,18 +1348,20 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         #try:
 
         if len(dataPadron) == 0:
-            self.muestraComparativoFiscal
+            self.muestraComparativoFiscal()
+            self.vaciarDomPadFis()
             return
 
         self.padron = dataPadron[0]
 
         # -- CARGA PADRON --
         # - carga ubicacion
-        self.lbCallePF.setText(str(self.padron['eUbCalle']))
-        self.lbNumExtPF.setText(str(self.padron['eUbNumexterior']))
-        self.lbNumInteriorPF.setText(str(self.padron['eUbNuminterior']))
-        self.lbCodPostalPF.setText(str(self.padron['eUbCodigoPostal']))
-        self.lbColoniaPF.setText(str(self.padron['eUbColonia']))
+       
+        self.lbCallePF.setText(self.padron['eUbCalle'] or '')
+        self.lbNumExtPF.setText(self.padron['eUbNumexterior'] or '')
+        self.lbNumInteriorPF.setText(self.padron['eUbNuminterior'] or '')
+        self.lbCodPostalPF.setText(self.padron['eUbCodigoPostal'] or '')
+        self.lbColoniaPF.setText(self.padron['eUbColonia'] or '')
 
         # - carga comparativo
         # superficies terreno
@@ -1448,6 +1533,129 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.leAnioConsP.setText('')
         self.leNvlUbicaP.setText('')
 
+        self.cmbFraccionesC.clear()
+        self.leNivPropC.setText('')
+        self.cmbConC.clear()
+
+        self.cmbUsoConstrC.setCurrentIndex(0)
+        self.cmbDestinoC.setCurrentIndex(0)
+        self.cmbEdoConstrC.setCurrentIndex(0)
+
+        self.leNombreC.setText('')
+        self.leSupConstrFC.setText('')
+        self.lbSupConstrFC.setText('')
+        self.leAnioConsC.setText('')
+        self.leNvlUbicaC.setText('')
+        
+    # - deshabilitar general cedula
+    def deshhabilitaCedula(self):
+        self.btnSelCalle.setEnabled(False)
+        self.btnCancelSelCalle.setEnabled(False)
+        self.leNoExteriorAlf.setEnabled(False)
+        self.cmbTipoPredio.setEnabled(False)
+        self.leNoExteAnt.setEnabled(False)
+        self.leNumPredio.setEnabled(False)
+        self.cmbRegimenProp.setEnabled(False)
+        self.cmbOrientacion.setEnabled(False)
+        self.leDispPerim.setEnabled(False)
+        self.leDescripcion.setEnabled(False)
+        self.btnColinAdd.setEnabled(False)
+        self.btnColinRemoveOne.setEnabled(False)
+        self.btnColinRemoveAll.setEnabled(False)      
+        self.rbtnCopiar.setEnabled(False)
+        self.rbtnCortar.setEnabled(False)
+        self.cmbDest.setEnabled(False)
+        self.btnDelete.setEnabled(False)
+        self.cmbClcata.setEnabled(False)
+        self.btnProc.setEnabled(False)
+        self.btnSubir.setEnabled(False)
+        self.btnGuardaImg.setEnabled(False)
+        self.leNombre.setEnabled(False)
+        self.cmbTipoUsoSuelo.setEnabled(False)
+        self.cmbTipoRelieve.setEnabled(False)
+        self.cmbFacilComun.setEnabled(False)
+        self.leFondo.setEnabled(False)
+        self.cmbFormaPredio.setEnabled(False)
+        self.cmbUsoSuelo.setEnabled(False)
+        self.cmbValorTerr.setEnabled(False)
+        self.cmbUsoPredio.setEnabled(False)
+        self.leFrente.setEnabled(False)
+        self.cmbOrientPredMza.setEnabled(False)
+        self.btnDelConstrP.setEnabled(False)
+        self.btnAddConstP.setEnabled(False)
+        self.btnGuardaVolP.setEnabled(False)
+        self.cmbConP.setEnabled(False)
+        self.btnFusionarP.setEnabled(False)
+        self.leNivPropP.setEnabled(False)
+        self.cmbNvaFraccP.setEnabled(False)
+        self.btnSubdividirP.setEnabled(False)
+        self.cmbUsoConstrP.setEnabled(False)
+        self.leNombreP.setEnabled(False)
+        self.leSupConstrFP.setEnabled(False)
+        self.cmbUsoEspP.setEnabled(False)
+        self.cmbDestinoP.setEnabled(False)
+        self.leNvlUbicaP.setEnabled(False)
+        self.leAnioConsP.setEnabled(False)
+        self.cmbEdoConstrP.setEnabled(False)
+        self.cmbCategoriaP.setEnabled(False)
+        self.cmbFactorConstrP.setEnabled(False)
+        self.btnCalcValCatP.setEnabled(False)
+        self.leNumOfCond.setEnabled(False)
+        self.leSupConstPrivCond.setEnabled(False)
+        self.leSupConstComunCond.setEnabled(False)
+        self.leValConstComunCond.setEnabled(False)
+        self.leValConstPrivCond.setEnabled(False)
+        self.leSupConstExcCond.setEnabled(False)
+        self.leSupConstTotalCond.setEnabled(False)
+        self.leValConstExcCond.setEnabled(False)
+        self.leValConstTotalCond.setEnabled(False)
+        self.leCveCatAntCond.setEnabled(False)
+        self.leSupTerrPrivCond.setEnabled(False)
+        self.leSupTerrComunCond.setEnabled(False)
+        self.leSupTerrExcCond.setEnabled(False)
+        self.leSupTerrTotalCond.setEnabled(False)
+        self.leValTerrPrivCond.setEnabled(False)
+        self.leValTerrComunCond.setEnabled(False)
+        self.leValTerrExcCond.setEnabled(False)
+        self.leValTerrTotalCond.setEnabled(False)
+        self.btnDelConstrC.setEnabled(False)
+        self.btnAddConstC.setEnabled(False)
+        self.btnGuardaVolC.setEnabled(False)
+        self.btnSubdividirC.setEnabled(False)
+        self.cmbNvaFraccC.setEnabled(False)
+        self.leNivPropC.setEnabled(False)
+        self.cmbConC.setEnabled(False)
+        self.btnFusionarC.setEnabled(False)
+        self.cmbUsoConstrC.setEnabled(False)
+        self.leNombreC.setEnabled(False)
+        self.cmbUsoEspC.setEnabled(False)
+        self.leSupConstrFC.setEnabled(False)
+        self.leAnioConsC.setEnabled(False)
+        self.cmbDestinoC.setEnabled(False)
+        self.leNvlUbicaC.setEnabled(False)
+        self.cmbEdoConstrC.setEnabled(False)
+        self.cmbCategoriaC.setEnabled(False)
+        self.cmbFactorConstrC.setEnabled(False)
+        self.btnCalcValCatC.setEnabled(False)      
+        self.twServiciosCalle.setEnabled(False)
+        self.twServiciosPredio.setEnabled(False)
+        self.twCaracteristicasP.setEnabled(False)
+        self.twServiciosCondo.setEnabled(False)
+        self.twCaracteristicasC.setEnabled(False)
+        self.lePrivadaC.setEnabled(False)
+        self.leComunC.setEnabled(False)
+        self.lePrivadaT.setEnabled(False)
+        self.leComunT.setEnabled(False)
+        self.btnBlocDesbloc.setEnabled(False)
+        self.btnActualizaInfo.setEnabled(False)
+        self.pteObservaciones.setReadOnly(True)
+
+
+
+
+
+
+       
     # - deshabilitar contrucciones de predio
     def deshabilitaConstr(self):
 
@@ -1458,7 +1666,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.btnGuardaVolP.setEnabled(False)
         self.cmbVolumenP.setEnabled(False)
         self.btnDelConstrP.setEnabled(False)
-        self.btnGuardaVolP.setEnabled(False)
+        self.btnSubdividirP.setEnabled(False)
+        self.btnFusionarP.setEnabled(False)
+        self.btnCalcValCatP.setEnabled(False)
 
         self.lbSupConstrP.setText('')
         self.lbNumNivP.setText('')
@@ -1470,7 +1680,39 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.lbValM2P.setText('')
         self.lbValConstP.setText('')
 
-        self.tabwCedula.removeTab(2)
+    def deshabilitaConstrC(self):
+        self.btnGuardaVolC.setEnabled(False)
+        self.cmbVolumenC.setEnabled(False)
+        self.btnDelConstrC.setEnabled(False)
+        self.btnSubdividirC.setEnabled(False)
+        self.btnFusionarC.setEnabled(False)
+        self.btnCalcValCatC.setEnabled(False)
+        self.cmbFraccionesC.setEnabled(False)
+        self.cmbNvaFraccC.setEnabled(False)
+        self.cmbConC.setEnabled(False)
+        self.cmbUsoConstrC.setEnabled(False)
+        self.cmbUsoEspC.setEnabled(False)
+        self.cmbDestinoC.setEnabled(False)
+        self.cmbCategoriaC.setEnabled(False)
+        self.cmbFactorConstrC.setEnabled(False)
+        self.cmbEdoConstrC.setEnabled(False)
+        
+        self.lbSupConstrC.setText('')
+        self.lbNumNivC.setText('')
+        self.lbTipoConstC.setText('')
+        self.lbCveConstEspC.setText('')
+        self.lbNvlFraccC.setText('')
+        self.leNivPropC.setEnabled(False)
+        self.leNombreC.setEnabled(False)
+        self.leSupConstrFC.setEnabled(False)
+        self.leAnioConsC.setEnabled(False)
+        self.leNvlUbicaC.setEnabled(False)
+
+        self.lbCveUsoC.setText('')
+        self.lbValM2C.setText('')
+        self.lbValConstC.setText('')
+
+        #self.tabwCedula.removeTab(2)
 
     # - hbilitar construcciones de predio
     def habilitaConstr(self):
@@ -1482,7 +1724,36 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.btnGuardaVolP.setEnabled(True)
         self.cmbVolumenP.setEnabled(True)
         self.btnDelConstrP.setEnabled(True)
-        self.btnGuardaVolP.setEnabled(True)
+        self.cmbNvaFraccP.setEnabled(True)
+        self.leNivPropP.setEnabled(True)
+        self.cmbConP.setEnabled(True)
+        self.btnCalcValCatP.setEnabled(True)
+        self.btnSubdividirP.setEnabled(True)
+        self.btnFusionarP.setEnabled(True)
+
+        self.btnGuardaVolC.setEnabled(True)
+        self.cmbVolumenC.setEnabled(True)
+        self.btnDelConstrC.setEnabled(True)
+        self.leNombreC.setEnabled(True)
+        self.leSupConstrFC.setEnabled(True)
+        self.leAnioConsC.setEnabled(True)
+        self.leNvlUbicaC.setEnabled(True)
+        self.cmbFraccionesC.setEnabled(True)
+        self.cmbNvaFraccC.setEnabled(True)
+        self.cmbConC.setEnabled(True)
+        self.cmbUsoConstrC.setEnabled(True)
+        self.cmbUsoEspC.setEnabled(True)
+        self.cmbDestinoC.setEnabled(True)
+        self.cmbCategoriaC.setEnabled(True)
+        self.cmbFactorConstrC.setEnabled(True)
+        self.cmbEdoConstrC.setEnabled(True)
+        
+        self.cmbNvaFraccC.setEnabled(True)
+        self.leNivPropC.setEnabled(True)
+        self.cmbConC.setEnabled(True)
+        self.btnSubdividirC.setEnabled(True)
+        self.btnFusionarC.setEnabled(True)
+        self.btnCalcValCatC.setEnabled(True)
 
     # - deshabilita manejo de imagenes
     def deshabilitaBotImages(self):
@@ -1491,6 +1762,12 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.btnZoomIn.setEnabled(False)
         self.btnZoomOut.setEnabled(False)
         self.btnAdelanteImagen.setEnabled(False)
+        self.btnRotarI.setEnabled(False)
+        self.btnRotarD.setEnabled(False)
+        self.btnRotarI.setEnabled(False)
+        self.btnRotarD.setEnabled(False)
+
+  
 
     # - habilita manejo de imagenes
     def habilitaBotImages(self):
@@ -1499,6 +1776,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         self.btnZoomIn.setEnabled(True)
         self.btnZoomOut.setEnabled(True)
         self.btnAdelanteImagen.setEnabled(True)
+        self.btnRotarI.setEnabled(True)
+        self.btnRotarD.setEnabled(True)
 
     def muestraPropPredio(self):
 
@@ -1642,7 +1921,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             if cond['cveCat'] == claveCata:
                 dataTemp = cond
             condos.append(cond)
-
+        
         dataTemp['numOfi'] = self.leNumOfCond.text()
         dataTemp['cveCatAnt'] = self.leCveCatAntCond.text()
 
@@ -1731,7 +2010,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         self.fraccTempCondo()
         dataTemp = self.cmbVolumenC.itemData(self.indexVolActualCondo)
-        print(dataTemp)
+       
         if dataTemp == None:
             return
 
@@ -1760,7 +2039,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         dataTemp['codigoConstruccion'] = self.lbCveUsoC.text()
         dataTemp['precioM2'] = self.lbValM2C.text().replace('$', '').replace(',', '')
         dataTemp['valorConst'] = self.lbValConstC.text().replace('$', '').replace(',', '')
-        dataTemp['supConstFraccion'] = self.lbSupConstrFC.text()
+        dataTemp['supConstFraccion'] = self.leSupConstrFC.text()
         dataTemp['numNivel'] = self.lbNvlFraccC.text()
         dataTemp['nombre'] = self.leNombreC.text()
         dataTemp['nvlUbica'] = self.leNvlUbicaC.text()
@@ -1895,7 +2174,10 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         # diferencia
         #self.lbImpPredC.setText('')
-        txtImpC = self.tablaTotales.item(1,1).text()
+        if self.tablaTotales.item(1,1) != None:
+            txtImpC = self.tablaTotales.item(1,1).text()
+        else:
+            txtImpC = ''
         impCatastro = 0 if txtImpC == '' else float(txtImpC.replace('$', '').replace(',', ''))
         diff = '${:,.2f}'.format(impCatastro - 0)
 
@@ -1909,14 +2191,19 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
     def consumeWSConstr(self, cveCatastral, tipoCta = 'P'):
 
         if self.cargandoRevision:
+            '''
+            headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
+            respuesta = requests.get(self.CFG.urlObtenerIdPredioEc + self.cveCatastral, headers = headers)
+            if respuesta.status_code == 200:
+                idPredio = respuesta.json()
+            '''
+            idPredio = self.cedula['id']
             url = self.CFG.urlReviConst + cveCatastral + '/' + tipoCta
         else:
             url = self.CFG.urlCedConstr + cveCatastral + '/' + tipoCta
 
-
-
         data = ""
-
+        print(url,'<-------------------- url')
         try:
             self.headers['Authorization'] = self.UTI.obtenerToken()
             response = requests.get(url, headers = self.headers)
@@ -1926,6 +2213,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         if response.status_code == 200:
             data = response.content
+            
         else:
             self.createAlert('Error en peticion "consumeWSConstr()":\n' + response.text)
             return
@@ -1953,10 +2241,12 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         if response.status_code == 200:
             data = response.content
         else:
+            
             self.createAlert('Error en peticion "consumeWSCedula()":\n' + response.text)
             return
 
         return json.loads(data)
+       
 
     # - consume ws que verifica si una construccion tiene geometria
     def verificaSiTieneGeomWS(self, idConst, url):
@@ -1965,7 +2255,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         
         try:
             self.headers['Authorization'] = self.UTI.obtenerToken()
-            response = requests.get(url + str(idConst), headers = self.headers)
+            response = requests.get(url + idConst, headers = self.headers)
         except requests.exceptions.RequestException as e:
             self.createAlert("Error de servidor, 'guardaConstrPredWS()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
             return str(e)
@@ -1993,6 +2283,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         if response.status_code == 200:
             data = response.content
+           
         else:
             self.createAlert('Error en peticion "consumeWSGeneral()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
             return
@@ -2065,21 +2356,23 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         data = ""
         
         jsonGuardaVolumen = json.dumps(volumen)
-        print(jsonGuardaVolumen)
+        
         try:
             self.headers['Authorization'] = self.UTI.obtenerToken()
             response = requests.post(url + accion, headers = self.headers, data = jsonGuardaVolumen)
         except requests.exceptions.RequestException as e:
             self.createAlert("Error de servidor, 'guardaConstrPredWS()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
             return str(e)
-
+       
         if response.status_code == 200:
-            data = response.content
+            data = response.json()
         else:
             self.createAlert('Error en peticion "guardaConstrPredWS()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
             return response.text
 
-        return 'OK'
+        if accion == 'delete' or accion == 'update':
+            return 'OK'
+        return data
 
     # - manda al ws un condominio para ser guardado
     def guardaCondominioWS(self, condominio, tipo, url):
@@ -2100,6 +2393,117 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             return response.text
 
         return 'OK'
+
+    def copiaImgWS(self,copia, url):
+        data = ""
+        
+        jsonCopiaImg = json.dumps(copia)
+
+        
+        try:
+            self.headers['Authorization'] = self.UTI.obtenerToken()
+            response = requests.post(url, headers = self.headers, data = jsonCopiaImg)
+        except requests.exceptions.RequestException as e:
+            self.createAlert("Error de servidor, 'copiaImgWS()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
+            return str(e)
+       
+        if response.status_code == 200:
+            data = response.content
+        elif response.status_code == 409:
+            self.createAlert(response.text, QMessageBox().Critical, "Cedula")
+            return response.text
+        else:
+            self.createAlert('Error en peticion "copiaImgWS()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
+            return response.text
+
+        return 'OK'
+
+
+    def cortaImgWS(self,corta, url):
+        data = ""
+        
+        jsonCortaImg = json.dumps(corta)
+
+       
+        try:
+            self.headers['Authorization'] = self.UTI.obtenerToken()
+            response = requests.put(url, headers = self.headers, data = jsonCortaImg)
+        except requests.exceptions.RequestException as e:
+            self.createAlert("Error de servidor, 'cortaImgWS()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
+            return str(e)
+      
+        if response.status_code == 200:
+            data = response.content
+        else:
+            self.createAlert('Error en peticion "cortaImgWS()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
+            return response.text
+
+       
+        return 'OK'
+
+    def elimImgWS(self,Elimina, url):
+        data = ""
+        
+        jsonEliminaImg = json.dumps(Elimina)
+
+        
+
+        try:
+            self.headers['Authorization'] = self.UTI.obtenerToken()
+            response = requests.delete(url, headers = self.headers, data = jsonEliminaImg)
+        except requests.exceptions.RequestException as e:
+            self.createAlert("Error de servidor, 'elimImgWS()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
+            return str(e)
+        
+        if response.status_code == 200:
+            data = response.content
+        else:
+            self.createAlert('Error en peticion "elimImgWS()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
+            return response.text
+
+       
+        return 'OK'
+
+    def subirImgWS(self,subir, url, cveCata):
+        data = ""
+        
+        jsonSubirImg = json.dumps(subir)
+        try:
+            self.headers['Authorization'] = self.UTI.obtenerToken()
+            response = requests.post(url + cveCata, headers = self.headers, data = jsonSubirImg)
+        except requests.exceptions.RequestException as e:
+            self.createAlert("Error de servidor, 'subirImgWS()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
+            return str(e)
+
+        if response.status_code == 200 or response.status_code == 201:
+            data = response.json()
+        else:
+            self.createAlert('Error en peticion "subirImgWS()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
+            return response.text
+
+        return data  
+
+    def actualizaImgWS(self,actualiza, url, cveCata):
+        data = ""
+        
+        jsonActualizaImg = json.dumps(actualiza)
+        try:
+            self.headers['Authorization'] = self.UTI.obtenerToken()
+            response = requests.put(url + cveCata, headers = self.headers, data = jsonActualizaImg)
+           
+        except requests.exceptions.RequestException as e:
+            self.createAlert("Error de servidor, 'actualizaImgWS()' '" + str(e) + "'", QMessageBox().Critical, "Error de servidor")
+            return str(e)
+
+        if response.status_code == 200:
+            data = response.content
+        else:
+            self.createAlert('Error en peticion "actualizaImgWS()":\n' + response.text, QMessageBox().Critical, "Error de servidor")
+            return response.text
+
+        return 'OK'
+
+
 
     # --- S E R V I C I O S   W E B   CIERRA ---
 
@@ -2124,7 +2528,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
     # -- se consulta la informacion del WS cada vez que se selecciona uno en el combo
     # -- pero si ya se habia consultado antes, ya no es necesario hacerlo de nuevo
     def event_cambioCondominio(self):
-
+        print('se metio evento de cambio de combo de condominio ------------------------------------------')
         if self.cmbCondo.count() > 0:
             index = self.cmbCondo.currentIndex()
             tipoCond = self.cmbCondo.itemData(index) # <---- tipo de condominio
@@ -2153,10 +2557,10 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 # consumir ws de consulta de informacion de condominio
 
                 if self.cargandoRevision:
-                    dataCond = self.consumeWSGeneral(self.CFG.urlReviCondConsulta + self.cveCatastral + clave + '/' + tipoCond)
+                    dataCond = self.consumeWSGeneral(self.CFG.urlReviCondConsulta + self.cveCatastral + clave + '/' + tipoCond + '/' + str(self.cedula['id']))
                 else:
                     dataCond = self.consumeWSGeneral(self.CFG.urlCedCondByCveCatTipoPred + self.cveCatastral + clave + '/' + tipoCond)
-
+              
                 if len(dataCond) == 0:
                     return
 
@@ -2226,7 +2630,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                     dataServCuenta.append(sc)
 
             if consume:
-                dataServCuenta = self.obtieneServiciosCuenta(self.cveCatastral + clave)
+                dataServCuenta = self.obtieneServiciosCuenta(str(dc['id']) + '/' + ('R' if self.cargandoRevision else 'C') + '/' + tipoCond + ('C' if self.cargandoRevision else ''))
                 for dcc in dataServCuenta:
 
                     dcc['cveCatastral'] = self.cveCatastral + clave
@@ -2257,33 +2661,41 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             consume = True
 
             for cc in self.constrCond:
+                print('entro al FOR')
                 if cc['cveCatastral'] == (self.cveCatastral + clave):
                     consume = False
                     dataConstC.append(cc)
 
             if consume:
+                print('entro al IF')
                 # consume de ws las construcciones de condominio
                 dataConstC = self.consumeWSConstr(self.cveCatastral + clave, tipoCond)
+                #print(dataConstC)
                 for dcc in dataConstC:
                     self.constrCond.append(dcc)
 
+            print('longitud condominio ------------ ', clave)
+            print(len(dataConstC))
 
             self.indexVolActualCondo = -1
             self.indexFraActualCondo = -1
 
             # - CARGA LAS CONSTRUCCIONES
-            self.cargaConstrCondo(dataConstC)
+            self.cargaConstrCondo(dataConstC, self.cveCatastral + clave)
 
             # - VALIDACIONES PARA MANEJO DE CONSTRUCCIONES 
             # si es vertical, NO se permiten agregar ni eliminar construcciones
 
-            if tipoCond == 'H': # <---------- HORIZONTAL
-                self.btnAddConstC.setEnabled(True)
-                self.btnDelConstrC.setEnabled(True)
+            if self.cargandoRevision == True:
 
-            elif tipoCond == 'V': # <-------- VERTICAL
-                self.btnAddConstC.setEnabled(False)
-                self.btnDelConstrC.setEnabled(False)
+                if tipoCond == 'H': # <---------- HORIZONTAL
+                    self.btnAddConstC.setEnabled(True)
+                    self.btnDelConstrC.setEnabled(True)
+
+                elif tipoCond == 'V': # <-------- VERTICAL
+                    self.btnAddConstC.setEnabled(False)
+                    self.btnDelConstrC.setEnabled(False)
+            
 
             currentIndex = self.tabwCedula.currentIndex()
             self.event_cambioPestania(index = currentIndex)
@@ -2535,6 +2947,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 self.leSupConstrFP.show()
             else:
                 self.leSupConstrFP.hide()
+
+    
 
     def event_cambioCategoria(self):
         
@@ -2871,13 +3285,11 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         # obtiene los indices de todas los renglones seleccionados
         indices = self.twColindancias.selectionModel().selectedRows()
-
-        if len(indices) == 0:
-            self.createAlert('Seleccione una orientacion a eliminar (seleccione todo el renglon)', icono = QMessageBox().Warning)
-
+        
         # elimina el renglon de la lista
-        for index in indices:
-            self.twColindancias.removeRow(index.row())
+        self.twColindancias.removeRow(self.twColindancias.currentRow())
+
+        
 
     def event_remTodasColin(self):
         self.twColindancias.clearContents()
@@ -3617,6 +4029,8 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         for index in range(0, count):
             volumen += self.cmbVolumenP.itemData(index)['nomVolumen']
             idPredio = self.cmbVolumenP.itemData(index)['idPredio']
+        if idPredio == None:
+            idPredio = self.cedula['id']
         # obtener el numero maximo de volumen
         maxVol = 0
         if volumen != '':
@@ -3695,6 +4109,124 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         if count == 0:
             self.habilitaConstr()
+
+    def event_nuevaConstrCo(self):
+
+        index = self.cmbCondo.currentIndex()
+        tipoCond = self.cmbCondo.itemData(index) # <---- tipo de condominio
+        clave = self.cmbCondo.currentText()      # <---- clave de condominio
+        count = self.cmbVolumenC.count()
+        if count == 0:
+            self.seRealiza = False
+
+        dataCond = []
+        # se busca si ya se habia consumido informacion del condominio seleccionado
+        for condo in self.condominios:
+
+            if condo['cveCat'] == (self.cveCatastral + clave):
+                consume = False
+                dataCond.append(condo)
+                break
+
+        # autoguardado
+        self.constrTemp()
+        
+        volumen = ''
+
+        # se obtienen todos los volumenes de predios
+        # en forma de una cadena (v1v2v3v4)
+        idPredio = None
+        for index in range(0, count):
+            volumen += self.cmbVolumenC.itemData(index)['nomVolumen']
+            idPredio = self.cmbVolumenC.itemData(index)['idPredio']
+
+        if idPredio == None:
+            idPredio = self.cedula['id']
+
+        # obtener el numero maximo de volumen
+        maxVol = 0
+        if volumen != '':
+
+            # se obtienen, en forma de lista, los numeros de los volumenes
+            lVolT = volumen.lower().split('v')
+
+            maxVol = int(max(lVolT))
+
+        # creacion de la nueva construccion
+        
+        construccion = {}
+
+        construccion['accion'] = 'new'
+        construccion['anioConstruccion'] = None
+        construccion['caracCategoriaEConstruccion'] = []
+        construccion['catUsoEspecificos'] = []
+        construccion['codigoConstruccion'] = None
+        construccion['constTipo'] = 'Construccion'
+        construccion['cveCatastral'] = self.cveCatastral + clave
+        construccion['cveConstEsp'] = None
+        construccion['fechaAct'] = None
+        construccion['guardado'] = False
+        construccion['id'] = None
+        construccion['idCatDestino'] = None
+        construccion['idCatEstadoConstruccion'] = None
+        construccion['idCatUsoConstruccion'] = None
+        construccion['idCategoria'] = None
+
+        if tipoCond == 'H':
+            construccion['idCondominioHorizontal'] = dataCond[0]['id']
+            construccion['idCondominioVertical'] = None
+        if tipoCond == 'V':
+            construccion['idCondominioHorizontal'] = None
+            construccion['idCondominioVertical'] = dataCond[0]['id']
+        
+        construccion['idFactor'] = None
+        construccion['idPredio'] = idPredio
+        construccion['idTipoConstruccion'] = 1
+        construccion['nomVolumen'] = 'V' + str(maxVol + 1)
+        construccion['nombre'] = None
+        construccion['numNiveles'] = 1
+        construccion['precioM2'] = None
+        construccion['supConst'] = 0
+        construccion['tipoCalculo'] = None
+        construccion['valorConst'] = None
+        construccion['volumen'] = None
+
+        fra = []
+
+        fr = {}
+        fr['anioConstruccion'] = None
+        fr['caracCategorias'] = []
+        fr['codigoConstruccion'] = None
+        fr['cveCatastral'] = self.cveCatastral + clave
+        fr['fechaAct'] = None
+        fr['idCatDestino'] = None
+        fr['idCatEstadoConstruccion'] = None
+        fr['idCatUsoConstruccion'] = None
+        fr['idCatUsoEspecifico'] = None
+        fr['idCategoria'] = None
+        fr['idConstruccion'] = None
+        fr['idFactor'] = None
+        fr['idPredio'] = idPredio
+        fr['idTipoFactor'] = None
+        fr['nombre'] = None
+        fr['numNivel'] = 1
+        fr['nvlUbica'] = None
+        fr['precioM2'] = None
+        fr['supConstFraccion'] = 0
+        fr['tipoCalculo'] = None
+        fr['valorConst'] = None
+        fr['volumen'] = 1
+
+        fra.append(fr)
+
+        construccion['fracciones'] = fra
+        
+        self.cmbVolumenC.addItem(str(construccion['nomVolumen']), construccion)
+
+        self.createAlert('Proceso Concluido', QMessageBox.Information)
+
+        if count == 0:
+            self.habilitaConstr()
         
     # -- eliminacion de construccion PREDIO
     # - se permite eliminar la construccion si y solo si 
@@ -3717,11 +4249,10 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         idConst = data['id']
         elimina = False
-
         if idConst is not None:
 
             # consumir ws para saber si la construccion tiene geometria
-            tieneGeom = self.verificaSiTieneGeomWS(idConst, self.CFG.urlVerifSiTieneGeomConstP)
+            tieneGeom = self.verificaSiTieneGeomWS(str(idConst) + '/' + ('R' if self.cargandoRevision else 'C'), self.CFG.urlVerifSiTieneGeomConstP)
             elimina = not tieneGeom
         else:
             elimina = True
@@ -3790,7 +4321,102 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         count = self.cmbVolumenP.count()
 
         if count == 0:
-            self.deshabilitaConstr()
+            self.deshabilitaConstrC()
+            self.limpiaConstrucciones()
+
+
+    def event_elimConstrCo(self):
+        
+        # autoguardado
+        self.constrTemp()
+        
+        # se obtienen todos los volumenes de predios
+        # en forma de una cadena (v1v2v3v4)
+        count = self.cmbVolumenC.count()
+
+        if count == 0:
+            return
+
+        # se obtiene la construccion actual
+        index = self.cmbVolumenC.currentIndex()
+        data = self.cmbVolumenC.itemData(index)
+
+        idConst = data['id']
+        elimina = False
+
+        if idConst is not None:
+
+            # consumir ws para saber si la construccion tiene geometria
+            tieneGeom = self.verificaSiTieneGeomWS(idConst, self.CFG.urlVerifSiTieneGeomConstP)
+            elimina = not tieneGeom
+        else:
+            elimina = True
+
+        # - SI se eliminara la construccion
+        if elimina:
+
+            # si cuenta con un indentificador (id) significa que la informacion se encuentra en la base de datos
+            # si NOOO tiene id, solo se elimina de memoria
+            if idConst is not None:
+
+                # la construccion se borrara directamente de la base de datos
+                # por eso se espera confirmacion del usuario
+                reply = QMessageBox.question(self,'Construccion', 'La construccion se eliminara definitivamente, ¿desea continuar?', QMessageBox.Yes, QMessageBox.No)
+                if reply == QMessageBox.Yes:
+                    
+                    # se envia al ws la construccion a eliminar
+                    data['accion'] = 'delete'
+
+                    payload = []
+                    payload.append(data)
+
+                    resp = self.guardaCondominioWS(payload, tipoCond, url = self.CFG.urlGuardaCondominio)
+
+                    if resp == 'OK':
+                        self.createAlert('Eliminacion correcta', QMessageBox.Information)
+
+                        # se elimina del combo de construcciones
+
+                        '''
+                        construccionesTemp = []
+                        count = self.cmbVolumenP.count()
+                        for indx in range(0, count):
+                            dataTemp = self.cmbVolumenP.itemData(indx)
+
+                            if str(dataTemp['nomVolumen']) == str(data['nomVolumen']):
+                                continue
+
+                            construccionesTemp.append(dataTemp)
+
+                        self.cmbVolumenP.clear()
+
+                        for ct in construccionesTemp:
+                            self.cmbVolumenP.addItem(str(ct['nomVolumen']), ct)
+                        '''
+                        self.seRealiza = False
+                        self.cmbVolumenC.removeItem(index)
+
+                else:
+                    return
+            else:
+
+                reply = QMessageBox.question(self,'Construccion', '¿Desea eliminar la construccion?', QMessageBox.Yes, QMessageBox.No)
+                if reply == QMessageBox.Yes:
+                    self.seRealiza = False
+                    self.cmbVolumenC.removeItem(index)
+                else:
+                    return
+            
+        else: # <- NOOO se elimina, debido a que cuenta con geometria asociada
+            self.createAlert('La construccion no se permite eliminar ya que cuenta con informacion cartografica')
+
+        # si ya no hay construcciones
+        # se limpia el formulario y se deshabilitan los controles
+
+        count = self.cmbVolumenC.count()
+
+        if count == 0:
+            self.deshabilitaConstrC()
             self.limpiaConstrucciones()
 
 
@@ -3831,12 +4457,12 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         # observaciones
         data['observaciones'] = None if self.pteObservaciones.toPlainText() == '' else self.pteObservaciones.toPlainText()
-
+        '''
         # uso de suelo (cveUsoSuelo)
         index = self.cmbTipoAsentH.currentIndex()
         idTipoAsH = self.cmbTipoAsentH.itemData(index)
         data['idTipoAsentamiento'] = None if int(idTipoAsH) == -1 else idTipoAsH
-
+        '''
         data['calles'] = []
 
         if self.idCalleSelecc != -1:
@@ -3920,19 +4546,48 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         data['valorTerreno'] = self.tablaValTerreno.item(2,1).text().replace('$', '').replace(',', '')
 
+        count = self.cmbVolumenP.count()
+        superficie = 0
+
+        for index in range(0, count):
+            superficie += self.cmbVolumenP.itemData(index)['supConst'] or 0
+        
+        data['subConstruccion'] = superficie
 
         # nombre
         data['nombre'] = None if self.leNombre.text() == '' else self.leNombre.text()
-
+        '''
         if self.cargandoRevision:
             headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
             respuesta = requests.get(self.CFG.urlObtenerIdPredio + self.cveCatastral, headers = headers)
             if respuesta.status_code == 200:
                 data['id'] = respuesta.json()
+        '''
+        if self.cargandoRevision == False:
+            guarda = 'C'
+        else:
+            guarda = 'R'
+        if self.ckbGuardadoTemCed.isChecked()==False:
+            guardaC = 'G'
+        else:
+            guardaC = 'T'
 
+        guardar = '/' + guarda + '/' + guardaC 
 
+        if guarda == 'R' and guardaC == 'G':
+
+            reply = QMessageBox.question(self,'Guardado', '¿Está seguro de guardar los cambios de manera general? \nSe liberará la asignación y ya no podrá hacer ninguna modificación', QMessageBox.Yes, QMessageBox.No)
+            if reply == QMessageBox.No:
+                return
+                                
         # --- G U A R D A   P R E D I O S ---
-        resp = self.guardaPredioWS(predio = data, url = self.CFG.urlGuardaPredio)
+        print('***************************************************************************')
+        print(data)
+        print(self.CFG.urlGuardaPredio +  guardar)
+        print('***************************************************************************')
+
+
+        resp = self.guardaPredioWS(predio = data, url = self.CFG.urlGuardaPredio +  guardar)
 
         if resp == 'OK':
 
@@ -3952,7 +4607,12 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                         listaServicios.append(servicio)
 
                 # consumir ws para guardar los servicios
-                resp = self.guardaServiciosPredWS(listaServicios, cveCata = self.cveCatastral, url = self.CFG.urlGuardaServiciosP)
+                if guarda == 'R' and guardaC == 'G':
+                    complemento = ''
+                else:
+                    complemento = ('C' if self.cargandoRevision else '')
+
+                resp = self.guardaServiciosPredWS(listaServicios, cveCata = str(self.cedula['id']) + '/' + self.cveCatastral +  guardar +'/P' + complemento, url = self.CFG.urlGuardaServiciosP)
 
                 if resp != 'OK':
                     return
@@ -3965,16 +4625,15 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             now = datetime.datetime.now()
             self.lbUltFechaAct.setText(str(now)[0:19])
 
+            if guarda == 'R' and guardaC == 'G':
 
-            headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
-            respuesta = requests.post(self.CFG.urlConfirmarFinR + self.cveCatastral + '/' + self.usuarioLogeado + '/revision', headers = headers)
+                headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
+                respuesta = requests.post(self.CFG.urlConfirmarFinR + self.cveCatastral + '/' + self.usuarioLogeado + '/revision', headers = headers)
 
-            if respuesta.status_code == 200:
-                    
-                    print('ACTUALIZADA LA FECCHA FIN')
-            else:
-                self.UTI.mostrarAlerta('Error al actualizar fecha de fin', QMessageBox().Critical, "Revision")
-                print(respuesta.json())
+                if respuesta.status_code != 200:
+                    self.UTI.mostrarAlerta('Error al actualizar fecha de fin', QMessageBox().Critical, "Revision")
+
+                            
 
     # -- GUARDAR   V O L U M E N   SELECCIONADO
     def event_guardarVolP(self):
@@ -4001,7 +4660,6 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
             if volumen['accion'] == 'new':
                 fr['idPredio'] = idPredio
-
             # destino
             fr['idCatDestino'] = None if str(fr['idCatDestino']) == '-1' else fr['idCatDestino']
 
@@ -4032,16 +4690,27 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         if volumen['accion'] == 'new':
             volumen['supConst'] = round(supConst, 2)
             volumen['idPredio'] = idPredio
-
-
+        
+        
         payload = []
         payload.append(volumen)
+        resp = self.guardaConstrPredWS(payload, volumen['accion'] + '/' + ('R' if self.cargandoRevision else 'C'), url = self.CFG.urlGuardaVolumenP)
 
-        resp = self.guardaConstrPredWS(payload, volumen['accion'], url = self.CFG.urlGuardaVolumenP)
-
-        if resp == 'OK':
+        if resp:
             self.createAlert('Guardado correcto', QMessageBox.Information)
+            if volumen['accion'] =='new':
+                volumen['accion'] = 'update'
+                va = list(resp.values())
 
+                id = va[1]
+                i= id
+                
+                volumen['id'] = i
+
+                self.cmbVolumenP.setItemData(indexC, volumen)
+
+
+       
     # GUARDAR   V O L U M E N   SELECCIONADO (C O N D O M I N I O)
     def event_guardarVolC(self):
 
@@ -4096,11 +4765,21 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         payload = []
         payload.append(volumen)
+        
+        resp = self.guardaConstrPredWS(payload, volumen['accion'] + '/' + ('R' if self.cargandoRevision else 'C'), url = self.CFG.urlGuardaVolumenP)
 
-        resp = self.guardaConstrPredWS(payload, volumen['accion'], url = self.CFG.urlGuardaVolumenP)
-
-        if resp == 'OK':
+        if resp:
             self.createAlert('Guardado correcto', QMessageBox.Information)
+            if volumen['accion'] =='new':
+                volumen['accion'] = 'update'
+                va = list(resp.values())
+
+                id = va[1]
+                i= id
+                
+                volumen['id'] = i
+
+                self.cmbVolumenP.setItemData(indexC, volumen)
 
     # -- GUARDAR   C O N D O M I N I O   SELECCIONADO
     def event_guardarCondominio(self):
@@ -4139,7 +4818,18 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         condSave['valorTerrExc'] = condSave['valorTerrExc'].replace('$', '').replace(',', '')
         '''
         # --- G U A R D A D O   D E   C O N D O M I N I O S ---
-        resp = self.guardaCondominioWS(payload, tipoCond, url = self.CFG.urlGuardaCondominio)
+        if self.cargandoRevision == False:
+            guarda = 'C'
+        else:
+            guarda = 'R'
+        if self.ckbGuardadoTemCedCond.isChecked()==False:
+            guardaC = 'G'
+        else:
+            guardaC = 'T'
+
+        guardar = '/' + guarda + '/' + guardaC
+
+        resp = self.guardaCondominioWS(payload, tipoCond + guardar, url = self.CFG.urlGuardaCondominio)
 
         if resp == 'OK':
 
@@ -4159,7 +4849,14 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                         listaServicios.append(servicio)
 
                 # consumir ws para guardar los servicios
-                resp = self.guardaServiciosPredWS(listaServicios, cveCata = self.cveCatastral + clave, url = self.CFG.urlGuardaServiciosP)
+                
+
+                if guarda == 'R' and guardaC == 'G':
+                    complemento = ''
+                else:
+                    complemento = ('C' if self.cargandoRevision else '')
+
+                resp = self.guardaServiciosPredWS(listaServicios, cveCata = str(condSave['id']) + '/' + self.cveCatastral + clave + guardar + '/' + tipoCond + complemento, url = self.CFG.urlGuardaServiciosP)
 
                 if resp != 'OK':
                     return
@@ -4567,8 +5264,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         col = self.twIndivisos.currentColumn()
         row = self.twIndivisos.currentRow()
 
-        # print(row, col, cadena)
-
+       
     def event_textoCambioPrivC(self, texto):
         self.totalesSuperf(self.lePrivadaC.text(), self.leComunC.text(), 'C')
         self.totalesSuperf(self.lePrivadaT.text(), self.leComunT.text(), 'T')
@@ -4601,7 +5297,18 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
                 listaInd.append(indiviso)
 
-            respuesta = self.guardaIndivisos(listaInd)
+            if self.cargandoRevision == False:
+                guarda = 'C'
+            else:
+                guarda = 'R'
+            if self.ckbGuardadoTemCedCond.isChecked()==False:
+                guardaC = 'G'
+            else:
+                guardaC = 'T'
+
+            guardar = '/' + guarda + '/' + guardaC
+
+            respuesta = self.guardaIndivisos(listaInd, guardar)
 
             if respuesta == 'OK':
                 self.createAlert('Proceso Concluido', QMessageBox.Information)
@@ -4634,14 +5341,14 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             if len(self.idsMzaIma) > 0:
                 data = self.idsMzaIma[self.countIM]
                 self.habilitaBotImages()
+                self.mostrarImagen(data, 'M')
+                self.lbNumImages.setText(str(self.countIM + 1) + ' de ' + str(len(self.idsMzaIma)))
 
             else:
                 self.lbImage.clear()
                 self.deshabilitaBotImages()
+                self.lbNumImages.setText('Sin imagenes')
                 return
-
-            self.mostrarImagen(data, 'M')
-            self.lbNumImages.setText(str(self.countIM + 1) + ' de ' + str(len(self.idsMzaIma)))
 
 
         # carga imagenes de fachadas
@@ -4650,13 +5357,13 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             if len(self.idsFacIma) > 0:
                 data = self.idsFacIma[self.countIF]
                 self.habilitaBotImages()
+                self.mostrarImagen(data, 'F')
+                self.lbNumImages.setText(str(self.countIF + 1) + ' de ' + str(len(self.idsFacIma)))
             else:
                 self.lbImage.clear()
                 self.deshabilitaBotImages()
+                self.lbNumImages.setText('Sin imagenes')
                 return
-
-            self.mostrarImagen(data, 'F')
-            self.lbNumImages.setText(str(self.countIF + 1) + ' de ' + str(len(self.idsFacIma)))
 
         # carga imagenes de documentos
         elif index == 2:
@@ -4664,16 +5371,17 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
             if len(self.idsDocIma) > 0:
                 data = self.idsDocIma[self.countID]
                 self.habilitaBotImages()
+                self.mostrarImagen(data, 'D')
+                self.lbNumImages.setText(str(self.countID + 1) + ' de ' + str(len(self.idsDocIma)))
             else:
                 self.lbImage.clear()
                 self.deshabilitaBotImages()
+                self.lbNumImages.setText('Sin imagenes')
                 return
-
-            self.mostrarImagen(data, 'D')
-            self.lbNumImages.setText(str(self.countID + 1) + ' de ' + str(len(self.idsFacIma)))
-
+ 
         self.btnZoomIn.setEnabled(self.listZoom[self.scaleFactor] < 2.5)
         self.btnZoomOut.setEnabled(self.listZoom[self.scaleFactor] > 1.0)
+        
 
     # evento que retocede una imagen, una posicion
     def event_atrasImagen(self):
@@ -4731,6 +5439,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         self.btnZoomIn.setEnabled(self.listZoom[self.scaleFactor] < 2.5)
         self.btnZoomOut.setEnabled(self.listZoom[self.scaleFactor] > 1.0)
+        
 
     # evento que avanza una imagen, una posicion
     def event_adelanteImagen(self):
@@ -4789,6 +5498,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         self.btnZoomIn.setEnabled(self.listZoom[self.scaleFactor] < 2.5)
         self.btnZoomOut.setEnabled(self.listZoom[self.scaleFactor] > 1.0)
+        
 
     # --- CERRAR E V E N T O S   Widget ---
 
@@ -4799,11 +5509,9 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         v = list(data.values())
         k = list(data.keys())
-
         imagen = {}
         if v[0] is None:
 
-            print('consume', tipo)
             # consume ws para obtener la imagen
             imagen = self.obtieneImagen(k[0], tipo)
             if tipo == 'M':
@@ -4846,7 +5554,536 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
 
         self.btnZoomIn.setEnabled(self.listZoom[self.scaleFactor] < 2.5)
         self.btnZoomOut.setEnabled(self.listZoom[self.scaleFactor] > 1.0)
+        
+    #rotar imagen a la derecha 90°
+    def rotarDer (self):
+        
+        pixmap = self.lbImage.pixmap()
+        size = QSize(453, 255)    
+        t = QtGui.QTransform()
+        t.rotate(90)
+        rotated_pixmap = pixmap.transformed(t)
+        self.lbImage.setPixmap(rotated_pixmap)
 
+        imagen = self.lbImage.pixmap()
+        image = imagen.toImage()
+        d = QByteArray()
+        buf = QBuffer(d)
+        image.save(buf, 'PNG')
+        img = ''
+        enconde_string = base64.b64encode(d)
+        img = enconde_string.decode("utf-8")
+        index = self.cmbMFD.currentIndex()
+
+         # carga imagenes de manzanas
+        if index == 0:
+            if len(self.idsMzaIma) > 0:
+                data = self.idsMzaIma[self.countIM]
+        # carga imagenes de fachadas
+        elif index == 1:
+            if len(self.idsFacIma) > 0:
+                data = self.idsFacIma[self.countIF]   
+        # carga imagenes de documentos
+        elif index == 2:
+            if len(self.idsDocIma) > 0:
+                data = self.idsDocIma[self.countID]
+
+        v = list(data.values())
+        
+        valor = v[0]
+     
+        if valor['archivo'] != img:
+            valor['archivo'] = img
+
+            index = self.cmbMFD.currentIndex()
+                # carga imagenes de manzanas
+            if index == 0:
+                m = {}
+                m[valor['id']] = valor
+                self.idsMzaIma[self.countIM] = m
+
+            # carga imagenes de fachadas
+            elif index == 1:
+                m = {}
+                m[valor['id']] = valor
+                self.idsFacIma[self.countIF] = m
+
+            # carga imagenes de documentos
+            elif index == 2:
+                m = {}
+                m[valor['id']] = valor
+                self.idsDocIma[self.countID] = m
+
+           
+            
+
+    
+
+    #rotar imagen a la izquierda 90°
+    def rotarIzq (self):
+        pixmap = self.lbImage.pixmap()
+        size = QSize(453, 255)    
+        t = QtGui.QTransform()
+        t.rotate(-90)
+        rotated_pixmap = pixmap.transformed(t)
+        self.lbImage.setPixmap(rotated_pixmap)
+
+        imagen = self.lbImage.pixmap()
+        image = imagen.toImage()
+        d = QByteArray()
+        buf = QBuffer(d)
+        image.save(buf, 'PNG')
+        img = ''
+        enconde_string = base64.b64encode(d)
+        img = enconde_string.decode("utf-8")
+
+
+        index = self.cmbMFD.currentIndex()
+
+         # carga imagenes de manzanas
+        if index == 0:
+            if len(self.idsMzaIma) > 0:
+                data = self.idsMzaIma[self.countIM]
+        # carga imagenes de fachadas
+        elif index == 1:
+            if len(self.idsFacIma) > 0:
+                data = self.idsFacIma[self.countIF]   
+        # carga imagenes de documentos
+        elif index == 2:
+            if len(self.idsDocIma) > 0:
+                data = self.idsDocIma[self.countID]
+
+        v = list(data.values())
+        k = list(data.keys())
+        
+        valor = v[0]
+   
+        if valor['archivo'] != img:
+            valor['archivo'] = img
+
+            index = self.cmbMFD.currentIndex()
+                # carga imagenes de manzanas
+            if index == 0:
+                m = {}
+                m[valor['id']] = valor
+                self.idsMzaIma[self.countIM] = m
+
+            # carga imagenes de fachadas
+            elif index == 1:
+                m = {}
+                m[valor['id']] = valor
+                self.idsFacIma[self.countIF] = m
+
+            # carga imagenes de documentos
+            elif index == 2:
+                m = {}
+                m[valor['id']] = valor
+                self.idsDocIma[self.countID] = m
+
+    
+        
+
+
+       
+
+    #subir imagen
+    def event_subirImg(self):
+        x = ''
+        BLOCKSIZE = 65536
+        path = QFileDialog.getOpenFileName(self, 'Subir imagen', os.getenv('HOME'), 'Image tiles(*.jpg, *.png )')
+        if path !=('',''):
+            hasher = hashlib.md5(open(path[0],'rb').read()).hexdigest().upper()
+            with open(path[0], "rb") as path:
+                encoded_string = base64.b64encode(path.read())
+                x= encoded_string.decode("utf-8")
+        else:
+            return
+        
+        index = self.cmbMFD.currentIndex()
+
+        #clave manzana
+        claveDes = self.cveCatastral
+
+        if self.cmbMFD.currentIndex() ==0:
+            claveDes = claveDes[0:20]
+            
+        idTipoArch =0
+        if index ==0:
+            idTipoArch = 4
+        elif index ==1:
+            idTipoArch = 2
+        else:
+            idTipoArch = 3 
+        
+        subir = {}
+        subir['archivo'] =x
+        subir['id'] = -1
+        subir['idTipoArchivo'] = idTipoArch 
+        subir['idTipoExtension'] = 1
+        subir['latitud'] = None
+        subir['longitud'] = None
+        subir['md5'] = hasher 
+        subir['nombreArchivo'] = None
+        subir['tmpid'] = None
+
+        # manzanas
+        if self.cmbMFD.currentIndex() == 0:
+            self.idsMzaIma.append({-1: subir})
+
+        # fachadas
+        elif self.cmbMFD.currentIndex() == 1:
+            self.idsFacIma.append({-1: subir})
+            
+        # documentos
+        elif self.cmbMFD.currentIndex() == 2:
+            self.idsDocIma.append({-1: subir})
+
+        self.cambioComboMFD()
+        
+    #guardar imagen
+    def event_guardaImg(self):
+        index = self.cmbMFD.currentIndex()
+
+         # carga imagenes de manzanas
+        if index == 0:
+            if len(self.idsMzaIma) > 0:
+                data = self.idsMzaIma[self.countIM]
+               
+            else:
+                self.createAlert('No se ha seleccionado imagen a guardar', QMessageBox.Warning)
+                return
+        # carga imagenes de fachadas
+        elif index == 1:
+            if len(self.idsFacIma) > 0:
+                data = self.idsFacIma[self.countIF]
+                
+            else:
+                self.createAlert('No se ha seleccionado imagen a guardar', QMessageBox.Warning)
+                return    
+        # carga imagenes de documentos
+        elif index == 2:
+            if len(self.idsDocIma) > 0:
+                data = self.idsDocIma[self.countID]
+               
+            else:
+                self.createAlert('No se ha seleccionado imagen a guardar', QMessageBox.Warning)
+                return
+
+         #clave manzana
+        claveDes = self.cveCatastral
+
+        if self.cmbMFD.currentIndex() ==0:
+            claveDes = claveDes[0:20]       
+
+
+        v = list(data.values())
+        k = list(data.keys())
+        valor = v[0]
+
+
+        
+        decoded = base64.decodebytes(valor['archivo'].encode('ascii'))
+        encry= hashlib.md5(decoded).hexdigest().upper()
+        #decoded = base64.decodebytes(t)
+        valor['md5'] = encry
+        
+  
+
+
+        if k[0] is -1:
+            respuesta = self.subirImgWS(valor, url = self.CFG.urlSubirIma, cveCata = claveDes)
+
+            self.createAlert('Guardado correcto', QMessageBox.Information)
+
+            va = list(respuesta.values())
+
+            id = va[1]
+            i= id
+            
+            valor['id'] = i
+           
+            index = self.cmbMFD.currentIndex()
+            
+            # carga imagenes de manzanas
+            if index == 0:
+                m = {}
+                m[i] = valor
+                self.idsMzaIma[self.countIM] = m
+
+            # carga imagenes de fachadas
+            elif index == 1:
+                m = {}
+                m[i] = valor
+                self.idsFacIma[self.countIF] = m
+    
+            # carga imagenes de documentos
+            elif index == 2:
+                m = {}
+                m[i] = valor
+                self.idsDocIma[self.countID] = m
+
+          
+            self.cambioComboMFD()
+        
+        else:
+            index = self.cmbMFD.currentIndex()
+
+            # carga imagenes de manzanas
+            if index == 0:
+                if len(self.idsMzaIma) > 0:
+                    data = self.idsMzaIma[self.countIM]
+            
+            # carga imagenes de fachadas
+            elif index == 1:
+                if len(self.idsFacIma) > 0:
+                    data = self.idsFacIma[self.countIF]
+                
+            # carga imagenes de documentos
+            elif index == 2:
+                if len(self.idsDocIma) > 0:
+                    data = self.idsDocIma[self.countID]
+
+            claveDes = self.cveCatastral
+
+            if self.cmbMFD.currentIndex() ==0:
+                claveDes = claveDes[0:20]
+          
+           
+                
+            respuesta = self.actualizaImgWS(valor, url = self.CFG.urlActualizaImg, cveCata = claveDes)
+           
+            if respuesta == 'OK':
+                self.createAlert('Imagen actualizada.', QMessageBox.Information)
+            
+                
+         
+    #elimina imagen seleccionada 
+    def event_elimImg(self):
+
+            index = self.cmbMFD.currentIndex()
+            des = self.cmbDest.currentIndex()
+            # carga imagenes de manzanas
+            if index == 0:
+
+                if len(self.idsMzaIma) > 0:
+                    data = self.idsMzaIma[self.countIM]
+                else:
+                    self.createAlert('No se ha seleccionado imagen', QMessageBox.Warning)
+
+                    return
+            # carga imagenes de fachadas
+            elif index == 1:
+
+                if len(self.idsFacIma) > 0:
+                    data = self.idsFacIma[self.countIF]             
+                else:
+                    self.createAlert('No se ha seleccionado imagen', QMessageBox.Warning)
+                    return  
+
+            # carga imagenes de documentos
+            elif index == 2:
+
+                if len(self.idsDocIma) > 0:
+                    data = self.idsDocIma[self.countID]
+                else:
+                    self.createAlert('No se ha seleccionado imagen', QMessageBox.Warning)
+                    return
+            k = list(data.keys())
+            v = list(data.values())
+
+
+            idArch = v[0]['id']
+            idTipoArchori = v[0]['idTipoArchivo']
+
+            if k[0] is -1:
+                self.createAlert('Primero debe guardar la imagen', QMessageBox.Warning)
+                return
+            if idArch == None:
+                self.createAlert('Primero debe guardar la imagen', QMessageBox.Warning)
+                return
+
+            
+        
+        
+            reply = QMessageBox.question(self,'imagen', 'La imagen se eliminara definitivamente, ¿desea continuar?', QMessageBox.Yes, QMessageBox.No)
+            if reply == QMessageBox.Yes:
+
+            
+                #clave manzana
+                index = self.cmbClcata.currentIndex()
+                cveMz = self.cmbClcata.itemData(index)
+                claveDes = self.cveCatastral
+
+                if self.cmbDest.currentIndex() ==0:
+                    cveMz = cveMz[0:20]
+
+                if self.cmbMFD.currentIndex() ==0:
+                    claveDes = claveDes[0:20]
+                
+                idTipoArch =0
+                if des ==0:
+                    idTipoArch = 4
+                elif des ==1:
+                    idTipoArch = 2
+                else:
+                    idTipoArch = 3 
+            
+
+                Elimina = {}
+                Elimina['cveCatastral'] = claveDes 
+                Elimina['idArchivo'] = idArch
+                Elimina['idTipoArchivo'] =idTipoArchori 
+
+                
+                resp = self.elimImgWS(Elimina, url = self.CFG.urlEliminaIma)
+                
+            
+
+                if resp == 'OK':
+                
+                    # manzanas
+                    if self.cmbMFD.currentIndex() == 0:
+                        self.idsMzaIma.pop(self.countIM)
+
+                            # fachadas
+                    elif self.cmbMFD.currentIndex() == 1:
+                        self.idsFacIma.pop(self.countIF)
+                                
+                            # documentos
+                    elif self.cmbMFD.currentIndex() == 2:
+                        self.idsDocIma.pop(self.countID)
+                    
+                    self.cambioComboMFD()
+                    self.createAlert('Eliminado correcto', QMessageBox.Information)
+
+
+
+    #copiar imagen
+    def event_copiaImg(self):
+        index = self.cmbMFD.currentIndex()
+        des = self.cmbDest.currentIndex()
+
+        #validaciones 
+        if index == 0 and des == 0:
+            self.createAlert('No se puede realizar la accion', QMessageBox.Warning)
+            return
+
+
+        # carga imagenes de manzanas
+        if index == 0:
+
+            if len(self.idsMzaIma) > 0:
+                data = self.idsMzaIma[self.countIM]
+            else:
+                self.createAlert('No se ha seleccionado imagen', QMessageBox.Warning)
+
+                return
+
+        # carga imagenes de fachadas
+        elif index == 1:
+
+            if len(self.idsFacIma) > 0:
+                data = self.idsFacIma[self.countIF]
+            
+            else:
+                self.createAlert('No se ha seleccionado imagen', QMessageBox.Warning)
+                return  
+
+        # carga imagenes de documentos
+        elif index == 2:
+
+            if len(self.idsDocIma) > 0:
+                data = self.idsDocIma[self.countID]
+            else:
+                self.createAlert('No se ha seleccionado imagen', QMessageBox.Warning)
+                return
+
+        k = list(data.keys())
+        v = list(data.values())
+
+
+        idArch = v[0]['id']
+        idTipoArchori = v[0]['idTipoArchivo']
+    
+        
+        if k[0] is -1:
+                self.createAlert('Primero debe guardar la imagen', QMessageBox.Warning)
+                return
+        if idArch == None:
+                self.createAlert('Primero debe guardar la imagen', QMessageBox.Warning)
+                return
+        
+        
+        
+
+        #clave manzana
+        index = self.cmbClcata.currentIndex()
+        cveMz = self.cmbClcata.itemData(index)
+        claveDes = self.cveCatastral
+
+        if self.cmbDest.currentIndex() ==0:
+            cveMz = cveMz[0:20]
+
+        if self.cmbMFD.currentIndex() ==0:
+            claveDes = claveDes[0:20]
+        
+        idTipoArch =0
+        if des ==0:
+            idTipoArch = 4
+        elif des ==1:
+            idTipoArch = 2
+        else:
+            idTipoArch = 3     
+    
+        #COPIAR
+        if self.rbtnCopiar.isChecked()==True:
+        
+            copia = {}
+            copia['cveCataDes'] = cveMz 
+            copia['cveCataOri'] = None
+            copia['idArchivoDes'] =idArch 
+            copia['idArchivoOri'] = None
+            copia['idTipoArchivoDes'] = idTipoArch
+            copia ['idTipoArchivoOri'] = None
+
+          
+            resp = self.copiaImgWS(copia, url = self.CFG.urlCopyIma)
+
+            if resp == 'OK':
+                self.createAlert('Copiado correcto', QMessageBox.Information)
+
+        #CORTAR
+        if self.rbtnCortar.isChecked()==True:
+            # self.cveCatastral
+
+            corta = {}
+            corta['cveCataDes'] = cveMz 
+            corta['cveCataOri'] = claveDes
+            corta['idArchivoDes'] =idArch 
+            corta['idArchivoOri'] = idArch
+            corta['idTipoArchivoDes'] = idTipoArch
+            corta ['idTipoArchivoOri'] = idTipoArchori
+
+            respuesta = self.cortaImgWS(corta, url = self.CFG.urlCortaIma)
+
+            if respuesta == 'OK':
+                self.createAlert('Cortado correcto', QMessageBox.Information)
+
+                # manzanas
+                if self.cmbMFD.currentIndex() == 0:
+                    self.idsMzaIma.pop(self.countIM)
+
+                # fachadas
+                elif self.cmbMFD.currentIndex() == 1:
+                    self.idsFacIma.pop(self.countIF)
+                    
+                # documentos
+                elif self.cmbMFD.currentIndex() == 2:
+                    self.idsDocIma.pop(self.countID)
+        
+            self.cambioComboMFD()
+        
+        
     # calculo indivisos
     def factorIndiviso(self):
 
@@ -4903,7 +6140,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         spinvalue = QtWidgets.QDoubleSpinBox()
         spinvalue.setRange(rangeInit, rangeEnd)
         spinvalue.setDecimals(decimals)
-        spinvalue.setSingleStep(0.01);
+        spinvalue.setSingleStep(0.01)
         spinvalue.setValue(sBValue)
 
         spinvalue.valueChanged.connect(self.event_spinBox)
@@ -4942,7 +6179,7 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
                 self.leNivPropP.setText('1')
                 self.cmbNvaFraccP.addItems(resultado)
             else:
-                self.leNivPropC.setText('1')
+                self.leNivPropC.setText('2')
                 self.cmbNvaFraccC.addItems(resultado)   
 
         return
@@ -4983,22 +6220,23 @@ class CedulaMainWindow(QtWidgets.QMainWindow, FORM_CLASS):
         if condo:
             # deshabilitar subdivision y fusion
             # fusion
-            if self.cmbConC.count() == 0:
-                self.btnFusionarC.setEnabled(False)
-                self.cmbConC.setEnabled(False)
-            else:
-                self.btnFusionarC.setEnabled(True)
-                self.cmbConC.setEnabled(True)            
+            if self.cargandoRevision == True:
+                if self.cmbConC.count() == 0:
+                    self.btnFusionarC.setEnabled(False)
+                    self.cmbConC.setEnabled(False)
+                else:
+                    self.btnFusionarC.setEnabled(True)
+                    self.cmbConC.setEnabled(True)            
 
-            # subdivision
-            if self.cmbNvaFraccC.count() == 0:
-                self.btnSubdividirC.setEnabled(False)
-                self.cmbNvaFraccC.setEnabled(False)
-                self.leNivPropC.setEnabled(False)
-            else:            
-                self.btnSubdividirC.setEnabled(True)
-                self.cmbNvaFraccC.setEnabled(True)
-                self.leNivPropC.setEnabled(True)
+                # subdivision
+                if self.cmbNvaFraccC.count() == 0:
+                    self.btnSubdividirC.setEnabled(False)
+                    self.cmbNvaFraccC.setEnabled(False)
+                    self.leNivPropC.setEnabled(False)
+                else:            
+                    self.btnSubdividirC.setEnabled(True)
+                    self.cmbNvaFraccC.setEnabled(True)
+                    self.leNivPropC.setEnabled(True)
 
     # - ordena las construcciones por volumen
     def ordenaConstr(self, dataConstP):

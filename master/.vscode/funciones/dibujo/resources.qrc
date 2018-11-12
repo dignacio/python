@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/plugins/dibujo">
+    <file>icons/flechaBlanca.png</file>
+    <file>icons/flechaCafe.png</file>
+  </qresource>
+</RCC>

@@ -58,6 +58,7 @@ class Master:
             application at run time.
         :type iface: QgsInterface
         """
+
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
@@ -87,6 +88,7 @@ class Master:
         self.toolbar.setObjectName(u'Master')
         #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         #self.CFG = Configuracion
+        
         self.CFG = Configuracion.Configuracion()
         self.UTI = utilidades.Utilidad()
 
@@ -170,7 +172,7 @@ class Master:
 
         self.CMS.UTI = self.UTI
         self.CMS.ACA = self.ACA
-
+        
 
 
         self.dlg.btnConsulta.clicked.connect(self.irAConsulta)
@@ -313,7 +315,7 @@ class Master:
         #self.irAConsulta()
         #self.ACA.pintarCapas()
         #self.irAFusionDivision()
-
+        '''
         if self.banderaInicial:
             capaManzana = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('manzana'))
             capaPredsG = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('predios.geom'))
@@ -334,7 +336,7 @@ class Master:
             capaHoriN.selectionChanged.connect(self.ELM.cargarEliminar)
             capaVert.selectionChanged.connect(self.ELM.cargarEliminar)
             capaCvert.selectionChanged.connect(self.ELM.cargarEliminar)
-            
+        '''
         # show the dialog
         #self.irAConsulta()
         #self.ACA.pintarCapas()

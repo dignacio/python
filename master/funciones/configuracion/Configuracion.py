@@ -5,8 +5,8 @@ class Configuracion():
     def __init__(self):
         
         #Direccion IP del servidor
-        #self.servidorIP = 'http://192.168.0.40:8080/'
-        self.servidorIP = 'http://127.0.0.1:8080/'
+        self.servidorIP = 'http://192.168.0.40:8080/'
+        #self.servidorIP = 'http://127.0.0.1:8080/'
 
         #Combos de localidades, sectores y manzanas
         self.urlLocalidades = self.servidorIP + 'busquedasimplewkn/api/combo/001/localidades/'
@@ -77,7 +77,18 @@ class Configuracion():
         self.urlImagenByIdAndCveCata = self.servidorIP + 'archivoswkn/api/archivo/getArchivo/'
         self.urlGetPadron = self.servidorIP + 'busquedasimplewkn/api/cedula/padron/'
         self.urlGetPropPredio = self.servidorIP + 'busquedasimplewkn/api/cedula/propietario/'
-
+        #Urls para claves de manzana
+        self.urlGetManzana = self.servidorIP + 'busquedasimplewkn/api/cedula/claves/mza/'
+        #Url para copiar imagen 
+        self.urlCopyIma = self.servidorIP +'archivoswkn/api/archivo/copiar'
+        #Url para cortar imagen 
+        self.urlCortaIma = self.servidorIP + 'archivoswkn/api/archivo/cortar'
+        #Url para eliminar imagen
+        self.urlEliminaIma = self.servidorIP + 'archivoswkn/api/archivo-resource/deleteArchivo'
+        #Url subir imagen
+        self.urlSubirIma = self.servidorIP + 'archivoswkn/api/archivo-resource/saveArchivo/'
+        #Url actualizar imagen
+        self.urlActualizaImg = self.servidorIP + 'archivoswkn/api/archivo-resource/updateDataArchivo/'
         #Urls para asignacion de campo
         self.urlAsigCampoAgregar = self.servidorIP + 'busquedasimplewkn/api/asignacion/campo/asignar/'
         self.urlAsigCampoEliminar = self.servidorIP + 'busquedasimplewkn/api/asignacion/campo/eliminar/'
@@ -101,10 +112,11 @@ class Configuracion():
 
         #Urls para asignacionrevision
         self.urlReviPredio = self.servidorIP + 'busquedasimplewkn/api/asignacion/revision/obtenerPredio/'
-        self.urlReviConst = self.servidorIP + 'featureswkn/api/asignacion/revision/obtenerConstrucciones/'
-        self.urlReviCondominios = self.servidorIP + 'busquedasimplewkn/api/revision/combo/condo/'
+        self.urlReviConst = self.servidorIP + 'featureswkn/api/asignacion/revision/obtenerConstruccionesRelId/'
+        self.urlReviCondominios = self.servidorIP + 'busquedasimplewkn/api/revision/combo/condo/'                       # cedulaResource
         self.urlReviCondConsulta = self.servidorIP + 'featureswkn/api/asignacion/revision/obtenerCondominios/'
         self.urlObtenerIdPredio = self.servidorIP + 'busquedasimplewkn/api/asignacion/revision/obtenerIdPredio/'
+        self.urlObtenerIdPredioEc = self.servidorIP + 'busquedasimplewkn/api/asignacion/revision/obtenerIdPredioEc/'
         self.urlObtenerCuentaPredial = self.servidorIP + 'busquedasimplewkn/api/asignacion/padron/obtenerCuentaPredial/'
         self.urlCvesUsuarioMan = self.servidorIP + 'busquedasimplewkn/api/asignacion/'
 

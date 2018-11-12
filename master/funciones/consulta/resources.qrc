@@ -1,11 +1,19 @@
 <RCC>
   <qresource prefix="cedula">
+    <file>icons/guardar.png</file>
+    <file>icons/icons8-close-window-30.png</file>
+    <file>icons/icons8-save-filled-50.png</file>
+    <file>icons/icons8-upload-to-cloud-24.png</file>
+    <file>icons/delete.png</file>
+    <file>icons/subir.png</file>
+    <file>icons/rotarDer.png</file>
+    <file>icons/rotar.png</file>
     <file>icons/zoom_out.png</file>
     <file>icons/zoom_in.png</file>
     <file>icons/add.png</file>
     <file>icons/remove_all.png</file>
     <file>icons/remove_one.png</file>
-	<file>icons/flechaBlanca.png</file>
-	<file>icons/flechaCafe.png</file>
+    <file>icons/flechaBlanca.png</file>
+    <file>icons/flechaCafe.png</file>
   </qresource>
 </RCC>

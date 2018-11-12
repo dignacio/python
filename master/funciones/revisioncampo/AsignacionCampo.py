@@ -139,6 +139,7 @@ class AsignacionCampo:
         try:
             headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
             respuesta = requests.get(self.CFG.urlLocalidades, headers = headers)
+            print(respuesta, "localidad ")
         except requests.exceptions.RequestException:
             self.UTI.mostrarAlerta("Error de servidor LOC01", QMessageBox().Critical, "Cargar Localidades")
             print('ERROR: LOC000')
@@ -186,6 +187,9 @@ class AsignacionCampo:
         if index == self.indexCompLocalidad or self.bypass:
             #self.indexCompLocalidad = -1
             #print('pasooooo')
+            self.manzanaCargada = -1
+            self.sectorCargado = -1
+
             self.bypass = False
             self.dlg.cmbManzana.setEnabled(False)
             self.dlg.cmbManzana.clear()
@@ -210,6 +214,7 @@ class AsignacionCampo:
                 try:
                     headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
                     respuesta = requests.get(self.CFG.urlSectores + idSector + '/sector/', headers = headers)
+                    print (respuesta, "sector por localidad")
                 except requests.exceptions.RequestException:
                     self.UTI.mostrarAlerta("Error de servidor SEC01", QMessageBox().Critical, "Cargar Sectores")
                     print('ERROR: SEC000')
@@ -251,6 +256,7 @@ class AsignacionCampo:
         if index == self.indexCompSector or self.bypass:
 
             self.bypass = False
+            
             if self.dlg.cmbSector.count() > 0 and index > 0:
                 #self.indexCompSector = -1
                 index = self.dlg.cmbSector.currentIndex()
@@ -270,6 +276,7 @@ class AsignacionCampo:
                 try:
                     headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
                     respuesta = requests.get(self.CFG.urlManzanas + idSector + '/manzana/', headers = headers)
+                    print(respuesta, "obtener manzanas por sector")
                 except requests.exceptions.RequestException:
                     self.UTI.mostrarAlerta("Error de servidor MAN01", QMessageBox().Critical, "Cargar Manzanas")
                     print('ERROR: MAN000')
@@ -303,7 +310,7 @@ class AsignacionCampo:
 #---------------------------------------------------------------------------------------------------------------
 
     def contactarPintarCampos(self):
-        print('entro al pintar camposss')
+        print('entro al pintar campo')
         index = self.dlg.cmbManzana.currentIndex()
 
         if index == self.indexCompManzana or self.bypass:
@@ -569,7 +576,7 @@ class AsignacionCampo:
                     self.diccionarioAsignaciones[cveManzana].append(cve)
 
             else:
-                print(respuesta)
+                print(respuesta, "obtener diccionario de asignaciones ")
                 self.UTI.mostrarAlerta("Error de servidor DICACC1", QMessageBox().Critical, "Cargar Sectores")
 
         except requests.exceptions.RequestException:
@@ -624,6 +631,7 @@ class AsignacionCampo:
                 try:
                     headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
                     respuesta = requests.post(self.CFG.urlAsigCampoAgregar, headers = headers, data=listaAEnviar)
+                    print (respuesta, "asignar campo")
 
                     if respuesta.status_code == 200:
                         
@@ -665,17 +673,22 @@ class AsignacionCampo:
         try:
             headers = {'Content-Type': 'application/json', 'Authorization' : self.UTI.obtenerToken()}
             respuesta = requests.get(self.CFG.urlObtenerUsuarios, headers = headers)
+
+            print (respuesta, "llenar usuarios ")
         except requests.exceptions.RequestException:
             self.UTI.mostrarAlerta("Error de servidor ACAUSU1", QMessageBox().Critical, "Cargar Manzanas")
             print('ERROR: USU000')
+        
+        print(respuesta,'-------')
 
         lenJson = len(list(respuesta.json()))
 
+        print(respuesta.json(),'******************')
         if lenJson > 0:
             listaTemp = ['--Selecciona--']
             self.enviosUsuario = ['-']
             for dato in respuesta.json():
-                listaTemp.append(dato['firstName'] + ' ' + dato['lastName'])
+                listaTemp.append(str(dato['firstName']) + ' ' +str(dato['lastName']))
                 self.enviosUsuario.append(dato['login'])
             modeloTemp = QStandardItemModel()
             for i,word in enumerate( listaTemp ):   

@@ -38,16 +38,30 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">
-	background : rgb(255,255,255)
-</string>
+    <string notr="true">QTabBar::Tab{
+background : rgb(174, 116, 0);
+color : rgb(255, 255, 255);
+font-weight: bold;
+font-size: 12px;
+width:224px
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+color : rgb(174, 116, 0);
+background : rgb(255, 255, 255);
+
+}
+
+QWidget{
+background : rgb(255,255,255)
+}</string>
    </property>
    <property name="currentIndex">
     <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
-     <string>Actualizacion Cartografica de Manzana</string>
+     <string>Actualizacion Cartografica</string>
     </attribute>
     <widget class="QLabel" name="label">
      <property name="geometry">
@@ -481,6 +495,9 @@ background : rgb(255,255,255);
         <weight>75</weight>
         <bold>true</bold>
        </font>
+      </property>
+      <property name="accessibleDescription">
+       <string>1</string>
       </property>
       <property name="styleSheet">
        <string notr="true">QPushButton{
