@@ -80,11 +80,13 @@ class DivisionFusion:
         self.dlg = DivisionFusionDialog(parent = iface.mainWindow())
         #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         # Declare instance attributes
+        '''
         self.actions = []
         self.menu = self.tr(u'&DivisionFusion')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'DivisionFusion')
         self.toolbar.setObjectName(u'DivisionFusion')
+        '''
 
         #self.dlg.setMinimumSize(QSize(464, 465))
         #self.dlg.setMaximumSize(QSize(371, 372))

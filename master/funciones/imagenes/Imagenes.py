@@ -65,11 +65,13 @@ class Imagenes:
         self.dlg = ImagenesDialog()
 
         # Declare instance attributes
+        '''
         self.actions = []
         self.menu = self.tr(u'&Imagenes')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'Imagenes')
         self.toolbar.setObjectName(u'Imagenes')
+        '''
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):

@@ -85,12 +85,14 @@ class Integracion:
         self.dlg.btnProcesar.setEnabled(False)
         # Declare instance attributes
         self.todoEnOrden = False
+        '''
         self.actions = []
         self.menu = self.tr(u'&Integracion')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'Integracion')
         self.toolbar.setObjectName(u'Integracion')
         self.tablas = {'manzana': 'e_manzana', 'predios.geom': 'e_predio', 'construcciones': 'e_construccion',  'horizontales.geom':'e_condominio_horizontal', 'verticales':'e_condominio_vertical', 'cves_verticales':'e_condominio_vert_clave'}
+        '''
 
 
     # noinspection PyMethodMayBeStatic

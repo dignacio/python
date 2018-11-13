@@ -65,11 +65,13 @@ class UsuarioCampo:
         self.dlg = UsuarioCampoDialog()
 
         # Declare instance attributes
+        '''
         self.actions = []
         self.menu = self.tr(u'&UsuarioCampo')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'UsuarioCampo')
         self.toolbar.setObjectName(u'UsuarioCampo')
+        '''
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):

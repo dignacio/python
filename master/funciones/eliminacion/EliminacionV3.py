@@ -141,11 +141,13 @@ class EliminacionV3:
         
         #self.dockwidget.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         # Declare instance attributes
+        '''
         self.actions = []
         self.menu = self.tr(u'&EliminacionV3')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'EliminacionV3')
         self.toolbar.setObjectName(u'EliminacionV3')
+        '''
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):

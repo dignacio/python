@@ -7,41 +7,7 @@ from PyQt5.QtWidgets import QAction, QMessageBox, QApplication
 from PyQt5.QtGui import *
 import json, requests, os, time, threading
 from osgeo import ogr, osr
-
-class ThreadingExample(object):
-    """ Threading example class
-    The run() method will be started and it will run in the background
-    until the application exits.
-    """
-
-    def __init__(self, interval=1):
-        """ Constructor
-        :type interval: int
-        :param interval: Check interval, in seconds
-        """
-        self.interval = interval
-        self.contador = 0
-
-        thread = threading.Thread(target=self.run, args=())
-        thread.daemon = True                            # Daemonize thread
-        thread.start()                                  # Start the execution
-
-
-    def run(self):
-        """ Method that runs forever """
-        while True:
-            # Do something
-            print('Doing something imporant in the background')
-            #print(self.interval)
-            time.sleep(self.interval)
-
-    def funcion(self, argumento):
-        while True:
-            self.contador += 1
-            print('hola ---------')
-            print('hola ---------')
-            print('hola ---------')
-            print('hola ---------')
+from pathlib import Path
 
 class Startup():
 
@@ -87,7 +53,7 @@ class Startup():
 
         self.tablas = {'manzana': 'e_manzana', 'predios.geom': 'e_predio', 'construcciones': 'e_construccion',  'horizontales.geom':'e_condominio_horizontal', 'verticales':'e_condominio_vertical', 'cves_verticales':'e_condominio_vert_clave'}
 
-        self.modoDesarrollo = True
+        self.modoDesarrollo = False
 
         clickFuga = QAction(QIcon("C:/AplicacionQGIS/reload.png"), QCoreApplication.translate("Groundwater Modeling", "Cerrar Sesion"), iface.mainWindow())
         clickCerrar = QAction(QIcon("C:/AplicacionQGIS/cerrar.png"), QCoreApplication.translate("Groundwater Modeling", "Cerrar Sesion"), iface.mainWindow())
@@ -260,24 +226,42 @@ class Startup():
         iface.actionShowPythonDialog().trigger()
         print ('CONSOLA INICIADA')
 
+
+    '''
+    dependiendo de un archivo de inicializacion se define si QGIS des abre para interactuar con el 
+    sistema cartografico o NO
+
+    en la primera linea tendra un booleano - define si se uso una aplicacion externa para iniciar session
+    en la segunda linea tendra el token - cuando se inicie session se genera un token para realizar peticiones a WS
+    en la tercera linea tendra un booleano - define si se encuentra logueado el usuario
+    '''
     def checarLogin(self):
         
-        archivo = open('C:/AplicacionQGIS/start.det', 'r') #Abrimos el archivo generado por C#
-        
-        self.var.setValue("usoLogin", archivo.readline().replace('\n', ''))
+        file = Path("C:/AplicacionQGIS/start.det")
+        # verifica si el archivo de inicializacion existe
+        if file.is_file():
+            # se abre el archivo de inicializacion
+            archivo = open('C:/AplicacionQGIS/start.det', 'r')
+
+            # el archivo contiene cinco lineas
+            self.var.setValue("usoLogin", archivo.readline().replace('\n', ''))
+        else:
+            self.var.setValue("usoLogin", "False")
 
         if(self.var.value("usoLogin") == "True"):
             self.var.setValue("token", archivo.readline().replace('\n', ''))
             self.var.setValue("logeado", archivo.readline().replace('\n', ''))
+            self.var.setValue("usuario", archivo.readline().replace('\n', ''))
+            self.var.setValue("clave", archivo.readline().replace('\n', ''))
             
         else:
-            self.var.setValue("token", "None")
             self.var.setValue("logeado", "False")
 
         log = self.var.value("logeado")
         sal = self.var.value("salida")
 
-        archivo.close()
+        if file.is_file():
+            archivo.close()
 
         #DESCOMENTAR LO SIGUIENTE
         if(self.var.value("usoLogin") == "True"):
@@ -395,7 +379,9 @@ class Startup():
 
     def cargarCapas(self, log):
         
-        
+        if not log:
+            return 
+
         headers = {'Content-Type': 'application/json', 'Authorization' : self.obtenerToken()}
 
 

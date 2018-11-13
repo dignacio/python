@@ -65,11 +65,13 @@ class VentanaReglasTopo:
         self.dlg = VentanaReglasTopoDialog()
 
         # Declare instance attributes
+        '''
         self.actions = []
         self.menu = self.tr(u'&VentanaReglasTopo')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'VentanaReglasTopo')
         self.toolbar.setObjectName(u'VentanaReglasTopo')
+        '''
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):

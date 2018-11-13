@@ -478,8 +478,7 @@ class ActualizacionCatastralV3:
 
     def intermediarioReferencia(self):
         nameCapa = self.dockwidget.comboCapaReferencia.currentText()
-        self.UTI.mostrarAlerta(self.dockwidget.botonCargarReferencia.accessibleDescription(), QMessageBox().Information, "siiiiiiiiiiiiiiiii")
-
+        
         try:
             bound = self.obtenerBoundingBox().asWkt()
         except:

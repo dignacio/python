@@ -80,12 +80,16 @@ class Master:
         # Create the dialog (after translation) and keep reference
         self.dlg = MasterDialog(parent = iface.mainWindow())
         self.banderaInicial = True
-        # Declare instance attributes
-        self.actions = []
-        self.menu = self.tr(u'&Master')
-        # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar(u'Master')
-        self.toolbar.setObjectName(u'Master')
+
+        var = QSettings()
+        if var.value('logeado') == 'True':
+            # Declare instance attributes
+            self.actions = []
+            self.menu = self.tr(u'&Master')
+            # TODO: We are going to let the user set this up in a future iteration
+            self.toolbar = self.iface.addToolBar(u'Master')
+            self.toolbar.setObjectName(u'Master')
+
         #self.dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         #self.CFG = Configuracion
         
@@ -98,11 +102,13 @@ class Master:
         self.ACA = ActualizacionCatastralV3.ActualizacionCatastralV3(iface)
         self.UTI.ACA = self.ACA
         self.DFS = DivisionFusion.DivisionFusion(iface, self.ACA)
+        
         self.DBJ = DibujoV3.DibujoV3(iface)
+        
         self.ELM = EliminacionV3.EliminacionV3(iface)           
         self.TPG = TopologiaV3.TopologiaV3(iface, self.ACA)
         self.CMS = Integracion.Integracion(iface)
-
+        
         self.ASCM = AsignacionCampo.AsignacionCampo(iface, self.UTI)
         self.ASRV = AsignacionRevision.AsignacionRevision(iface, self.UTI)
         self.ASPA = AsignacionPadron.AsignacionPadron(iface, self.UTI)
@@ -187,7 +193,7 @@ class Master:
 
         self.dlg.btnInterPad.clicked.connect(self.irAIntermediarioPad)
         self.dlg.btnInterRev.clicked.connect(self.irAIntermediarioRev)
-
+        
         #self.dlg.btnAsigCampo.setEnabled(False)
         #self.dlg.btnAsigRev.setEnabled(False)
         
@@ -290,11 +296,15 @@ class Master:
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
         icon_path = ':/plugins/Master/icon.png'
-        self.add_action(
-            icon_path,
-            text=self.tr(u'Master'),
-            callback=self.run,
-            parent=self.iface.mainWindow())
+
+        var = QSettings()
+        if var.value('logeado') == 'True':
+
+            self.add_action(
+                icon_path,
+                text=self.tr(u'Master'),
+                callback=self.run,
+                parent=self.iface.mainWindow())
 
 #-----------------------------------------------------
 
@@ -315,7 +325,7 @@ class Master:
         #self.irAConsulta()
         #self.ACA.pintarCapas()
         #self.irAFusionDivision()
-        '''
+        
         if self.banderaInicial:
             capaManzana = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('manzana'))
             capaPredsG = QgsProject.instance().mapLayer(self.ACA.obtenerIdCapa('predios.geom'))
@@ -336,7 +346,7 @@ class Master:
             capaHoriN.selectionChanged.connect(self.ELM.cargarEliminar)
             capaVert.selectionChanged.connect(self.ELM.cargarEliminar)
             capaCvert.selectionChanged.connect(self.ELM.cargarEliminar)
-        '''
+        
         # show the dialog
         #self.irAConsulta()
         #self.ACA.pintarCapas()

@@ -76,11 +76,13 @@ class TopologiaV3:
 
         self.dockwidget.btnVerReglas.clicked.connect(self.verReglas)
         # Declare instance attributes
+        '''
         self.actions = []
         self.menu = self.tr(u'&TopologiaV3')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'TopologiaV3')
         self.toolbar.setObjectName(u'TopologiaV3')
+        '''
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):

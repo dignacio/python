@@ -79,20 +79,25 @@ class DibujoV3:
 
         self.pluginIsActive = False
 
-        self.eventos = Evento(iface.mapCanvas(), self)
         
-        self.dockwidget.botonDibujar.clicked.connect(self.eventos.alternarModoDibujo)
-        iface.currentLayerChanged.connect(self.eventos.actualizarCapaActiva)
-        self.eventos.deactivated.connect(self.eventos.recargarQgsMapTool)
+        var = QSettings()
+        if var.value('logeado') == 'True':
+            self.eventos = Evento(iface.mapCanvas(), self)
+            
+            self.dockwidget.botonDibujar.clicked.connect(self.eventos.alternarModoDibujo)
+            iface.currentLayerChanged.connect(self.eventos.actualizarCapaActiva)
+            self.eventos.deactivated.connect(self.eventos.recargarQgsMapTool)
         
 
 
         # Declare instance attributes
+        '''
         self.actions = []
         self.menu = self.tr(u'&DibujoV3')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'DibujoV3')
         self.toolbar.setObjectName(u'DibujoV3')
+        '''
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
